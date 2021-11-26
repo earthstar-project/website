@@ -1,0 +1,38 @@
+{
+  "private": true,
+  "name": "remix-app-template",
+  "description": "",
+  "license": "",
+  "scripts": {
+    "build": "remix build",
+    "remix-dev": "remix dev",
+    "postinstall": "remix setup node",
+    "deploy": "flyctl deploy",
+    "start": "remix-serve build",
+    "css": "postcss styles --base styles --dir app/styles --ext css -w",
+    "dev": "pm2-dev pm2.config.js"
+  },
+  "dependencies": {
+    "@remix-run/react": "^1.0.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "remix": "^1.0.0",
+    "@remix-run/serve": "^1.0.0"
+  },
+  "devDependencies": {
+    "@remix-run/dev": "^1.0.0",
+    "@tailwindcss/jit": "^0.1.18",
+    "@types/react": "^17.0.24",
+    "@types/react-dom": "^17.0.9",
+    "autoprefixer": "^10.3.7",
+    "pm2": "^5.1.2",
+    "postcss": "^8.3.11",
+    "postcss-cli": "^9.0.1",
+    "tailwindcss": "^2.2.17",
+    "typescript": "^4.1.2"
+  },
+  "engines": {
+    "node": ">=14"
+  },
+  "sideEffects": false
+}
