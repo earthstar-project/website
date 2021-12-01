@@ -6,8 +6,7 @@ type Sitemap = Record<string, string | Record<string, string>>;
 const sitemap: Sitemap = {
   // Blog: "/blog",
   "Get started": {
-    "How is earthstar different?": "/get-started/how-is-earthstar-different",
-    "Concept glossary": "/get-started/concept-glossary",
+    "How does Earthstar work?": "/get-started/how-does-earthstar-work",
   },
   APIs: {
     earthstar: "/api/earthstar",
@@ -76,11 +75,13 @@ export default function Nav() {
 
   return (
     <>
-      <header className="hidden lg:block">
-        <h1 className="text-2xl font-bold text-purple-700">
-          <Link to="/">Earthstar</Link>
+      <div className="hidden lg:block border-r-2 border-gray-300 bg-white overflow-auto">
+        <h1 className="text-2xl font-bold text-white px-2 py-4 ">
+          <Link to="/">
+            <img src="/earthstar.svg" alt="earthstar" className="w-40" />
+          </Link>
         </h1>
-        <nav>
+        <nav className="p-2">
           <ul>
             {Object.entries(sitemap).map(([title, urlOrSection]) => (
               <LinkOrSection
@@ -92,17 +93,20 @@ export default function Nav() {
             ))}
           </ul>
         </nav>
-      </header>
-      <details ref={detailsRef} className="lg:hidden p-2">
-        <summary className="text-2xl flex items-baseline">
+      </div>
+      <details
+        ref={detailsRef}
+        className="lg:hidden border-b-2 border-purple-400 sticky top-0 bg-white"
+      >
+        <summary className="text-2xl flex items-baseline p-2">
           🍔
           <h1 className="text-2xl font-bold text-purple-700 text-right flex-grow">
             <Link to="/" onClick={collapse}>
-              Earthstar
+              <img src="/earthstar.svg" alt="earthstar" className="w-40" />
             </Link>
           </h1>
         </summary>
-        <nav>
+        <nav className="border-t-2 border-purple-400 p-2">
           <ul>
             {Object.entries(sitemap).map(([title, urlOrSection]) => (
               <LinkOrSection

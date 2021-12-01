@@ -1,3 +1,66 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+  .border-outset {
+    border-style: outset;
+  }
+
+  .checked {
+    background-color: #f9f7fc;
+    opacity: 0.8;
+    background-image: repeating-linear-gradient(
+        45deg,
+        #f5f1ff 25%,
+        transparent 25%,
+        transparent 75%,
+        #f5f1ff 75%,
+        #f5f1ff
+      ),
+      repeating-linear-gradient(
+        45deg,
+        #f5f1ff 25%,
+        #f9f7fc 25%,
+        #f9f7fc 75%,
+        #f5f1ff 75%,
+        #f5f1ff
+      );
+    background-position: 0 0, 21px 21px;
+    background-size: 42px 42px;
+  }
+}
+
+@layer base {
+  #main h1 {
+    @apply text-2xl my-2 font-bold;
+  }
+  #main h2 {
+    @apply text-xl mt-6 mb-1 font-bold border-b-2 max-w-prose;
+  }
+  #main h3 {
+    @apply text-lg mt-6 mb-1 font-bold;
+  }
+  #main p {
+    @apply max-w-prose my-2;
+  }
+  #main blockquote {
+    @apply p-4 bg-gray-100 max-w-prose border-l-2 border-purple-200 my-2;
+  }
+  #main pre {
+    @apply p-4 bg-gray-100 overflow-scroll max-w-prose my-2 my-2;
+  }
+  #main code {
+    @apply p-1 bg-gray-100;
+  }
+  #main ul,
+  #main ol {
+    @apply pl-6 max-w-prose;
+  }
+  #main ul li {
+    @apply list-disc;
+  }
+  #main ol li {
+    @apply list-decimal;
+  }
+}

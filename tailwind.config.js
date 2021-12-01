@@ -5,10 +5,10 @@ module.exports = {
   theme: {
     extend: {
       gridTemplateColumns: {
-        'large': 'minmax(15rem, 20rem) 1fr',
+        'large': 'minmax(10rem, 15rem) 1fr',
         'standard': '1fr'
-      }
-    },
+      },
+          },
   },
   variants: {
     extend: {},

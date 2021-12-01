@@ -24,10 +24,8 @@ function Document({
         <Meta />
         <Links />
       </head>
-      <body>
-        <main className="grid gap-1 grid-cols-standard lg:grid-cols-large p-1 lg:h-screen">
-          {children}
-        </main>
+      <body className="grid grid-cols-standard lg:grid-cols-large h-screen">
+        {children}
         <Scripts />
         {process.env.NODE_ENV === "development" && <LiveReload />}
       </body>
@@ -39,7 +37,9 @@ export default function App() {
   return (
     <Document>
       <Nav />
-      <Outlet />
+      <div id="main" className="p-2 overflow-auto   lg:w-full lg:m-0 bg-white">
+        <Outlet />
+      </div>
     </Document>
   );
 }

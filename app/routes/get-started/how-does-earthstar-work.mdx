@@ -1,0 +1,66 @@
+---
+meta:
+  title: How does Earthstar work?
+  description: Isn't this awesome?
+headers:
+  Cache-Control: no-cache
+---
+
+# How does Earthstar work?
+
+In a nutshell, Earthstar helps you do three things:
+
+- Store data
+- Propagate that data
+- Prove the identity of who wrote that data
+
+With most online services, your data and online identity is stored on a centralised server. You sign in with a username and password, and are issued temporary privileges to access them. This gives the owner of the server a lot of power:
+
+- They decide whether the identity you choose is acceptable or not
+- They decide what constitutes 'appropriate content'
+- They decide which applications you can use
+- They give themselves the right to nose through your data
+- They are responsible for protecting you from malevolent users (and are usually pretty bad at it)
+
+With Earthstar, your data and identity stays with you. This inverts the power dynamic:
+
+- You decide how to express your identity
+- You decide what is appropriate and what is not
+- You decide which applications you can use
+- Your data only goes where you want it to
+- and is only propagated to people you trust
+
+Instead of a centralised server that everyone relies on, Earthstar gives you **pockets**.
+
+## Pockets
+
+Pockets are stores of data which you can put wherever you want: your computer, a USB key, a friend's internet-connected Raspberry Pi.
+
+You can also put whatever kind of data you want on them, e.g. chat messages, blog posts, images, songs.
+
+The magical part is that two pockets can synchronise their data with each other, and this can be used to create networks with people you trust.
+
+It's important that pockets' data cannot be synced anywhere without discrimination,
+so for two pockets to sync, they must be keyed to the same **Space**.
+
+## Spaces
+
+Spaces symbolise private groups interested in sharing data, like a Slack workspace or Discord server. When two pockets are keyed to the same space, they can sync with one another.
+
+Spaces are represented by special addresses like `+bookclub.a18bu7axtn`. The first part helps you remember which space you're interacting with, and the second, scrambly part makes it hard for others to guess. When you create a pocket, it needs an address like this.
+
+But even within a private space, we want to know that the data we receive is really from who we think it came from. We do that with identities.
+
+## Identities
+
+An identity in Earthstar is represented by a keypair, which is a bit like a username and password.
+
+It's made up of an **address** and a **secret**. The address is made up of a shortname you choose and something called a public key, like this: `@suzy.bzfkbawuj2cdxsxilvso4a2xczmcx6char4pqd2tjhdmcoy5i4ebq`.
+
+The address is publicly shareable information, and the secret should be kept, well, secret.
+
+Every time you write some data to a pocket, that data is _signed_ with your address and secret. Others can use this signature to cryptographically verify that the data was in fact written by who it says it was, i.e. your identity's address.
+
+But what about the ways we express our identity, like names, pronouns, or avatars?
+
+This kind of information is stored as documents within the Spaces you use. This has two big benefits: your identity can morph between the spaces you use; and you can express your identity however you want to!

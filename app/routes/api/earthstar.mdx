@@ -1,0 +1,44 @@
+---
+meta:
+  title: earthstar API
+  description: Isn't this awesome?
+headers:
+  Cache-Control: no-cache
+---
+
+# earthstar API
+
+`earthstar` is a reference implementation of written in Typescript. You can use it to add Earthstar functionality to programs running on servers, in browsers, or on the command line.
+
+Because this library can be used in different environments, it has a very modular API that requires many pieces to be plugged together. The upside is this library has a lot of flexibility.
+
+## `Crypto`
+
+Earthstar relies on [ed25519](https://ed25519.cr.yp.to) cryptography to sign and verify documents.
+
+(set different crypto driver to crypto global, give background)
+(generate identity with crypto)
+
+## `StorageAsync`
+
+(create storages with es4 + different drivers, list all of them)
+
+(list all the different methods and what they do, examples - order by utility?)
+
+## `Doc`
+
+## `Query`
+
+(query a storage, explain what the different properties do)
+
+## `Peer`
+
+(Adding storages to a peer, list of different methods)
+
+## `QueryFollower`
+
+(what is this for, lifecycle)
+
+## `StorageCache`
+
+(explain what this is useful for and how it works)
