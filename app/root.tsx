@@ -24,7 +24,7 @@ function Document({
         <Meta />
         <Links />
       </head>
-      <body className="grid grid-cols-standard lg:grid-cols-large h-screen">
+      <body className="grid grid-cols-standard lg:grid-cols-large">
         {children}
         <Scripts />
         {process.env.NODE_ENV === "development" && <LiveReload />}

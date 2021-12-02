@@ -75,7 +75,7 @@ export default function Nav() {
 
   return (
     <>
-      <div className="hidden lg:block border-r-2 border-gray-300 bg-white overflow-auto">
+      <div className="hidden lg:block bg-white overflow-auto self-start sticky top-0">
         <h1 className="text-2xl font-bold text-white px-2 py-4 ">
           <Link to="/">
             <img src="/earthstar.svg" alt="earthstar" className="w-40" />

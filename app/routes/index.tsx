@@ -17,16 +17,18 @@ export let links: LinksFunction = () => {
 export default function Index() {
   return (
     <div className="text-4xl">
-      <p>
+      <p className="leading-loose">
         Run your own
-        <div>chat / message board / file share / anything</div>
+        <div className="bg-yellow-100">
+          chat / message board / file share / anything
+        </div>
         for
-        <div>you / your friends / your community</div>
+        <div className="bg-green-100">you / your friends / your community</div>
         over the
-        <div>internet / sneakernet </div>
+        <div className="bg-blue-100">internet / sneakernet </div>
         with Earthstar.
       </p>
-      <p>
+      <p className="">
         <Link
           className="underline bg-purple-500 text-white p-3 rounded"
           to="get-started/how-does-earthstar-work"
