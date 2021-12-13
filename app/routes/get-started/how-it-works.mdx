@@ -24,19 +24,31 @@ Commons symbolise groups interested in sharing data, like a Slack workspace or D
 
 They are represented by addresses like `+bookclub.a18bu7axtn`. The first part helps you see which space you're interacting with, and the second, scrambly part makes it hard for others to guess.
 
-Obtaining this address grants access to the commons, so keep it out of public and share it only with people you trust.
+Obtaining this address grants access to your commons, so keep it out of public and share it only with people you trust.
 
-A commons' data is stored on its users devices using **pockets**.
+A commons' data is stored on its users' devices using **pockets**.
 
 ## Pockets
 
-Pockets are stores of data which you can put wherever you want: your computer, a USB key, a friend's internet-connected Raspberry Pi.
+Pockets are stores of data which you can put wherever you want: your computer, a USB key, a friend's internet-connected Raspberry Pi. They can use different storage technologies to persist their data, such as SQLite or IndexedDB.
 
-They can hold whatever kind of data you want on them, like chat messages, blog posts, images, or songs (and that data can be **deleted** whenever you want, too).
+When two pockets are configured to use the same commons address, they can synchronise with each other, and this can be used to create collaborative applications like chatrooms, forums, or games.
 
-When two pockets are keyed to the same commons address, they can synchronise with each other, and this can be used to create collaborative applications like chatrooms, forums, or games.
+All data stored on a pocket are persisted as separate **Documents**.
 
-With collaborative applications, it's important to know who authored data. We can do that with **identities**.
+## Documents
+
+Documents describe and contain your commons' data.
+
+Every document has a **path** like `/my-story.txt`. Paths can be used to group different bits of data together and make them more discoverable, e.g. `/posts/2021/bird-thoughts.md`.
+
+Our community has used this to create a few conventions for storing documents for different purposes e.g. profile information, micro-blogging, long-form discussions.
+
+Documents have a optional property on them which describes when it should be deleted. After this time, pockets will delete that document completely.
+
+Many people can write to the same document, and your pocket will store the last version from each author. This means you can always roll back or resolve conflicts if something went wrong.
+
+Every document has a signature to help Earthstar verify its authorship. So if a document claims it was written by `@suzy`, you can be fairly confident it was really written by `@suzy`. These signatures are created using **identities**.
 
 ## Identities
 
@@ -44,13 +56,13 @@ An identity in Earthstar is represented by a keypair, which is a bit like a user
 
 It's made up of an **address** and a **secret**. The address is made up of a shortname you choose and something called a public key, which can look like this: `@suzy.bzfkbawuj2cdxsxilvso4a2xczmcx6char4pqd2tjhdmcoy5i4ebq`.
 
-The address is publicly shareable information, and the secret should be kept, well, secret.
+The address is publicly shareable information, and the secret should be kept, well, secret. A keypair's address or secret can never be changed, so keep it safe!
 
-Every time you write some data to a pocket, that data is _signed_ with your address and secret. Others can use this signature to cryptographically verify that the data was in fact written by who it says it was, i.e. your identity's address.
+When a public name is put into a document's path, prefixed with a tilde (e.g. `/about/@suzy.bzfkbawuj2cdxsxilvso4a2xczmcx6char4pqd2tjhdmcoy5i4ebq/displayName.txt`), then _only_ the user with that identity can write to that document.
 
 But what about the ways we express our identity, like names, pronouns, or avatars?
 
-This kind of information is stored as data within the commons you use. This has two big benefits: your identity can morph between the spaces you use; and you can express your identity however you want to!
+This kind of information is stored as data within the commons you use. This has two big benefits: your identity can freely fluctuate between the spaces you use; and you can express your identity with as little or as much detail as you want!
 
 ## Applications
 

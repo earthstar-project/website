@@ -93,12 +93,12 @@ export default function Nav() {
   return (
     <>
       <div className="hidden lg:block bg-white overflow-auto self-start sticky top-0">
-        <h1 className="text-2xl font-bold px-2 mt-4 ">
+        <h1 className="text-2xl font-bold pl-2 md:pl-4 my-4 ">
           <Link to="/">
             <span className="text-purple-500">Earthstar</span> Project
           </Link>
         </h1>
-        <nav className="p-2">
+        <nav className="pl-2 md pl-4">
           <ul>
             {Object.entries(sitemap).map(([title, urlOrSection]) => (
               <LinkOrSection
