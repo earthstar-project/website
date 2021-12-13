@@ -6,7 +6,9 @@ type Sitemap = Record<string, string | Record<string, string>>;
 const sitemap: Sitemap = {
   // Blog: "/blog",
   "Get started": {
-    "How does Earthstar work?": "/get-started/how-does-earthstar-work",
+    "How it works": "/get-started/how-it-works",
+    "Why it's decentralised": "/get-started/why-decentralised",
+    Roadmap: "/get-started/roadmap",
   },
   APIs: {
     earthstar: "/api/earthstar",
@@ -14,9 +16,11 @@ const sitemap: Sitemap = {
   Specifications: {
     "Data specification": "/specs/data-spec",
   },
-  Support: {
-    "Contribute code": "/support/contribute",
-    Donate: "/support/donate",
+  Community: {
+    "Contribute code": "/community/contribute",
+    Donate: "/community/donate",
+    "Code of Conduct": "/community/code-of-conduct",
+    "Our backers": "/community/our-backers",
   },
   Links: {
     "Open Collective": "https://opencollective.com/earthstar",
@@ -37,7 +41,11 @@ function LinkOrSection({
   if (typeof item === "string") {
     return (
       <li className="text-purple-800 underline">
-        <Link to={item} onClick={collapseDetails}>
+        <Link
+          className="visited:text-purple-500"
+          to={item}
+          onClick={collapseDetails}
+        >
           {title}
         </Link>
       </li>
@@ -45,18 +53,27 @@ function LinkOrSection({
   }
 
   return (
-    <li>
-      <span className="font-bold">{title}</span>
-      <ul className="pl-4">
+    <li className="mb-2">
+      <span className="font-bold text-sm text-gray-700">{title}</span>
+      <ul className="pl-2">
         {Object.entries(item).map(([title, url]) => (
           <li key={title}>
-            <Link
-              className="text-purple-800 underline"
-              to={url}
-              onClick={collapseDetails}
-            >
-              {title}
-            </Link>
+            {url.startsWith("http") ? (
+              <a
+                className="text-purple-800 underline visited:text-purple-500"
+                href={url}
+              >
+                {title}
+              </a>
+            ) : (
+              <Link
+                className="text-purple-800 underline visited:text-purple-500"
+                to={url}
+                onClick={collapseDetails}
+              >
+                {title}
+              </Link>
+            )}
           </li>
         ))}
       </ul>
@@ -76,9 +93,9 @@ export default function Nav() {
   return (
     <>
       <div className="hidden lg:block bg-white overflow-auto self-start sticky top-0">
-        <h1 className="text-2xl font-bold text-white px-2 py-4 ">
+        <h1 className="text-2xl font-bold px-2 mt-4 ">
           <Link to="/">
-            <img src="/earthstar.svg" alt="earthstar" className="w-40" />
+            <span className="text-purple-500">Earthstar</span> Project
           </Link>
         </h1>
         <nav className="p-2">
@@ -96,17 +113,17 @@ export default function Nav() {
       </div>
       <details
         ref={detailsRef}
-        className="lg:hidden border-b-2 border-purple-400 sticky top-0 bg-white"
+        className="lg:hidden shadow sticky top-0 bg-white"
       >
-        <summary className="text-2xl flex items-baseline p-2">
-          🍔
-          <h1 className="text-2xl font-bold text-purple-700 text-right flex-grow">
-            <Link to="/" onClick={collapse}>
-              <img src="/earthstar.svg" alt="earthstar" className="w-40" />
+        <summary className="text-sm flex items-baseline p-2">
+          Navigate
+          <h1 className="text-2xl font-bold text-purple-00 text-right flex-grow">
+            <Link to="/">
+              <span className="text-purple-500">Earthstar</span> Project
             </Link>
           </h1>
         </summary>
-        <nav className="border-t-2 border-purple-400 p-2">
+        <nav className="bg-gray-50 p-2">
           <ul>
             {Object.entries(sitemap).map(([title, urlOrSection]) => (
               <LinkOrSection

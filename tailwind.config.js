@@ -5,7 +5,7 @@ module.exports = {
   theme: {
     extend: {
       gridTemplateColumns: {
-        'large': 'minmax(10rem, 15rem) 1fr',
+        'large': 'minmax(10rem, 15rem) minmax(600px, 1080px)',
         'standard': '1fr'
       },
           },

@@ -37,7 +37,7 @@ export default function App() {
   return (
     <Document>
       <Nav />
-      <div id="main" className="p-2 overflow-auto   lg:w-full lg:m-0 bg-white">
+      <div className="p-2 overflow-auto   lg:w-full lg:m-0 ">
         <Outlet />
       </div>
     </Document>

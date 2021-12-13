@@ -1,0 +1,72 @@
+---
+meta:
+  title: How does Earthstar work?
+  description: Isn't this awesome?
+headers:
+  Cache-Control: no-cache
+---
+
+<div id="doc">
+
+# How it works
+
+In a nutshell, Earthstar helps you do three things:
+
+- Store and retrieve data
+- Synchronise that data
+- Prove the identity of who wrote that data
+
+These things combined can be used to make rich collaborative applications, like chatrooms, games, or message boards.
+
+## Commons
+
+Commons symbolise groups interested in sharing data, like a Slack workspace or Discord server. They are made up of users who already know and trust each other.
+
+They are represented by addresses like `+bookclub.a18bu7axtn`. The first part helps you see which space you're interacting with, and the second, scrambly part makes it hard for others to guess.
+
+Obtaining this address grants access to the commons, so keep it out of public and share it only with people you trust.
+
+A commons' data is stored on its users devices using **pockets**.
+
+## Pockets
+
+Pockets are stores of data which you can put wherever you want: your computer, a USB key, a friend's internet-connected Raspberry Pi.
+
+They can hold whatever kind of data you want on them, like chat messages, blog posts, images, or songs (and that data can be **deleted** whenever you want, too).
+
+When two pockets are keyed to the same commons address, they can synchronise with each other, and this can be used to create collaborative applications like chatrooms, forums, or games.
+
+With collaborative applications, it's important to know who authored data. We can do that with **identities**.
+
+## Identities
+
+An identity in Earthstar is represented by a keypair, which is a bit like a username and password.
+
+It's made up of an **address** and a **secret**. The address is made up of a shortname you choose and something called a public key, which can look like this: `@suzy.bzfkbawuj2cdxsxilvso4a2xczmcx6char4pqd2tjhdmcoy5i4ebq`.
+
+The address is publicly shareable information, and the secret should be kept, well, secret.
+
+Every time you write some data to a pocket, that data is _signed_ with your address and secret. Others can use this signature to cryptographically verify that the data was in fact written by who it says it was, i.e. your identity's address.
+
+But what about the ways we express our identity, like names, pronouns, or avatars?
+
+This kind of information is stored as data within the commons you use. This has two big benefits: your identity can morph between the spaces you use; and you can express your identity however you want to!
+
+## Applications
+
+Applications are just programs which write and read through a pocket's contents and re-present it as a friendly user interface. For example, imagine a program which reads a folder full of images and displays them as a gallery.
+
+Earthstar has **no opinion** on how applications are created, and provides a Javascript API that you can use in your vanilla JS, jQuery, React, Svelte, Vue, Angular, or whatever app.
+
+## Get started
+
+If you'd like to learn more about Earthstar:
+
+- Check out our [Roadmap](/get-started/roadmap)
+
+If you'd like to start building a tool, application, or even an implementation of Earthstar:
+
+- Read the docs for `earthstar`, the Javascript reference implementation
+- Read the data specification
+
+</div>
