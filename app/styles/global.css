@@ -649,6 +649,11 @@ video {
   #doc ol li {
 	list-style-type: decimal;
 }
+  #doc a {
+	--tw-text-opacity: 1;
+	color: rgba(59, 130, 246, var(--tw-text-opacity));
+	text-decoration: underline;
+}
 .visible {
 	visibility: visible;
 }
@@ -842,6 +847,28 @@ video {
 .filter {
 	filter: var(--tw-filter);
 }
+.checked {
+    background-color: #f9f7fc;
+    opacity: 0.8;
+    background-image: repeating-linear-gradient(
+        45deg,
+        #f5f1ff 25%,
+        transparent 25%,
+        transparent 75%,
+        #f5f1ff 75%,
+        #f5f1ff
+      ),
+      repeating-linear-gradient(
+        45deg,
+        #f5f1ff 25%,
+        #f9f7fc 25%,
+        #f9f7fc 75%,
+        #f5f1ff 75%,
+        #f5f1ff
+      );
+    background-position: 0 0, 21px 21px;
+    background-size: 42px 42px;
+  }
 
 .last\:mr-0:last-child {
 	margin-right: 0px;

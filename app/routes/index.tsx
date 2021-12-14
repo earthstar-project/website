@@ -39,14 +39,10 @@ export default function Index() {
         </div>
         <div className="flex flex-row gap-4 items-center  md:flex-col">
           <p className=" max-w-prose text-xl  order-1 md:order-2">
-            Every document in a commons is signed by the author's{" "}
-            <span className="text-purple-500">identity</span>, so that its
-            authorship can be verified by anyone.
+            Your data is here for the long haul. Everyone keeps a working
+            replica of their commons, so servers are just a nice-to-have.
           </p>
-          <img
-            src="identity.jpg"
-            className="flex-shrink w-48 order-2 md:order-1"
-          />
+          <img src="" className="flex-shrink w-48 order-2 md:order-1" />
         </div>
         <div className="flex flex-row gap-4 items-center md:flex-col">
           <p className=" max-w-prose text-xl order-1 md:order-2">

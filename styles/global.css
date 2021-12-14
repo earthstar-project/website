@@ -63,4 +63,7 @@
   #doc ol li {
     @apply list-decimal;
   }
+  #doc a {
+    @apply underline text-blue-500;
+  }
 }
