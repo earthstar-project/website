@@ -1,0 +1,124 @@
+import * as React from "react";
+import {
+  HeadersFunction,
+  json,
+  LoaderFunction,
+  MetaFunction,
+  redirect,
+  useLoaderData,
+} from "remix";
+import { getMDXComponent } from "mdx-bundler/client";
+import getDoc, { MdxDoc } from "~/getDoc.server";
+
+export let meta: MetaFunction = ({ data }) => {
+  const { doc } = data as LoaderType;
+
+  return {
+    title: `${doc.title} - Earthstar Project`,
+    description: doc.description,
+  };
+};
+
+export let loader: LoaderFunction = async ({ params }) => {
+  const maybeDoc = await getDoc(params.section || "", params.slug || "");
+
+  if (!maybeDoc) {
+    return redirect("/404");
+  }
+
+  return json({ doc: maybeDoc });
+};
+
+type LoaderType = {
+  doc: MdxDoc;
+};
+
+function H1(props: {}) {
+  return <h1 {...props} className={"text-2xl my-2 font-bold"} />;
+}
+
+function H2(props: {}) {
+  return (
+    <h2
+      {...props}
+      className={"text-xl mt-6 mb-1 font-bold border-b-2 max-w-prose"}
+    />
+  );
+}
+
+function H3(props: {}) {
+  return <h3 {...props} className={"text-lg mt-6 mb-1 font-bold"} />;
+}
+
+function H4(props: {}) {
+  return <h4 {...props} className={"font-bold"} />;
+}
+
+function Link(props: {}) {
+  return <a className={"underline text-blue-500"} {...props} />;
+}
+
+function ListItem(props: {}) {
+  return <li className={""} {...props} />;
+}
+
+function UnorderedList(props: {}) {
+  return <ul className={"pl-6 max-w-prose list-disc"} {...props} />;
+}
+
+function OrderedList(props: {}) {
+  return <ul className={"pl-6 max-w-prose list-decimal"} {...props} />;
+}
+
+function Code(props: {}) {
+  return <code className={"p-1 bg-gray-100 text-sm"} {...props} />;
+}
+
+function Paragraph(props: {}) {
+  return <p className={"max-w-prose my-2"} {...props} />;
+}
+
+function BlockQuote(props: {}) {
+  return (
+    <blockquote
+      className="p-4 bg-gray-100 max-w-prose border-l-2 border-purple-200 my-2"
+      {...props}
+    />
+  );
+}
+
+function Pre(props: {}) {
+  return (
+    <pre
+      className={"p-4 bg-gray-100 overflow-scroll max-w-prose my-2 my-2"}
+      {...props}
+    />
+  );
+}
+
+export default function Post() {
+  const { doc } = useLoaderData<LoaderType>();
+
+  const Component = React.useMemo(() => getMDXComponent(doc.code), [doc.code]);
+
+  return (
+    <article>
+      <Component
+        components={{
+          p: Paragraph,
+          a: Link,
+          h1: H1,
+          h2: H2,
+          h3: H3,
+          h4: H4,
+          li: ListItem,
+          ul: UnorderedList,
+          ol: OrderedList,
+          code: Code,
+          blockquote: BlockQuote,
+          pre: Pre,
+        }}
+      />
+    </article>
+  );
+}
