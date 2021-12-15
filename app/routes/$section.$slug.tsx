@@ -1,7 +1,7 @@
 import * as React from "react";
 import {
-  HeadersFunction,
   json,
+  LinksFunction,
   LoaderFunction,
   MetaFunction,
   redirect,
@@ -17,6 +17,15 @@ export let meta: MetaFunction = ({ data }) => {
     title: `${doc.title} - Earthstar Project`,
     description: doc.description,
   };
+};
+
+export let links: LinksFunction = () => {
+  return [
+    {
+      rel: "stylesheet",
+      href: "//unpkg.com/@highlightjs/cdn-assets@11.3.1/styles/default.min.css",
+    },
+  ];
 };
 
 export let loader: LoaderFunction = async ({ params }) => {

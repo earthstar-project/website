@@ -75,7 +75,7 @@ Instead, use `null`.
 
 When a function can have expected kinds of errors, return an Error from the function instead of throwing it. This helps Typescript to understand the function better and ensures the people calling the function later will be aware of all the possible errors.
 
-```ts
+```typescript
 // return result or Error
 let divideNumbers(a: number, b: number): number | EarthstarError => {
     if (b === 0) { return new EarthstarError("can't divide by zero"); }
@@ -97,7 +97,7 @@ if (notErr(n)) { ... }
 
 Use subclasses of the built-in node Error class. They're defined in [types.ts](src/util/types.ts). Prefer these specific errors to the generic built-in `Error`.
 
-```ts
+```typescript
 class EarthstarError extends Error { ... }
 
 class ValidationError extends EarthstarError { ... }
@@ -140,7 +140,7 @@ Long lines of code are ok (> 80 characters) -- turn on word-wrap in your editor 
 
 ### Capitalization
 
-```ts
+```typescript
 CONSTANT_VALUE;
 variableName;
 ClassName;
@@ -165,7 +165,7 @@ JSON also uses camelCase:
 
 Use semicolons. Format functions like this:
 
-```ts
+```typescript
 let exampleFunction = (x: number): number => {
   return x * 2;
 };
@@ -175,14 +175,14 @@ let oneLinerFunction = (x: number): number => x * 2;
 
 Object literals written on one line should have spaces inside the curly brackets:
 
-```ts
+```typescript
 let myObject = { a: 1, b: 2, c: 3 };
 //       spaces ^               ^
 ```
 
 Some old code has a space before type-related colons, which we don't want. This can be fixed with the built-in code formatter in VSCode (command-shift P, then "format selection").
 
-```ts
+```typescript
 // no
 let square = (x: number): number => x * x;
 
@@ -192,7 +192,7 @@ let square = (x: number): number => x * x;
 
 Prefer single quotes to double quotes:
 
-```ts
+```typescript
 let yes = "yes";
 let no = "no";
 let ok = "I'm a string with an apostrophe so I can use double quotes";
@@ -210,7 +210,7 @@ If importing more than one thing from a file, put each thing on a separate line 
 
 No circular dependencies (two files should not import each other).
 
-```ts
+```typescript
 // built-ins
 import * as fs from "fs";
 

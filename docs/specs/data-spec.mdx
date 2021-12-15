@@ -6,8 +6,6 @@ headers:
   Cache-Control: no-cache
 ---
 
-<div id="doc">
-
 # Data specification
 
 Format: `es.4`
@@ -116,7 +114,7 @@ When a new document arrives and an existing one is already there (from the same 
 
 The process of validating and potentially saving an incoming document is called **ingesting**, and it MUST happen to newly obtained documents, whether they come from other peers or are made as local writes. Earthstar libraries MUST use this ingestion process:
 
-```tsx
+```typescript
 // Pseudocode
 
 Ingest(newDoc):
@@ -569,7 +567,7 @@ This example document is shown as JSON though it can exist in many serialization
 
 Document schema in Typescript:
 
-```ts
+```typescript
 interface Doc {
   author: string; // an author address
   content: string; // an arbitary string of utf-8
@@ -609,7 +607,7 @@ Extra fields are NOT included in the document's signature.
 >
 > These extra fields are not standardized yet.
 >
-> ```ts
+> ```typescript
 > interface DocWithExtraFields extends Doc {
 >   // (...The core fields will be present here also.)
 >
@@ -740,7 +738,7 @@ Timestamps are integer **microseconds** (millionths of a second) since the Unix 
 
 Note this is NOT the default format used by Javascript, which uses milliseconds (thousandths of a second).
 
-```ts
+```typescript
 // Earthstar timestamps in javascript
 let timestamp = Date.now() * 1000;
 ```
@@ -752,7 +750,7 @@ timestamp = int(time.time() * 1000 * 1000)
 
 Timestamps MUST be within the following range (inclusive):
 
-```ts
+```typescript
 // 10^13
 let MIN_TIMESTAMP = 10000000000000;
 
@@ -852,7 +850,7 @@ Earthstar libraries MUST use this exact process.
 
 To hash a document:
 
-```ts
+```typescript
 // Pseudocode
 
 let hashDocument(document): string => {
@@ -895,7 +893,7 @@ let hashDocument(document): string => {
 
 To sign a document:
 
-```ts
+```typescript
 // Pseudocode
 
 let signDocument(authorKeypair, document): void => {
@@ -922,7 +920,7 @@ Preconditions that make this work:
 
 The reference implementation is in `hashDocument()` in `src/validators/es4.ts`. Here's a summary:
 
-```ts
+```typescript
 // Typescript-style psuedocode
 
 let serializeDocumentForHashing = (doc: Document): string => {
@@ -1068,7 +1066,7 @@ This only supports relatively simple ways of querying and filtering documents be
 
 The recommended query object format, expressed in Typescript, is... (see [query.ts](https://github.com/earthstar-project/earthstar/blob/main/src/storage/query.ts) for the latest version of this):
 
-```ts
+```typescript
 /**
  * Query objects describe how to query a Storage instance for documents.
  *
@@ -1219,7 +1217,7 @@ By taking advantage of these two techniques, both AND and OR type behaviour is p
 
 Example:
 
-```ts
+```typescript
 // ask for all the About documents, and the recent Wiki documents
 let incomingQueries = [
   {
@@ -1306,5 +1304,3 @@ Documents that can't be edited. They may or may not be able to be deleted, and t
 This would probably involve a new optional document field, `immutable`.
 
 See more [in this issue.](https://github.com/earthstar-project/earthstar/issues/8).
-
-</div>

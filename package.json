@@ -6,7 +6,7 @@
   "scripts": {
     "build": "remix build",
     "remix-dev": "remix dev",
-    "postinstall": "remix setup node",
+    "postinstall": "./node_modules/.bin/remix setup",
     "deploy": "flyctl deploy",
     "start": "remix-serve build",
     "css": "postcss styles --base styles --dir app/styles --ext css -w",
@@ -18,7 +18,7 @@
     "mdx-bundler": "^8.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "rehype-highlight": "^5.0.0",
+    "rehype-highlight": "^4.1.0",
     "remix": "^1.0.0"
   },
   "devDependencies": {

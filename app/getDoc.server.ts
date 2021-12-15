@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { bundleMDX } from "mdx-bundler";
+import rehypeHighlight from 'rehype-highlight'
 
 export type MdxDoc = {
   title: string;
@@ -15,14 +16,22 @@ export default async function getDoc(
   const docPath = path.resolve(`./docs/${section}/${slug}.mdx`);
 
   const docExists = fs.existsSync(docPath);
-  
-  console.log({docPath, docExists})
 
   if (!docExists) {
     return undefined;
   }
 
-  const mdxResult = await bundleMDX({ file: docPath });
+  const mdxResult = await bundleMDX({ file: docPath, xdmOptions(options) {
+      // this is the recommended way to add custom remark/rehype plugins:
+      // The syntax might look weird, but it protects you in case we add/remove
+      // plugins in the future.
+      options.remarkPlugins = [...(options.remarkPlugins ?? [])]
+      options.rehypePlugins = [...(options.rehypePlugins ?? []), rehypeHighlight]
+    
+      return options
+    } });
+    
+ 
 
   return {
     title: mdxResult.frontmatter.meta.title,

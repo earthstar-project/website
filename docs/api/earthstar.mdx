@@ -32,7 +32,7 @@ Nearly all of Earthstar's classes can be configured to suit your specific use-ca
 
 <details>
 <summary>Type declaration</summary>
-```ts
+```typescript
 interface Peer {
   // TODO: oops, or should we have storage IDs instead of peer IDs?
   peerId: PeerId;
@@ -56,7 +56,7 @@ removeStorage(storage: IStorageAsync): Promise<void>;
 
 A `Peer` is responsible for managing many `StorageAsync`, and synchronising them across different transports.
 
-```ts
+```typescript
 const myPeer = new Peer();
 
 myPeer.workspaces();
@@ -68,7 +68,7 @@ myPeer.workspaces();
 
 <details>
 <summary>Type Declaration</summary>
-```ts
+```typescript
 interface IStorageAsync {
   storageId: StorageId;
   workspace: WorkspaceAddress;
@@ -124,7 +124,7 @@ interface IStorageAsync {
 
 A local replica of a commons' documents. Provides operations for querying and setting documents.
 
-```ts
+```typescript
 import { StorageAsync, ValidatorEs4, StorageDriverMemory } from "earthstar";
 
 // Construct a storage
@@ -182,7 +182,7 @@ Every time a new document is ingested by a `StorageAsync` it is checked by a val
 
 <details>
 <summary>Type declaration</summary>
-```ts
+```typescript
 export interface Query {
   // for each property, the first option is the default if it's omitted
 
@@ -226,7 +226,7 @@ Used to describe a document query. Used with `StorageAsync.query` and `QueryFoll
 
 <details>
 <summary>Type declaration</summary>
-```ts
+```typescript
 interface Doc {
     format: string,
     author: string,
@@ -247,7 +247,7 @@ Represents some cryptographically-signed user data. The contents of a `Doc` can 
 
 <details>
 <summary>Type declaration</summary>
-```ts
+```typescript
 interface Crypto {
     sha256base32(input: string | Uint8Array): Base32String;
     generateAuthorKeypair(name: string): AuthorKeypair | ValidationError;
@@ -262,7 +262,7 @@ interface Crypto {
 
 `Crypto` is used internally for signing and verifying documents using [ed25519](https://ed25519.cr.yp.to). In most cases, you will want to use it to generate new identity keypairs:
 
-```ts
+```typescript
 const keypair = Crypto.generateAuthorKeypair("suzy");
 
 console.log(keypair);
@@ -282,7 +282,7 @@ To balance compatibility and performance, Earthstar uses [noble/ed25519](https:/
 
 Earthstar exports a `setGlobalCrypto` function to change this:
 
-```ts
+```typescript
 import { setGlobalCryptoDriver, CryptoDriverChloride } from "earthstar";
 
 setGlobalCryptoDriver(CryptoDriverChloride);
@@ -294,7 +294,7 @@ setGlobalCryptoDriver(CryptoDriverChloride);
 
 <details>
 <summary>Type declaration</summary>
-```ts
+```typescript
 interface IQueryFollower {
     storage: IStorageAsync;
     query: Query;
@@ -311,7 +311,7 @@ Listens to events from a `StorageAsync`, and if it matches the given query, send
 
 Here's a basic usage:
 
-```ts
+```typescript
 const myMarkdownFollower = new QueryFollower(myStorage, {
   filter: {
     pathEndsWith: ".md",
@@ -333,7 +333,7 @@ A `QueryFollower` must always be _hatched_ first. Hatching makes it catch up wit
 
 When you're done with a `QueryFollower`, you should close it to stop callbacks from running:
 
-```ts
+```typescript
 myJpgFollower.close();
 ```
 
@@ -342,7 +342,7 @@ myJpgFollower.close();
 <details>
 <summary>Type declaration</summary>
 
-```ts
+```typescript
 interface StorageCache {
   getAllDocs(): Doc[];
   getLatestDocs(): Doc[];
@@ -371,7 +371,7 @@ interface StorageCache {
 
 When you first query a document, there is no result. But StorageCache can be subscribed to for updates, at which point you return to the cache and get an instant result:
 
-```ts
+```typescript
 import { StorageCache } from "earthstar";
 
 const cache = new StorageCache(myStorage);
@@ -388,7 +388,7 @@ cache.onCacheUpdated(() => {
 
 `StorageCache` has an optional TTL (time-to-live) option which can be provided to its constructor:
 
-```ts
+```typescript
 const cache = new StorageCache(myStorage, 2000); // ms, 1000 by default
 ```
 

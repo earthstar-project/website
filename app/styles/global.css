@@ -725,10 +725,6 @@ video {
 .p-4 {
 	padding: 1rem;
 }
-.py-4 {
-	padding-top: 1rem;
-	padding-bottom: 1rem;
-}
 .py-2 {
 	padding-top: 0.5rem;
 	padding-bottom: 0.5rem;
@@ -797,21 +793,17 @@ video {
 	--tw-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
 	box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
-
 .last\:mr-0:last-child {
 	margin-right: 0px;
 }
-
 .even\:text-gray-500:nth-child(even) {
 	--tw-text-opacity: 1;
 	color: rgba(107, 114, 128, var(--tw-text-opacity));
 }
-
 .visited\:text-purple-500:visited {
 	--tw-text-opacity: 1;
 	color: rgba(139, 92, 246, var(--tw-text-opacity));
 }
-
 @media (min-width: 768px) {
 
 	.md\:order-2 {
@@ -842,7 +834,6 @@ video {
 		padding-left: 1rem;
 	}
 }
-
 @media (min-width: 1024px) {
 
 	.lg\:m-0 {
