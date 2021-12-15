@@ -12,21 +12,21 @@ headers:
 
 `earthstar` is a reference implementation of Earthstar written in Typescript. You can use it to add Earthstar functionality to programs running on servers, browsers, or the command line.
 
-It can be installed using npm:
-
-```
-npm install earthstar
-```
-
-or imported via URL:
+It can be imported via URL in the browser, or Deno:
 
 ```
 import * as Earthstar from "https://esm.sh/earthstar";
 ```
 
+or installed with NPM:
+
+```
+npm install earthstar
+```
+
 To integrate Earthstar into your program, your application will probably need a single instance of Earthstar's `Peer` class, which manages many commons and is responsible for synchronising them.
 
-(drawing of a Peer class inside your app, next to its business logic)
+![](/api-images/outline.jpg)
 
 Nearly all of Earthstar's classes can be configured to suit your specific use-case, e.g. a `StorageAsync` can be configured to persist data to IndexedDB if you're building a browser app.
 
@@ -54,6 +54,7 @@ removeStorage(storage: IStorageAsync): Promise<void>;
 ````
 </details>
 
+![](/api-images/peer.jpg)
 
 A `Peer` is responsible for managing many `StorageAsync`, and synchronising them across different transports.
 
@@ -69,7 +70,6 @@ myPeer.workspaces();
 
 <details>
 <summary>Type Declaration</summary>
-
 ```ts
 interface IStorageAsync {
   storageId: StorageId;
@@ -122,6 +122,8 @@ interface IStorageAsync {
 ```
 </details>
 
+![](/api-images/storage.jpg)
+
 A local replica of a commons' documents. Provides operations for querying and setting documents.
 
 ```ts
@@ -155,9 +157,11 @@ await myStorage.set(myKeypair, {
 
 ## Storage drivers
 
+![](/api-images/storagedriver.jpg)
+
 Earthstar can be used on in browsers, on servers, or on the command line. There's no single way to persist data in all these environments, which is why `StorageAsync` is able to use different `StorageDrivers` suited to the environment its being used in.
 
-Universal drivers:
+Built-in Universal drivers:
 
 - `StorageDriverMemory` (no persistence)
 
@@ -166,13 +170,15 @@ Web platform drivers:
 - `StorageDriverLocalStorage`
 - `StorageDriverIndexedDB`
 
+It's possible to create your own storage drivers which conform to `IStorage`.
+
 ## Validators
+
+![](/api-images/validator.jpg)
 
 Earthstar commons are able to store documents of different formats. But most of the time, you'll want to use the built-in one from this library: `es.4`. As such, Earthstar currenly only offers one format validator: `ValidatorEs4`.
 
 Every time a new document is ingested by a `StorageAsync` it is checked by a validator.  In the case of `ValidatorEs4`, it checks whether a document's signature matches its  author, space address, and content.
-
-
 
 ## `Query`
 
@@ -212,9 +218,13 @@ limit?: number;
 
 </details>
 
+![](/api-images/query.jpg)
+
 Used to describe a document query. Used with `StorageAsync.query` and `QueryFollower`.
 
 ## `Doc`
+
+![](/api-images/doc.jpg)
 
 <details>
 <summary>Type declaration</summary>
@@ -250,6 +260,8 @@ interface Crypto {
 ```
 </details>
 
+![](/api-images/crypto.jpg)
+
 `Crypto` is used internally for signing and verifying documents using [ed25519](https://ed25519.cr.yp.to). In most cases, you will want to use it to generate new identity keypairs:
 
 ```ts
@@ -279,6 +291,8 @@ setGlobalCryptoDriver(CryptoDriverChloride);
 ```
 
 ## `QueryFollower`
+
+![](/api-images/queryfollower.jpg)
 
 <details>
 <summary>Type declaration</summary>
@@ -351,11 +365,13 @@ interface StorageCache {
 
 </details>
 
+![](/api-images/storagecache.jpg)
+
 `StorageAsync` offers a strictly asynchronous interface to a commons' contents. Sometimes a synchronous API would make life far easier, and `StorageCache` does its best to provide that.
 
-StorageCache offers a synchronous API for fetching documents by storing queried documents in an internal cache.
+`StorageCache` offers a synchronous API for fetching documents by storing queried documents in an internal cache.
 
-When you first query a document, there is no result. But StorageCache can be subscribed to for updates:
+When you first query a document, there is no result. But StorageCache can be subscribed to for updates, at which point you return to the cache and get an instant result:
 
 ```ts
 import { StorageCache } from "earthstar";
@@ -371,5 +387,13 @@ cache.onCacheUpdated(() => {
   aboutDocs = cache.queryDocs(myQuery); // Now there should be something in there.
 });
 ```
+
+`StorageCache` has an optional TTL (time-to-live) option which can be provided to its constructor:
+
+```ts
+const cache = new StorageCache(myStorage, 2000); // ms, 1000 by default
+```
+
+When you fetch an expired result from the cache, StorageCache will then return the latest result from its backing storage.
 
 </div>

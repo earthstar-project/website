@@ -869,21 +869,17 @@ video {
     background-position: 0 0, 21px 21px;
     background-size: 42px 42px;
   }
-
 .last\:mr-0:last-child {
 	margin-right: 0px;
 }
-
 .even\:text-gray-500:nth-child(even) {
 	--tw-text-opacity: 1;
 	color: rgba(107, 114, 128, var(--tw-text-opacity));
 }
-
 .visited\:text-purple-500:visited {
 	--tw-text-opacity: 1;
 	color: rgba(139, 92, 246, var(--tw-text-opacity));
 }
-
 @media (min-width: 768px) {
 
 	.md\:order-2 {
@@ -914,7 +910,6 @@ video {
 		padding-left: 1rem;
 	}
 }
-
 @media (min-width: 1024px) {
 
 	.lg\:m-0 {
