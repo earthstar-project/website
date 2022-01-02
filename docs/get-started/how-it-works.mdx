@@ -12,15 +12,23 @@ headers:
 
 In a nutshell, Earthstar helps you do three things:
 
-- Store and retrieve data
-- Synchronise that data
-- Prove the identity of who wrote that data
+- Store and retrieve data, by yourself or collaboratively in small groups
+- Synchronise that data across devices
+- Verify the integrity of the data against tampering
+
+This all works without a central server, but you can run server(s) to make it easier for devices to connect with each other.
 
 These things combined can be used to make rich collaborative applications, like chatrooms, games, or message boards.
 
+> **A note on vocabulary**
+>
+> We're still choosing names for the various pieces of Earthstar.  You may encounter older terminology, which we've highlighted in each section.
+
 ## Commons
 
-Commons symbolise groups interested in sharing data, like a Slack workspace or Discord server. They are made up of users who already know and trust each other.
+> Previously known as: *workspace*, *space*
+
+Commons are groups interested in sharing data, like a Slack workspace or Discord server.They are made up of users who already know and trust each other.
 
 They are represented by addresses like `+bookclub.a18bu7axtn`. The first part helps you see which space you're interacting with, and the second, scrambly part makes it hard for others to guess.
 
@@ -30,11 +38,15 @@ A commons' data is stored on its users' devices using **pockets**.
 
 ## Pockets
 
+> Previously known as: *storages*, *replicas*
+
 Pockets are stores of data which you can put wherever you want: your computer, a USB key, a friend's internet-connected Raspberry Pi. They can use different storage technologies to persist their data, such as SQLite or IndexedDB.
 
 When two pockets are configured to use the same commons address, they can synchronise with each other, and this can be used to create collaborative applications like chatrooms, forums, or games.
 
-All data stored on a pocket are persisted as separate **Documents**.
+Each **Pocket** holds the data for one **Commons**.
+
+Data stored in a pocket are persisted as separate **Documents**.
 
 ## Documents
 
@@ -42,33 +54,76 @@ Documents describe and contain your commons' data.
 
 Every document has a **path** like `/my-story.txt`. Paths can be used to group different bits of data together and make them more discoverable, e.g. `/posts/2021/bird-thoughts.md`.
 
-Our community has used this to create a few conventions for storing documents for different purposes e.g. profile information, micro-blogging, long-form discussions.
+Our community has used this to create a few conventions for storing documents for different purposes e.g. profile information, micro-blogging, long-form discussions.  These emerging standards allow multiple apps to use the same data.
 
-Documents have a optional property on them which describes when it should be deleted. After this time, pockets will delete that document completely.
+Documents can be temporary: they can optionally state the time at which they should be auto-deleted.  After this time, pockets will delete that document completely.  Users can also delete documents on demand by overwriting them with empty documents.
 
-Many people can write to the same document, and your pocket will store the last version from each author. This means you can always roll back or resolve conflicts if something went wrong.
+Documents can either belong to a single user, or be writable by everyone in the commons.  In that case many people can write to the same document, and your pocket will store the last version from each author. This means you can always roll back or resolve conflicts if something went wrong.
 
-Every document has a signature to help Earthstar verify its authorship. So if a document claims it was written by `@suzy`, you can be fairly confident it was really written by `@suzy`. These signatures are created using **identities**.
+Every document has a signature to help Earthstar verify its authorship. So if a document claims it was written by `@suzy`, you can be confident it was really written by `@suzy` and not alteredy by anyone else. These signatures are created using **identities**.
 
 ## Identities
 
-An identity in Earthstar is represented by a keypair, which is a bit like a username and password.
+A person's identity in Earthstar is represented by a keypair, which is a bit like a username and password.
 
-It's made up of an **address** and a **secret**. The address is made up of a shortname you choose and something called a public key, which can look like this: `@suzy.bzfkbawuj2cdxsxilvso4a2xczmcx6char4pqd2tjhdmcoy5i4ebq`.
+It's made up of an **address** and a **secret**. The address is made up of a 4-letter "shortname" you choose and something called a public key, which can look like this: `@suzy.bzfkbawuj2cdxsxilvso4a2xczmcx6char4pqd2tjhdmcoy5i4ebq`.
 
 The address is publicly shareable information, and the secret should be kept, well, secret. A keypair's address or secret can never be changed, so keep it safe!
 
-When a public name is put into a document's path, prefixed with a tilde (e.g. `/about/@suzy.bzfkbawuj2cdxsxilvso4a2xczmcx6char4pqd2tjhdmcoy5i4ebq/displayName.txt`), then _only_ the user with that identity can write to that document.
+When a public name is put into a document's path, prefixed with a tilde (e.g. `/about/~@suzy.bzfkbawuj2cdxsxilvso4a2xczmcx6char4pqd2tjhdmcoy5i4ebq/displayName.txt`), then _only_ the user with that identity can write to that document.  Otherwise anyone can edit the document.
 
 But what about the ways we express our identity, like names, pronouns, or avatars?
 
-This kind of information is stored as data within the commons you use. This has two big benefits: your identity can freely fluctuate between the spaces you use; and you can express your identity with as little or as much detail as you want!
+This kind of information is stored as documents within the commons, e.g. in your ["about me"](https://github.com/earthstar-project/earthstar/wiki/Standard-paths-and-data-formats-used-by-apps#about-author-profile-info) document. This has two big benefits: your identity can freely fluctuate between the spaces you use; and you can express your identity with as little or as much detail as you want!
 
 ## Applications
 
-Applications are just programs which write and read through a pocket's contents and re-present it as a friendly user interface. For example, imagine a program which reads a folder full of images and displays them as a gallery.
+Applications are just programs which write and read through a pocket's documents and re-present it as a friendly user interface. For example, imagine a program which reads a folder full of images and displays them as a gallery.
 
 Earthstar has **no opinion** on how applications are created, and provides a Javascript API that you can use in your vanilla JS, jQuery, React, Svelte, Vue, Angular, or whatever app.
+
+Earthstar apps can typically run in browsers, or can be native apps.  They just need to be able to talk to the other peers to sync data.
+
+## Servers & Peers
+
+> Pocket Servers: previously known as: *pub servers*, *cloud pockets*
+
+Most laptops and phones are not able to connect directly to each other, so we need some third space they can both connect to where data can be temporarily stashed for syncing.
+
+These are called **Pocket Servers**.  You can run your own pocket server(s) for your community on a small device like a raspberry pi, or hosted in the cloud.
+
+To run your own pocket server, see instructions in the [earthstar-pub](https://github.com/earthstar-project/earthstar-pub/#how-to-deploy) repo.
+
+Every computer running Earthstar, even servers, is a **Peer**.  Pocket servers are just Peers like regular users' computers; they're just online all the time and they have reachable URLs.
+
+Servers have no control over user permissions, and there can be many servers running at once for a particular Commons.  This is good for redundancy and reliabilty; ask your friends to run a server too!  Earthstar works best when the infrastructure is controlled by the people in the Commons.
+
+Every Commons has its own separate network of Peers; data does not spread from one Commons to another.  But a Peer can hold multiple Commons at a time.
+
+## Important reminder about secrets
+
+A **Commons** address gives you full read and write permission to the documents stored there.  Only share it with people when you want to invite them to the Commons.  It's not currently possible to remove people from a Commons; instead you can make a new Commons and migrate everybody else there instead.
+
+* Example commons address: `+gardening.boaifjo2w3ij`
+
+Your **Identity** keypair has two parts, the **address** and **secret**.  The address is safe to share (it's how people can identify you) but don't share your secret with anyone -- treat it like a password.
+
+Example:
+
+* identity address: `@suzy.bxiaysedtxn3j67hilo56rlt5mzy56onq2c4f73o7jhsrm3kk4lda`
+* identity secret: `b7oxhtw4ssze6smo5mgoohgf4zd735qcobxq3dqxrhyd5llehms7a`
+
+Finally, note that documents are **not encrypted**.  They are *signed*, which means we can prove they were not tampered with during their multi-hop journey to your computer.  Anyone with the commons address can read all the documents.
+
+Apps will be able to encrypt the content of documents and Earthstar will provide helper functions for this.  Document metadata (author, path) is needed for syncing and will not be encrypted.
+
+## Blocking & harassment
+
+We care deeply about making safe and healthy online spaces.  That said, blocking is difficult due to the distributed nature of Earthstar and we're still figuring it out.
+
+As a fist step, pocket servers tend to be the bottlenecks in the network so they might be a natural place to apply blocklists.  Apps should also provide users with the ability to hide other users.
+
+We are also interested in distributed/delegated blocking and reputation ideas such as [TrustNet](https://cblgh.org/dl/trustnet-cblgh.pdf).
 
 ## Get started
 
