@@ -10,11 +10,10 @@ headers:
 
 # How it works
 
-In a nutshell, Earthstar helps you do three things:
+In a nutshell, Earthstar helps you do two things:
 
-- Store and retrieve data, by yourself or collaboratively in small groups
-- Synchronise that data across devices
-- Verify the integrity of the data against tampering
+- Store and retrieve data on your own device (even when you're offline)
+- Synchronize data with other people (for collaboration and backup)
 
 This all works without a central server, but you can run server(s) to make it easier for devices to connect with each other.
 
@@ -28,17 +27,19 @@ These things combined can be used to make rich collaborative applications, like 
 
 > Previously known as: *workspace*, *space*
 
-Commons are groups interested in sharing data, like a Slack workspace or Discord server. They are made up of users who already know and trust each other.
+A Commons is like a shared folder holding Documents.  Typically it's shared with a small group of trusted people.
 
-They are represented by addresses like `+bookclub.a18bu7axtn`. The first part helps you see which space you're interacting with, and the second, scrambly part makes it hard for others to guess.
+Each Commons has an address like `+bookclub.a18bu7axtn`. The first part helps you see which space you're interacting with, and the second, scrambly part makes it hard for others to guess.
 
-Obtaining this address grants access to your commons, so keep it out of public and share it only with people you trust.
+Anyone who knows the address can view and edit the data, so keep it out of public and share it only with people you trust.
 
-A commons' data is stored on its users' devices using **pockets**.
+A Commons' data is stored on its users' devices using **pockets**.
 
 ## Pockets
 
 > Previously known as: *storages*, *replicas*
+
+A Pocket is a physical copy of the data in a Commons.
 
 Pockets are stores of data which you can put wherever you want: your computer, a USB key, a friend's internet-connected Raspberry Pi. They can use different storage technologies to persist their data, such as SQLite or IndexedDB.
 
