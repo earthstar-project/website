@@ -573,6 +573,16 @@ video {
 	--tw-ring-offset-shadow: 0 0 #0000;
 	--tw-ring-shadow: 0 0 #0000;
 	--tw-shadow: 0 0 #0000;
+	--tw-blur: var(--tw-empty,/*!*/ /*!*/);
+	--tw-brightness: var(--tw-empty,/*!*/ /*!*/);
+	--tw-contrast: var(--tw-empty,/*!*/ /*!*/);
+	--tw-grayscale: var(--tw-empty,/*!*/ /*!*/);
+	--tw-hue-rotate: var(--tw-empty,/*!*/ /*!*/);
+	--tw-invert: var(--tw-empty,/*!*/ /*!*/);
+	--tw-saturate: var(--tw-empty,/*!*/ /*!*/);
+	--tw-sepia: var(--tw-empty,/*!*/ /*!*/);
+	--tw-drop-shadow: var(--tw-empty,/*!*/ /*!*/);
+	--tw-filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
   @font-face {
     font-family: "Dover Sans Display";
@@ -599,18 +609,24 @@ video {
       url("/fonts/DoverSansText-Italic-Web.woff") format("woff");
     font-style: italic;
   }
+.visible {
+	visibility: visible;
+}
+.invisible {
+	visibility: hidden;
+}
+.fixed {
+	position: fixed;
+}
+.relative {
+	position: relative;
+}
 .sticky {
 	position: -webkit-sticky;
 	position: sticky;
 }
 .top-0 {
 	top: 0px;
-}
-.order-1 {
-	order: 1;
-}
-.order-2 {
-	order: 2;
 }
 .m-auto {
 	margin: auto;
@@ -650,6 +666,12 @@ video {
 .mr-1 {
 	margin-right: 0.25rem;
 }
+.mr-2 {
+	margin-right: 0.5rem;
+}
+.mt-12 {
+	margin-top: 3rem;
+}
 .block {
 	display: block;
 }
@@ -659,20 +681,47 @@ video {
 .flex {
 	display: flex;
 }
+.table {
+	display: table;
+}
 .grid {
 	display: grid;
+}
+.contents {
+	display: contents;
 }
 .hidden {
 	display: none;
 }
-.h-48 {
-	height: 12rem;
-}
-.h-36 {
-	height: 9rem;
-}
 .h-32 {
 	height: 8rem;
+}
+.h-16 {
+	height: 4rem;
+}
+.h-8 {
+	height: 2rem;
+}
+.h-6 {
+	height: 1.5rem;
+}
+.h-4 {
+	height: 1rem;
+}
+.h-7 {
+	height: 1.75rem;
+}
+.w-16 {
+	width: 4rem;
+}
+.w-20 {
+	width: 5rem;
+}
+.w-6 {
+	width: 1.5rem;
+}
+.w-7 {
+	width: 1.75rem;
 }
 .max-w-prose {
 	max-width: 65ch;
@@ -727,9 +776,6 @@ video {
 }
 .border-l-2 {
 	border-left-width: 2px;
-}
-.border-b-4 {
-	border-bottom-width: 4px;
 }
 .border-es-green {
 	--tw-border-opacity: 1;
@@ -787,6 +833,18 @@ video {
 .text-right {
 	text-align: right;
 }
+.align-baseline {
+	vertical-align: baseline;
+}
+.align-middle {
+	vertical-align: middle;
+}
+.align-text-top {
+	vertical-align: text-top;
+}
+.align-text-bottom {
+	vertical-align: text-bottom;
+}
 .font-display {
 	font-family: Dover Sans Display, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
@@ -813,6 +871,12 @@ video {
 .font-bold {
 	font-weight: 700;
 }
+.uppercase {
+	text-transform: uppercase;
+}
+.lowercase {
+	text-transform: lowercase;
+}
 .text-es-blue {
 	--tw-text-opacity: 1;
 	color: rgba(11, 113, 195, var(--tw-text-opacity));
@@ -836,6 +900,31 @@ video {
 	--tw-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
 	box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
+.filter {
+	filter: var(--tw-filter);
+}
+.checked {
+    background-color: #f9f7fc;
+    opacity: 0.8;
+    background-image: repeating-linear-gradient(
+        45deg,
+        #f5f1ff 25%,
+        transparent 25%,
+        transparent 75%,
+        #f5f1ff 75%,
+        #f5f1ff
+      ),
+      repeating-linear-gradient(
+        45deg,
+        #f5f1ff 25%,
+        #f9f7fc 25%,
+        #f9f7fc 75%,
+        #f5f1ff 75%,
+        #f5f1ff
+      );
+    background-position: 0 0, 21px 21px;
+    background-size: 42px 42px;
+  }
 
 .last\:mr-0:last-child {
 	margin-right: 0px;
@@ -857,18 +946,6 @@ video {
 }
 
 @media (min-width: 768px) {
-
-	.md\:order-2 {
-		order: 2;
-	}
-
-	.md\:order-1 {
-		order: 1;
-	}
-
-	.md\:h-48 {
-		height: 12rem;
-	}
 
 	.md\:h-40 {
 		height: 10rem;

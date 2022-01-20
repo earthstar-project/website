@@ -6,24 +6,29 @@ headers:
   Cache-Control: no-cache
 ---
 
-<div id="doc">
 
 # How it works
 
 In a nutshell, Earthstar helps you do two things:
 
-- Store and retrieve data on your own device (even when you're offline)
-- Synchronize data with other people (for collaboration and backup)
+<table class="border-2">
+  <tbody>
+    <tr >
+      <td class="border-2 p-2 text-center"><img src="/how-it-works/readwrite.svg" class="h-16 w-18 inline-block"/></td>
+      <td class="border-2 p-2">Store and retrieve data on your own device (even when you're offline)</td>
+    </tr>
+    <tr>
+      <td class="border-2 p-2"><img src="/how-it-works/sync.svg" class="h-16 inline-block"/></td>
+      <td class="border-2 p-2">Synchronize data with other people (for collaboration and backup)</td>
+    </tr>
+  </tbody>
+</table>
 
 This all works without a central server, but you can run server(s) to make it easier for devices to connect with each other.
 
 These things combined can be used to make rich collaborative applications, like chatrooms, games, or message boards.
 
-> **A note on vocabulary**
->
-> We're still choosing names for the various pieces of Earthstar.  You may encounter older terminology, which we've highlighted in each section.
-
-## Share
+## <img src="/how-it-works/share.svg" class="inline-block h-7 align-text-top mr-1"/> Share
 
 > Previously known as: *workspace*, *space*
 
@@ -35,7 +40,7 @@ Anyone who knows the address can view and edit the data, so keep it out of publi
 
 A share's data is stored on its users' devices using **replicas**.
 
-## Replicas
+## <img src="/how-it-works/replica.svg" class="inline-block w-7 align-baseline mr-1"/> Replicas
 
 > Previously known as: *storages*, *pockets*
 
@@ -49,7 +54,7 @@ Each **replica** holds the data for one **share**.
 
 Data stored in a replica are persisted as separate **Documents**.
 
-## Documents
+## <img src="/how-it-works/doc.svg" class="inline-block h-7 align-text-top mr-1"/> Documents
 
 Documents describe and contain your share's data.
 
@@ -63,7 +68,7 @@ Documents can either belong to a single user, or be writable by everyone with th
 
 Every document has a signature to help Earthstar verify its authorship. So if a document claims it was written by `@suzy`, you can be confident it was really written by `@suzy` and not altered by anyone else. These signatures are created using **identities**.
 
-## Identities
+## <img src="/how-it-works/identity.svg" class="inline-block h-8 align-text-top mr-1"/> Identities
 
 A person's identity in Earthstar is represented by a keypair, which is a bit like a username and password.
 
@@ -132,5 +137,3 @@ If you'd like to start building a tool, application, or even an implementation o
 
 - [Read the docs for `earthstar`, the Javascript reference implementation](/api/earthstar)
 - [Read the data specification](/specs/data-spec)
-
-</div>

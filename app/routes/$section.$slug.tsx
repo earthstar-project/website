@@ -50,7 +50,7 @@ function H2(props: {}) {
   return (
     <h2
       {...props}
-      className={"text-2xl mt-8 font-display max-w-prose"}
+      className={"text-2xl mt-12 font-display max-w-prose"}
     />
   );
 }
@@ -126,6 +126,7 @@ export default function Post() {
           code: Code,
           blockquote: BlockQuote,
           pre: Pre,
+    
         }}
       />
     </article>
