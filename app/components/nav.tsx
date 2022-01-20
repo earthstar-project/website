@@ -8,8 +8,8 @@ const sitemap: Sitemap = {
   "Get started": {
     "How it works": "/get-started/how-it-works",
   },
-  APIs: {
-    earthstar: "/api/earthstar",
+  Docs: {
+    "API Tour": "/api/earthstar",
   },
   Specifications: {
     "Data specification": "/specs/data-spec",

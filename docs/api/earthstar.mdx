@@ -1,19 +1,27 @@
 ---
 meta:
-  title: earthstar API
+  title: API Tour
   description: Isn't this awesome?
 headers:
   Cache-Control: no-cache
 ---
 
-# earthstar API
+# earthstar API tour
 
 `earthstar` is a reference implementation of Earthstar written in Typescript. You can use it to add Earthstar functionality to programs running on servers, browsers, or the command line.
 
-It can be imported via URL in the browser, or Deno:
+It can be imported via URL into a browser:
 
 ```
-import * as Earthstar from "https://esm.sh/earthstar";
+<script type="module">
+  import * as Earthstar from "https://cdn.earthstar-project.org/earthstar.bundle.js";
+</script>
+```
+
+Or Deno:
+
+```
+import * as Earthstar from "https://deno.land/x/stone-soup/mod.ts";
 ```
 
 or installed with NPM:
@@ -24,35 +32,13 @@ npm install earthstar
 
 To integrate Earthstar into your program, your application will probably need a single instance of Earthstar's `Peer` class, which manages many commons and is responsible for synchronising them.
 
-![](/api-images/outline.jpg)
+<img src="/api-tour/application.svg" class="h-72"/>
 
 Nearly all of Earthstar's classes can be configured to suit your specific use-case, e.g. a `StorageAsync` can be configured to persist data to IndexedDB if you're building a browser app.
 
-## `Peer`
+## Peer
 
-<details>
-<summary>Type declaration</summary>
-```typescript
-interface Peer {
-  // TODO: oops, or should we have storage IDs instead of peer IDs?
-  peerId: PeerId;
-
-hasWorkspace(address: string): boolean;
-workspaces(): string[];
-storages(): IStorageAsync[];
-size(): number;
-getStorage(address: string): IStorageAsync | undefined;
-
-// setters
-addStorage(storage: IStorageAsync): Promise<void>;
-removeStorageByWorkspace(address: string): Promise<void>;
-removeStorage(storage: IStorageAsync): Promise<void>;
-}
-
-````
-</details>
-
-![](/api-images/peer.jpg)
+<img src="/api-tour/peer.svg" class="h-60"/>
 
 A `Peer` is responsible for managing many `StorageAsync`, and synchronising them across different transports.
 
@@ -64,63 +50,9 @@ myPeer.workspaces();
 // Learn how to add storages in the StorageAsync section.
 ```
 
-## `StorageAsync`
+## StorageAsync
 
-<details>
-<summary>Type Declaration</summary>
-```typescript
-interface IStorageAsync {
-  storageId: StorageId;
-  workspace: WorkspaceAddress;
-  formatValidator: IFormatValidator;
-  storageDriver: IStorageDriverAsync;
-  bus: Superbus<StorageBusChannel>;
-
-  //--------------------------------------------------
-  // LIFECYCLE
-
-  isClosed(): boolean;
-  close(erase: boolean): Promise<void>;
-
-  //--------------------------------------------------
-  // GET
-
-  // this one is synchronous
-  getMaxLocalIndex(): number;
-
-  // these should all return frozen docs
-  getDocsAfterLocalIndex(
-    historyMode: HistoryMode,
-    startAfter: LocalIndex,
-    limit?: number
-  ): Promise<Doc[]>;
-  getAllDocs(): Promise<Doc[]>;
-  getLatestDocs(): Promise<Doc[]>;
-  getAllDocsAtPath(path: Path): Promise<Doc[]>;
-  getLatestDocAtPath(path: Path): Promise<Doc | undefined>;
-
-  queryDocs(query?: Query): Promise<Doc[]>;
-
-  //    queryPaths(query?: Query): Path[];
-  //    queryAuthors(query?: Query): AuthorAddress[];
-
-  //--------------------------------------------------
-  // SET
-
-  set(keypair: AuthorKeypair, docToSet: DocToSet): Promise<IngestEvent>;
-
-  // this should freeze the incoming doc if needed
-  ingest(doc: Doc): Promise<IngestEvent>;
-
-  // Overwrite every doc from this author, including history versions, with an empty doc.
-  overwriteAllDocsByAuthor(
-    keypair: AuthorKeypair
-  ): Promise<number | ValidationError>;
-}
-```
-</details>
-
-![](/api-images/storage.jpg)
+![](/api-tour/replica.svg)
 
 A local replica of a commons' documents. Provides operations for querying and setting documents.
 
@@ -155,7 +87,7 @@ await myStorage.set(myKeypair, {
 
 ## Storage drivers
 
-![](/api-images/storagedriver.jpg)
+<img src="/api-tour/storage-driver.svg" class="h-48"/>
 
 Earthstar can be used on in browsers, on servers, or on the command line. There's no single way to persist data in all these environments, which is why `StorageAsync` is able to use different `StorageDrivers` suited to the environment its being used in.
 
@@ -172,93 +104,27 @@ It's possible to create your own storage drivers which conform to `IStorage`.
 
 ## Validators
 
-![](/api-images/validator.jpg)
+<img src="/api-tour/validator.svg" class="h-48"/>
 
 Earthstar commons are able to store documents of different formats. But most of the time, you'll want to use the built-in one from this library: `es.4`. As such, Earthstar currenly only offers one format validator: `ValidatorEs4`.
 
 Every time a new document is ingested by a `StorageAsync` it is checked by a validator.  In the case of `ValidatorEs4`, it checks whether a document's signature matches its  author, space address, and content.
 
-## `Query`
+## Query
 
-<details>
-<summary>Type declaration</summary>
-```typescript
-export interface Query {
-  // for each property, the first option is the default if it's omitted
-
-// this is in the order that processing happens:
-
-// first, limit to latest docs or all docs
-historyMode?: HistoryMode;
-
-// then iterate in this order
-// "path ASC" is actually "path ASC then break ties with timestamp DESC"
-// "path DESC" is the reverse of that
-orderBy?: "path ASC" | "path DESC" | "localIndex ASC" | "localIndex DESC";
-
-// start iterating immediately after this item (e.g. get items which are > startAfter)
-startAfter?: {
-// only when ordering by localIndex
-localIndex?: number;
-// only when ordering by path
-path?: string;
-};
-
-// then apply filters, if any
-filter?: QueryFilter;
-
-// stop iterating after this number of docs
-limit?: number;
-// TODO: limitBytes
-}
-
-````
-
-</details>
-
-![](/api-images/query.jpg)
+<img src="/api-tour/query.svg" class="h-36"/>
 
 Used to describe a document query. Used with `StorageAsync.query` and `QueryFollower`.
 
-## `Doc`
+## Doc
 
-![](/api-images/doc.jpg)
-
-<details>
-<summary>Type declaration</summary>
-```typescript
-interface Doc {
-    format: string,
-    author: string,
-    content: string,
-    contentHash: string,
-    deleteAfter: number | null,
-    path: string,
-    signature: string,
-    timestamp: number,
-    workspace: string,
-}
-```
-</details>
+<img src="/api-tour/doc.svg" class="h-36"/>
 
 Represents some cryptographically-signed user data. The contents of a `Doc` can only be changed via `StorageAsync`. A document cannot be moved from one commons to another.
 
-## `Crypto`
+## Crypto
 
-<details>
-<summary>Type declaration</summary>
-```typescript
-interface Crypto {
-    sha256base32(input: string | Uint8Array): Base32String;
-    generateAuthorKeypair(name: string): AuthorKeypair | ValidationError;
-    sign(keypair: AuthorKeypair, msg: string | Uint8Array): Base32String | ValidationError;
-    verify(authorAddress: AuthorAddress, sig: Base32String, msg: string | Uint8Array): boolean;
-    checkAuthorKeypairIsValid(keypair: AuthorKeypair): true | ValidationError;
-}
-```
-</details>
-
-![](/api-images/crypto.jpg)
+<img src="/api-tour/crypto.svg" class="h-40"/>
 
 `Crypto` is used internally for signing and verifying documents using [ed25519](https://ed25519.cr.yp.to). In most cases, you will want to use it to generate new identity keypairs:
 
@@ -274,7 +140,7 @@ console.log(keypair);
 */
 ```
 
-## `setGlobalCryptoDriver`
+## setGlobalCryptoDriver
 
 Because ed25519 is not part of any JS standard library (or WebCrypto API), there are several third-party implementations, some of which are only available for certain runtimes.
 
@@ -288,24 +154,9 @@ import { setGlobalCryptoDriver, CryptoDriverChloride } from "earthstar";
 setGlobalCryptoDriver(CryptoDriverChloride);
 ```
 
-## `QueryFollower`
+## QueryFollower
 
-![](/api-images/queryfollower.jpg)
-
-<details>
-<summary>Type declaration</summary>
-```typescript
-interface IQueryFollower {
-    storage: IStorageAsync;
-    query: Query;
-    bus: Simplebus<LiveQueryEvent>;
-    state(): QueryFollowerState;
-    hatch(): Promise<void>;
-    close(): Promise<void>;
-}
-```
-
-</details>
+<img src="/api-tour/query-follower.svg" class="h-40"/>
 
 Listens to events from a `StorageAsync`, and if it matches the given query, sends an event to a [`SuperBus`](https://github.com/cinnamon-bun/superbus).
 
@@ -337,33 +188,9 @@ When you're done with a `QueryFollower`, you should close it to stop callbacks f
 myJpgFollower.close();
 ```
 
-## `StorageCache`
+## StorageCache
 
-<details>
-<summary>Type declaration</summary>
-
-```typescript
-interface StorageCache {
-  getAllDocs(): Doc[];
-  getLatestDocs(): Doc[];
-  getAllDocsAtPath(path: Path): Doc[];
-  getLatestDocAtPath(path: Path): Doc | undefined;
-  queryDocs(query: Query): Doc[];
-
-  // These methods remain asynchronous!
-  set(keypair: AuthorKeypair, docToSet: DocToSet): Promise<IngestEvent>;
-  overwriteAllDocsByAuthor(
-    keypair: AuthorKeypair
-  ): Promise<number | ValidationError>;
-
-  // Subscribe to cache updates. Returns a fn to unsubscribe.
-  onCacheUpdated(callback: () => void | (() => Promise<void>)): () => void;
-}
-```
-
-</details>
-
-![](/api-images/storagecache.jpg)
+<img src="/api-tour/replica-cache.svg" class="h-44"/>
 
 `StorageAsync` offers a strictly asynchronous interface to a commons' contents. Sometimes a synchronous API would make life far easier, and `StorageCache` does its best to provide that.
 
