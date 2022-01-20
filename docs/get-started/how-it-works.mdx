@@ -23,43 +23,43 @@ These things combined can be used to make rich collaborative applications, like 
 >
 > We're still choosing names for the various pieces of Earthstar.  You may encounter older terminology, which we've highlighted in each section.
 
-## Commons
+## Share
 
 > Previously known as: *workspace*, *space*
 
-A Commons is like a shared folder.  Typically it's shared with a small group of trusted people.
+A share is like a shared folder.  Typically it's shared with a small group of trusted people.
 
-Each Commons has an address like `+bookclub.a18bu7axtn`. The first part helps you see which space you're interacting with, and the second, scrambly part makes it hard for others to guess.
+Each share has an address like `+bookclub.a18bu7axtn`. The first part helps you see which space you're interacting with, and the second, scrambly part makes it hard for others to guess.
 
 Anyone who knows the address can view and edit the data, so keep it out of public and share it only with people you trust.
 
-A Commons' data is stored on its users' devices using **pockets**.
+A share's data is stored on its users' devices using **replicas**.
 
-## Pockets
+## Replicas
 
-> Previously known as: *storages*, *replicas*
+> Previously known as: *storages*, *pockets*
 
-A Pocket is a physical copy of the data in a Commons.
+A replica is a physical copy of the data in a Commons.
 
-Pockets are stores of data which you can put wherever you want: your computer, a USB key, a friend's internet-connected Raspberry Pi. They can use different storage technologies to persist their data, such as SQLite or IndexedDB.
+Replicas are stores of data which you can put wherever you want: your computer, a USB key, a friend's internet-connected Raspberry Pi. They can use different storage technologies to persist their data, such as SQLite or IndexedDB.
 
-When two pockets are configured to use the same commons address, they can synchronise with each other, and this can be used to create collaborative applications like chatrooms, forums, or games.
+When two replicas are configured to use the same share address, they can synchronise with each other, and this can be used to create collaborative applications like chatrooms, forums, or games.
 
-Each **Pocket** holds the data for one **Commons**.
+Each **replica** holds the data for one **share**.
 
-Data stored in a pocket are persisted as separate **Documents**.
+Data stored in a replica are persisted as separate **Documents**.
 
 ## Documents
 
-Documents describe and contain your commons' data.
+Documents describe and contain your share's data.
 
 Every document has a **path** like `/my-story.txt`. Paths can be used to group different bits of data together and make them more discoverable, e.g. `/posts/2021/bird-thoughts.md`.
 
 Our community has used this to create a few conventions for storing documents for different purposes e.g. profile information, micro-blogging, long-form discussions.  These emerging standards allow multiple apps to use the same data.
 
-Documents can be temporary: they can optionally state the time at which they should be auto-deleted.  After this time, pockets will delete that document completely.  Users can also delete documents on demand by overwriting them with empty documents.
+Documents can be temporary: they can optionally state the time at which they should be auto-deleted.  After this time, replicas will delete that document completely.  Users can also delete documents on demand by overwriting them with empty documents.
 
-Documents can either belong to a single user, or be writable by everyone in the commons.  In that case many people can write to the same document, and your pocket will store the last version from each author. This means you can always roll back or resolve conflicts if something went wrong.
+Documents can either belong to a single user, or be writable by everyone with the share address.  In that case many people can write to the same document, and your pocket will store the last version from each author. This means you can always roll back or resolve conflicts if something went wrong.
 
 Every document has a signature to help Earthstar verify its authorship. So if a document claims it was written by `@suzy`, you can be confident it was really written by `@suzy` and not altered by anyone else. These signatures are created using **identities**.
 
@@ -87,23 +87,23 @@ Earthstar apps can typically run in browsers, or can be native apps.  They just 
 
 ## Servers & Peers
 
-> Pocket Servers: previously known as: *pub servers*, *cloud pockets*
+> Replica Servers: previously known as: *pub servers*, *cloud pockets*
 
 Most laptops and phones are not able to connect directly to each other, so we need some third space they can both connect to where data can be temporarily stashed for syncing.
 
-These are called **Pocket Servers**.  You can run your own pocket server(s) for your community on a small device like a raspberry pi, or hosted in the cloud.
+These are called **Replica Servers**.  You can run your own replica server(s) for your community on a small device like a raspberry pi, or hosted in the cloud.
 
-Every computer running Earthstar, even servers, is a **Peer**.  Pocket servers are just Peers like regular users' computers; they're just online all the time and they have reachable URLs.
+Every computer running Earthstar, even servers, is a **Peer**.  Replica servers are just Peers like regular users' computers; they're just online all the time and they have reachable URLs.
 
-Servers have no control over user permissions, and there can be many servers running at once for a particular Commons.  This is good for redundancy and reliabilty; ask your friends to run a server too!  Earthstar works best when the infrastructure is controlled by the people in the Commons.
+Servers have no control over user permissions, and there can be many servers running at once for a particular share.  This is good for redundancy and reliabilty; ask your friends to run a server too!  Earthstar works best when the infrastructure is controlled by the people using the share.
 
-Every Commons has its own separate network of Peers; data does not spread from one Commons to another.  But a Peer can hold multiple Commons at a time.
+Every share has its own separate network of Peers; data does not spread from one share to another.  But a Peer can hold multiple share at a time.
 
 ## Important reminder about secrets
 
-A **Commons** address gives you full read and write permission to the documents stored there.  Only share it with people when you want to invite them to the Commons.  It's not currently possible to remove people from a Commons; instead you can make a new Commons and migrate everybody else there instead.
+A **share** address gives you full read and write permission to the documents stored there.  Only share it with people when you want to invite them to the share.  It's not currently possible to remove people from a share; instead you can make a new share and migrate everybody else there instead.
 
-* Example commons address: `+gardening.boaifjo2w3ij`
+* Example share address: `+gardening.boaifjo2w3ij`
 
 Your **Identity** keypair has two parts, the **address** and **secret**.  The address is safe to share (it's how people can identify you) but don't share your secret with anyone -- treat it like a password.
 
@@ -120,19 +120,17 @@ Apps will be able to encrypt the content of documents and Earthstar will provide
 
 We care deeply about making safe and healthy online spaces.  That said, blocking is difficult due to the distributed nature of Earthstar and we're still figuring it out.
 
-As a fist step, pocket servers tend to be the bottlenecks in the network so they might be a natural place to apply blocklists.  Apps should also provide users with the ability to hide other users.
+As a fist step, replica servers tend to be the bottlenecks in the network so they might be a natural place to apply blocklists.  Apps should also provide users with the ability to hide other users.
 
 We are also interested in distributed/delegated blocking and reputation ideas such as [TrustNet](https://cblgh.org/dl/trustnet-cblgh.pdf).
 
 ## Get started
 
-If you'd like to learn more about Earthstar:
-
-- Check out our [Roadmap](/get-started/roadmap)
+At this stage Earthstar is of use to developers interested in building something with it. Apps and utilities for everyone else are coming soon.
 
 If you'd like to start building a tool, application, or even an implementation of Earthstar:
 
-- Read the docs for `earthstar`, the Javascript reference implementation
-- Read the data specification
+- [Read the docs for `earthstar`, the Javascript reference implementation](/api/earthstar)
+- [Read the data specification](/specs/data-spec)
 
 </div>

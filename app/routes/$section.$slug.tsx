@@ -43,14 +43,14 @@ type LoaderType = {
 };
 
 function H1(props: {}) {
-  return <h1 {...props} className={"text-2xl my-2 font-bold"} />;
+  return <h1 {...props} className={"text-3xl my-2 font-display"} />;
 }
 
 function H2(props: {}) {
   return (
     <h2
       {...props}
-      className={"text-xl mt-6 mb-1 font-bold border-b-2 max-w-prose"}
+      className={"text-2xl mt-8 font-display max-w-prose"}
     />
   );
 }
@@ -84,13 +84,13 @@ function Code(props: {}) {
 }
 
 function Paragraph(props: {}) {
-  return <p className={"max-w-prose my-2"} {...props} />;
+  return <p className={"max-w-prose my-3 "} {...props} />;
 }
 
 function BlockQuote(props: {}) {
   return (
     <blockquote
-      className="p-4 bg-gray-100 max-w-prose border-l-2 border-purple-200 my-2"
+      className="px-4 py-2 bg-gray-100 max-w-prose border-l-2 border-purple-200 my-2"
       {...props}
     />
   );
@@ -99,7 +99,7 @@ function BlockQuote(props: {}) {
 function Pre(props: {}) {
   return (
     <pre
-      className={"p-4 bg-gray-100 overflow-scroll max-w-prose my-2 my-2"}
+      className={"overflow-auto my-2 my-2 text-sm"}
       {...props}
     />
   );

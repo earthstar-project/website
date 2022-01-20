@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Link } from "remix";
+import { NavLink, Link  } from "remix";
 
 type Sitemap = Record<string, string | Record<string, string>>;
 
@@ -7,8 +7,6 @@ const sitemap: Sitemap = {
   // Blog: "/blog",
   "Get started": {
     "How it works": "/get-started/how-it-works",
-    "Why it's decentralised": "/get-started/why-decentralised",
-    Roadmap: "/get-started/roadmap",
   },
   APIs: {
     earthstar: "/api/earthstar",
@@ -40,39 +38,40 @@ function LinkOrSection({
 }) {
   if (typeof item === "string") {
     return (
-      <li className="text-purple-800 underline">
-        <Link
-          className="visited:text-purple-500"
+      <li className="underline">
+        <NavLink
+          className="text-es-blue visited:text-purple-900"
           to={item}
           onClick={collapseDetails}
         >
           {title}
-        </Link>
+        </NavLink>
       </li>
     );
   }
 
   return (
-    <li className="mb-2">
-      <span className="font-bold text-sm text-gray-700">{title}</span>
+    <li className="my-3">
+      <span className="font-bold text-gray-700">{title}</span>
       <ul className="pl-2">
         {Object.entries(item).map(([title, url]) => (
           <li key={title}>
             {url.startsWith("http") ? (
               <a
-                className="text-purple-800 underline visited:text-purple-500"
+                className={"text-es-blue underline visited:text-purple-800 inline-block"}
                 href={url}
               >
                 {title}
               </a>
             ) : (
-              <Link
-                className="text-purple-800 underline visited:text-purple-500"
+              <NavLink
+                className={({isActive}) => `text-es-blue underline visited:text-purple-800 ${isActive ? 'font-bold': ''}`}
                 to={url}
                 onClick={collapseDetails}
+                
               >
                 {title}
-              </Link>
+              </NavLink>
             )}
           </li>
         ))}
@@ -92,10 +91,10 @@ export default function Nav() {
 
   return (
     <>
-      <div className="hidden lg:block bg-white overflow-auto self-start sticky top-0">
-        <h1 className="text-2xl font-bold pl-2 md:pl-4 my-4 ">
+      <div className="hidden lg:block overflow-auto self-start sticky top-0">
+        <h1 className="text-3xl text-display pl-2 md:pl-4 my-4 ">
           <Link to="/">
-            <span className="text-purple-500">Earthstar</span> Project
+            <span className="inline-block text-es-purple border-b-2 border-es-green">Earthstar</span>
           </Link>
         </h1>
         <nav className="pl-2 md pl-4">
@@ -117,9 +116,9 @@ export default function Nav() {
       >
         <summary className="text-sm flex items-baseline p-2">
           Navigate
-          <h1 className="text-2xl font-bold text-purple-00 text-right flex-grow">
+          <h1 className="text-3xl text-display text-right flex-grow">
             <Link to="/">
-              <span className="text-purple-500">Earthstar</span> Project
+              <span className="inline-block text-es-purple border-b-2 border-es-green">Earthstar</span>
             </Link>
           </h1>
         </summary>
