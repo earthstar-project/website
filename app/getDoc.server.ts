@@ -20,18 +20,20 @@ export default async function getDoc(
   if (!docExists) {
     return undefined;
   }
+  
+  const { default: remarkToc } = await import("remark-toc");
 
-  const mdxResult = await bundleMDX({ file: docPath, xdmOptions(options) {
+  const mdxResult = await bundleMDX({ file: docPath, xdmOptions(options, frontmatter) {
       // this is the recommended way to add custom remark/rehype plugins:
       // The syntax might look weird, but it protects you in case we add/remove
       // plugins in the future.
-      options.remarkPlugins = [...(options.remarkPlugins ?? [])]
+     
+      
+      options.remarkPlugins = [...(frontmatter.toc ? [remarkToc] : []), ...(options.remarkPlugins ?? [])]
       options.rehypePlugins = [...(options.rehypePlugins ?? []), rehypeHighlight]
     
       return options
     } });
-    
- 
 
   return {
     title: mdxResult.frontmatter.meta.title,

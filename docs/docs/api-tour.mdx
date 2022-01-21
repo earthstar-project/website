@@ -2,6 +2,7 @@
 meta:
   title: API Tour
   description: Isn't this awesome?
+  toc: true
 ---
 
 # earthstar API tour
@@ -28,7 +29,7 @@ or installed with NPM:
 npm install earthstar
 ```
 
-To integrate Earthstar into your program, your application will probably need a single instance of Earthstar's `Peer` class, which manages many commons and is responsible for synchronising them.
+To integrate Earthstar into your program, your application will probably need a single instance of Earthstar's `Peer` class, which manages many shares and is responsible for synchronising them.
 
 <img src="/api-tour/application.svg" class="h-72"/>
 
@@ -52,15 +53,15 @@ myPeer.workspaces();
 
 ![](/api-tour/replica.svg)
 
-A local replica of a commons' documents. Provides operations for querying and setting documents.
+A local replica of a share's documents. Provides operations for querying and setting documents.
 
 ```typescript
 import { StorageAsync, ValidatorEs4, StorageDriverMemory } from "earthstar";
 
 // Construct a storage
 const myStorage = new StorageAsync(
-  // Needs a commons address
-  `+myCommons.a8puorlpz1`,
+  // Needs a share address
+  `+myshare.a8puorlpz1`,
   // At least one validator
   [ValidatorEs4],
   // And a driver to teach it how to read and write documents
@@ -104,7 +105,7 @@ It's possible to create your own storage drivers which conform to `IStorage`.
 
 <img src="/api-tour/validator.svg" class="h-48"/>
 
-Earthstar commons are able to store documents of different formats. But most of the time, you'll want to use the built-in one from this library: `es.4`. As such, Earthstar currenly only offers one format validator: `ValidatorEs4`.
+Earthstar shares are able to store documents of different formats. But most of the time, you'll want to use the built-in one from this library: `es.4`. As such, Earthstar currenly only offers one format validator: `ValidatorEs4`.
 
 Every time a new document is ingested by a `StorageAsync` it is checked by a validator.  In the case of `ValidatorEs4`, it checks whether a document's signature matches its  author, space address, and content.
 
@@ -118,7 +119,7 @@ Used to describe a document query. Used with `StorageAsync.query` and `QueryFoll
 
 <img src="/api-tour/doc.svg" class="h-36"/>
 
-Represents some cryptographically-signed user data. The contents of a `Doc` can only be changed via `StorageAsync`. A document cannot be moved from one commons to another.
+Represents some cryptographically-signed user data. The contents of a `Doc` can only be changed via `StorageAsync`. A document cannot be moved from one share to another.
 
 ## Crypto
 
@@ -190,7 +191,7 @@ myJpgFollower.close();
 
 <img src="/api-tour/replica-cache.svg" class="h-44"/>
 
-`StorageAsync` offers a strictly asynchronous interface to a commons' contents. Sometimes a synchronous API would make life far easier, and `StorageCache` does its best to provide that.
+`StorageAsync` offers a strictly asynchronous interface to a share's contents. Sometimes a synchronous API would make life far easier, and `StorageCache` does its best to provide that.
 
 `StorageCache` offers a synchronous API for fetching documents by storing queried documents in an internal cache.
 

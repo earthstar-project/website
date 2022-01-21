@@ -40,8 +40,7 @@ export default function Index() {
         <div className="flex flex-row gap-4 items-center  md:flex-col">
           <img src="/landing/replica.svg" className="flex-shrink h-32 md:h-40" />
           <p className=" max-w-prose text-lg">
-            Your data is here for the long haul. Everyone keeps a working
-            replica of their share, so servers are just a nice-to-have.
+            Your data is here for the long haul. Everyone keeps a working <span className="text-es-blue">replica</span> of their share, so servers are just a nice-to-have.
           </p>
           
         </div>
@@ -56,7 +55,7 @@ export default function Index() {
       </div>
 
       <a
-        href="/get-started/how-does-earthstar-work"
+        href="/get-started/how-it-works"
         className="text-es-blue text-2xl block text-center py-2 md:w-96 lg:hidden font-bold m-auto border-2 border-es-blue my-6"
       >
         Learn more
