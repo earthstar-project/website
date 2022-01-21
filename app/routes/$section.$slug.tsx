@@ -9,6 +9,7 @@ import {
 } from "remix";
 import { getMDXComponent } from "mdx-bundler/client";
 import getDoc, { MdxDoc } from "~/getDoc.server";
+import cache from '../cache';
 
 export let meta: MetaFunction = ({ data }) => {
   const { doc } = data as LoaderType;
@@ -29,11 +30,19 @@ export let links: LinksFunction = () => {
 };
 
 export let loader: LoaderFunction = async ({ params }) => {
+  const cachedDoc = cache.get(`post.${params.section}/${params.slug}`);
+  
+  if (cachedDoc) {
+    return json({doc: cachedDoc});
+  }
+  
   const maybeDoc = await getDoc(params.section || "", params.slug || "");
 
   if (!maybeDoc) {
     return redirect("/404");
   }
+  
+  cache.set(`post.${params.section}/${params.slug}`, maybeDoc);
 
   return json({ doc: maybeDoc });
 };

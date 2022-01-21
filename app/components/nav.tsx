@@ -9,7 +9,8 @@ const sitemap: Sitemap = {
     "How it works": "/get-started/how-it-works",
   },
   Docs: {
-    "API Tour": "/api/earthstar",
+    "Developer Tour": "/docs/api-tour",
+    "API": "https://doc.deno.land/https://deno.land/x/stone_soup@v8.0.0/mod.ts"
   },
   Specifications: {
     "Data specification": "/specs/data-spec",
@@ -60,6 +61,7 @@ function LinkOrSection({
               <a
                 className={"text-es-blue underline visited:text-purple-800 inline-block"}
                 href={url}
+                target={'_blank'}
               >
                 {title}
               </a>

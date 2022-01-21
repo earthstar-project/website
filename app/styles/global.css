@@ -651,8 +651,8 @@ video {
 	margin-top: 1.5rem;
 	margin-bottom: 1.5rem;
 }
-.mt-8 {
-	margin-top: 2rem;
+.mt-12 {
+	margin-top: 3rem;
 }
 .mt-6 {
 	margin-top: 1.5rem;
@@ -665,12 +665,6 @@ video {
 }
 .mr-1 {
 	margin-right: 0.25rem;
-}
-.mr-2 {
-	margin-right: 0.5rem;
-}
-.mt-12 {
-	margin-top: 3rem;
 }
 .block {
 	display: block;
@@ -696,38 +690,14 @@ video {
 .h-32 {
 	height: 8rem;
 }
-.h-16 {
-	height: 4rem;
-}
-.h-8 {
-	height: 2rem;
-}
-.h-6 {
-	height: 1.5rem;
-}
-.h-4 {
-	height: 1rem;
-}
-.h-7 {
-	height: 1.75rem;
-}
-.h-96 {
-	height: 24rem;
+.h-72 {
+	height: 18rem;
 }
 .h-60 {
 	height: 15rem;
 }
-.h-72 {
-	height: 18rem;
-}
-.h-64 {
-	height: 16rem;
-}
 .h-48 {
 	height: 12rem;
-}
-.h-24 {
-	height: 6rem;
 }
 .h-36 {
 	height: 9rem;
@@ -738,14 +708,14 @@ video {
 .h-44 {
 	height: 11rem;
 }
-.w-16 {
-	width: 4rem;
+.h-16 {
+	height: 4rem;
 }
-.w-20 {
-	width: 5rem;
+.h-7 {
+	height: 1.75rem;
 }
-.w-6 {
-	width: 1.5rem;
+.h-8 {
+	height: 2rem;
 }
 .w-7 {
 	width: 1.75rem;
@@ -794,6 +764,9 @@ video {
 }
 .overflow-auto {
 	overflow: auto;
+}
+.whitespace-pre {
+	white-space: pre;
 }
 .border-2 {
 	border-width: 2px;
@@ -863,14 +836,8 @@ video {
 .align-baseline {
 	vertical-align: baseline;
 }
-.align-middle {
-	vertical-align: middle;
-}
 .align-text-top {
 	vertical-align: text-top;
-}
-.align-text-bottom {
-	vertical-align: text-bottom;
 }
 .font-display {
 	font-family: Dover Sans Display, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -894,6 +861,10 @@ video {
 .text-4xl {
 	font-size: 2.25rem;
 	line-height: 2.5rem;
+}
+.text-xl {
+	font-size: 1.25rem;
+	line-height: 1.75rem;
 }
 .font-bold {
 	font-weight: 700;
