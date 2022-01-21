@@ -3,6 +3,7 @@ import path from "path";
 import { bundleMDX } from "mdx-bundler";
 import rehypeHighlight from 'rehype-highlight'
 
+
 export type MdxDoc = {
   title: string;
   description: string;
@@ -22,15 +23,17 @@ export default async function getDoc(
   }
   
   const { default: remarkToc } = await import("remark-toc");
+  const { default: rehypeSlug } = await import('rehype-slug');
+  const { default: rehypeAutolinkHeadings } = await import('rehype-autolink-headings');
 
-  const mdxResult = await bundleMDX({ file: docPath, xdmOptions(options, frontmatter) {
+  const mdxResult = await bundleMDX({ file: docPath, xdmOptions(options) {
       // this is the recommended way to add custom remark/rehype plugins:
       // The syntax might look weird, but it protects you in case we add/remove
       // plugins in the future.
      
       
-      options.remarkPlugins = [...(frontmatter.toc ? [remarkToc] : []), ...(options.remarkPlugins ?? [])]
-      options.rehypePlugins = [...(options.rehypePlugins ?? []), rehypeHighlight]
+      options.remarkPlugins = [[remarkToc, {tight: true}], ...(options.remarkPlugins ?? [])]
+      options.rehypePlugins = [...(options.rehypePlugins ?? []), rehypeHighlight, rehypeSlug, rehypeAutolinkHeadings]
     
       return options
     } });

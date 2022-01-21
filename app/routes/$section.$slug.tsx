@@ -59,13 +59,13 @@ function H2(props: {}) {
   return (
     <h2
       {...props}
-      className={"text-2xl mt-12 font-display max-w-prose"}
+      className={"text-2xl mt-6 font-display max-w-prose"}
     />
   );
 }
 
 function H3(props: {}) {
-  return <h3 {...props} className={"text-lg mt-6 mb-1 font-bold"} />;
+  return <h3 {...props} className={"text-lg mt-4 mb-1 font-bold"} />;
 }
 
 function H4(props: {}) {
@@ -93,7 +93,7 @@ function Code(props: {}) {
 }
 
 function Paragraph(props: {}) {
-  return <p className={"max-w-prose my-3 "} {...props} />;
+  return <p className={"max-w-prose my-4 "} {...props} />;
 }
 
 function BlockQuote(props: {}) {
