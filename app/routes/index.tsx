@@ -32,7 +32,7 @@ export default function Index() {
           />
           <p className="text-lg max-w-prose ">
             A <span className="text-es-purple">share</span> is a collection
-            of data — messages, blog posts, photos, <strong>anything</strong> —
+            of data — messages, blog posts, photos, <em>anything</em> —
             synchronised across the devices of its users.
           </p>
           
@@ -40,14 +40,14 @@ export default function Index() {
         <div className="flex flex-row gap-4 items-center  md:flex-col">
           <img src="/landing/replica.svg" className="flex-shrink h-32 md:h-40" />
           <p className=" max-w-prose text-lg">
-            Your data is here for the long haul. Everyone keeps a working <span className="text-es-blue">replica</span> of their share, so servers are just a nice-to-have.
+            Your data is here for the long haul. Everyone keeps a working <span className="text-es-blue text-bold">replica</span> of their share, so servers are just a nice-to-have.
           </p>
           
         </div>
         <div className="flex flex-row gap-4 items-center md:flex-col">
           <img src="/landing/interface.svg" className="flex-shrink h-32 md:h-40" />
           <p className=" max-w-prose text-lg">
-            Interact with your share however you want: through home-cooked
+            Interact with your <span className="text-es-green">documents</span> however you want: through home-cooked
             browser apps, command-line interfaces, or native apps.
           </p>
           
