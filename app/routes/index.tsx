@@ -17,9 +17,9 @@ export let links: LinksFunction = () => {
 export default function Index() {
   return (
     <div>
-      <div className=" gap-2 flex flex-col items-center my-8">
+      <div className=" gap-2 flex flex-col items-start my-8">
         <p className="text-4xl max-w-prose font-display">
-          Private and independent networks for you, your friends, or community with <span className="text-es-purple">Earthstar</span>.
+          Sync stuff you care about with people you know.
         </p>
       </div>
       <hr className="my-8" />
