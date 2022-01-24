@@ -74,6 +74,7 @@ export default function Index() {
         <FItem>Sneakernets.</FItem>
         <FItem>Always self-hosted.</FItem>
         <FItem>Servers optional.</FItem>
+        <FItem>Free forever, in every sense.</FItem>
       </ul>
       <ul className="pl-0 text-lg max-w-prose">
         <FItem>Author verification with ed25519.</FItem>
