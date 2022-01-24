@@ -123,6 +123,10 @@ An identity is a keypair containing a public address and a secret. This keypair 
 
 You can generate identities using [Crypto](#crypto).
 
+Note that documents are not *encrypted* (yet), only *signed*.  This means we can verify that the document has not been tampered with on its journey to you, making it possible for syncing to hop across several peers without worrying about them messing with your data.  They can still *read* your data.
+
+Technically speaking, these are ed25519 keypairs encoded in base32.
+
 ## Query
 
 <img src="/api-tour/query.svg" class="h-36"/>
