@@ -58,13 +58,13 @@ function LinkOrSection({
         {Object.entries(item).map(([title, url]) => (
           <li key={title}>
             {url.startsWith("http") ? (
-              <a
+              <><a
                 className={"text-es-blue underline visited:text-purple-800 inline-block"}
                 href={url}
                 target={'_blank'}
               >
                 {title}
-              </a>
+              </a> ↗</>
             ) : (
               <NavLink
                 className={({isActive}) => `text-es-blue underline visited:text-purple-800 ${isActive ? 'font-bold': ''}`}
