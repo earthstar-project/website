@@ -113,6 +113,14 @@ Earthstar shares are able to store documents of different formats. But most of t
 
 Every time a new document is ingested by a `StorageAsync` it is checked by a validator.  In the case of `ValidatorEs4`, it checks whether a document's signature matches its  author, space address, and content.
 
+## Identity
+
+<img src="/api-tour/identity.svg" className="h-36" />
+
+An identity is a keypair containing a public address and a secret. This keypair is used to sign documents whenever they're written. The public address can be freely distributed, but the secret should be, well, secret.
+
+You can generate identities using [Crypto](#crypto).
+
 ## Query
 
 <img src="/api-tour/query.svg" class="h-36"/>
