@@ -1,5 +1,5 @@
 import type { LinksFunction } from "remix";
-import { Meta, Links, Scripts, LiveReload, useCatch, Outlet } from "remix";
+import { Meta, Links, Scripts, LiveReload, useCatch, Outlet, ScrollRestoration } from "remix";
 import Nav from "./components/nav";
 
 import stylesUrl from "./styles/global.css";
@@ -27,6 +27,7 @@ function Document({
       </head>
       <body className="grid grid-cols-standard lg:grid-cols-large bg-gray-50">
         {children}
+        <ScrollRestoration />
         <Scripts />
         {process.env.NODE_ENV === "development" && <LiveReload />}
       </body>
