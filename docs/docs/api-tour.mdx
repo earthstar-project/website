@@ -24,7 +24,7 @@ It can be imported via URL into a browser:
 Or Deno:
 
 ```
-import * as Earthstar from "https://deno.land/x/stone-soup/mod.ts";
+import * as Earthstar from "https://deno.land/x/stone-soup/mod.ts";n
 ```
 
 or installed with NPM:
@@ -35,15 +35,15 @@ npm install earthstar
 
 To integrate Earthstar into your program, your application will probably need a single instance of Earthstar's `Peer` class, which manages many shares and is responsible for synchronising them.
 
-<img src="/api-tour/application.svg" class="h-72"/>
+<img src="/api-tour/application.svg" class="bg-gray-200 p-4"/>
 
 Nearly all of Earthstar's classes can be configured to suit your specific use-case, e.g. a `StorageAsync` can be configured to persist data to IndexedDB if you're building a browser app.
 
 ## Peer
 
-<img src="/api-tour/peer.svg" class="h-60"/>
+<img src="/api-tour/peer.svg" class="bg-gray-200 p-4"/>
 
-A `Peer` is responsible for managing many `StorageAsync`, and synchronising them across different transports. [Complete API documentation here.](https://doc.deno.land/https://deno.land/x/stone_soup@v8.0.0/mod.ts/~/Peer)
+A `Peer` is responsible for managing many `StorageAsync`, and synchronising them across different transports. 
 
 ```typescript
 const myPeer = new Peer();
@@ -55,7 +55,7 @@ myPeer.workspaces();
 
 ## StorageAsync
 
-![](/api-tour/replica.svg)
+<img src="/api-tour/replica.svg" class="bg-gray-200 p-4"/>
 
 A local replica of a share's documents. Provides operations for querying and setting documents. [Complete API documentation here.](https://doc.deno.land/https://deno.land/x/stone_soup@v8.0.0/mod.ts/~/StorageAsync)
 
@@ -90,7 +90,7 @@ await myStorage.set(myKeypair, {
 
 ## Storage drivers
 
-<img src="/api-tour/storage-driver.svg" class="h-48"/>
+<img src="/api-tour/storage-driver.svg" class="bg-gray-200 p-4"/>
 
 Earthstar can be used on in browsers, on servers, or on the command line. There's no single way to persist data in all these environments, which is why `StorageAsync` is able to use different `StorageDrivers` suited to the environment its being used in.
 
@@ -107,7 +107,7 @@ It's possible to create your own storage drivers which conform to `IStorage`. [S
 
 ## Validators
 
-<img src="/api-tour/validator.svg" class="h-48"/>
+<img src="/api-tour/validator.svg" class="bg-gray-200 p-4"/>
 
 Earthstar shares are able to store documents of different formats. But most of the time, you'll want to use the built-in one from this library: `es.4`. As such, Earthstar currenly only offers one format validator: `FormatValidatorEs4` ([API documentation here.](https://doc.deno.land/https://deno.land/x/stone_soup@v8.0.0/mod.ts/~/FormatValidatorEs4))
 
@@ -117,7 +117,7 @@ It's possible to write your own validator which adheres to [`IFormatValidator`](
 
 ## Identity
 
-<img src="/api-tour/identity.svg" className="h-36" />
+<img src="/api-tour/identity.svg" class="bg-gray-200 p-4"/>
 
 An identity is a keypair containing a public address and a secret. This keypair is used to sign documents whenever they're written. The public address can be freely distributed, but the secret should be, well, secret. [API docs here](https://doc.deno.land/https://deno.land/x/stone_soup@v8.0.0/mod.ts/~/AuthorKeypair).
 
@@ -129,19 +129,19 @@ Technically speaking, these are ed25519 keypairs encoded in base32.
 
 ## Query
 
-<img src="/api-tour/query.svg" class="h-36"/>
+<img src="/api-tour/query.svg" class="bg-gray-200 p-4"/>
 
 Used to describe a document query. Used with `StorageAsync.query` and `QueryFollower`. [Full API details here](https://doc.deno.land/https://deno.land/x/stone_soup@v8.0.0/mod.ts/~/Query).
 
 ## Doc
 
-<img src="/api-tour/doc.svg" class="h-36"/>
+<img src="/api-tour/doc.svg" class="bg-gray-200 p-4"/>
 
 Represents some cryptographically-signed user data. The contents of a `Doc` can only be changed via `StorageAsync`. A document cannot be moved from one share to another. [Full API documentation here](https://doc.deno.land/https://deno.land/x/stone_soup@v8.0.0/mod.ts/~/Doc).
 
 ## Crypto
 
-<img src="/api-tour/crypto.svg" class="h-40"/>
+<img src="/api-tour/crypto.svg" class="bg-gray-200 p-4"/>
 
 `Crypto` ([full API docs](https://doc.deno.land/https://deno.land/x/stone_soup@v8.0.0/mod.ts/~/Crypto)) is used internally for signing and verifying documents using [ed25519](https://ed25519.cr.yp.to). In most cases, you will want to use it to generate new identity keypairs:
 
@@ -173,7 +173,7 @@ setGlobalCryptoDriver(CryptoDriverChloride);
 
 ## QueryFollower
 
-<img src="/api-tour/query-follower.svg" class="h-40"/>
+<img src="/api-tour/query-follower.svg" class="bg-gray-200 p-4"/>
 
 Listens to events from a `StorageAsync`, and if it matches the given query, sends an event to a [`SuperBus`](https://github.com/cinnamon-bun/superbus).
 
@@ -207,7 +207,7 @@ myJpgFollower.close();
 
 ## StorageCache
 
-<img src="/api-tour/replica-cache.svg" class="h-44"/>
+<img src="/api-tour/replica-cache.svg" class="bg-gray-200 p-4"/>
 
 `StorageAsync` offers a strictly asynchronous interface to a share's contents. Sometimes a synchronous API would make life far easier, and `StorageCache` does its best to provide that.
 
