@@ -26,7 +26,7 @@ function Document({
         
         <link rel="mask-icon" href="/favicon.svg" color="#AD3BFF"/>
 
-        <link rel="icon" href="/favicon.png" type="image/png"/>
+        
         {title ? <title>{title}</title> : null}
         <Meta />
         <Links />
