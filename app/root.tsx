@@ -20,7 +20,13 @@ function Document({
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
-        <link rel="icon" href="/favicon.png" type="image/png" />
+        
+        
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+        
+        <link rel="mask-icon" href="/favicon.svg" color="#AD3BFF"/>
+
+        <link rel="icon" href="/favicon.png" type="image/png"/>
         {title ? <title>{title}</title> : null}
         <Meta />
         <Links />
