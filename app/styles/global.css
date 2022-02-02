@@ -759,6 +759,9 @@ video {
 .overflow-auto {
 	overflow: auto;
 }
+.rounded {
+	border-radius: 0.25rem;
+}
 .border-2 {
 	border-width: 2px;
 }
@@ -779,6 +782,10 @@ video {
 .border-es-blue {
 	--tw-border-opacity: 1;
 	border-color: rgba(11, 113, 195, var(--tw-border-opacity));
+}
+.border-es-purple {
+	--tw-border-opacity: 1;
+	border-color: rgba(173, 60, 255, var(--tw-border-opacity));
 }
 .bg-gray-50 {
 	--tw-bg-opacity: 1;

@@ -70,7 +70,7 @@ export default function Index() {
 
       <a
         href="/get-started/how-it-works"
-        className="text-es-blue text-2xl block text-center py-2 md:w-96 lg:hidden font-bold m-auto border-2 border-es-blue my-6"
+        className="font-display text-es-purple text-2xl block text-center py-2 md:w-96 lg:hidden font-bold m-auto border-2 border-es-purple my-6 rounded bg-purple-50"
       >
         Learn more
       </a>
