@@ -1,7 +1,7 @@
 ---
 meta:
   title: Playground
-  description: Isn't this awesome?
+  description: You can play with the Earthstar API right here in your browser.
 ---
 
 import ModuleInject from '../app/components/module-inject.tsx';
@@ -49,7 +49,7 @@ replica.set(identity, { content: 'Pizza Margerita!', path: '/my-order.txt', form
 Let's check if it worked.
 
 ```js
-await replica.getLatestDoc();
+await replica.getLatestDocs();
 ```
 
 ```
@@ -69,6 +69,46 @@ await replica.getLatestDoc();
 ]
 ```
 
-Great! We should synchronise this to our friends so they know which pizza to order for us. I'll add instructions for that as soon as we merge some form of syncing into Earthstar.
+Great! We should synchronise this to our friends so they know which pizza to order for us. First we'll need to put our replica inside a `Peer`, which is used to manage shares and coordinate with syncers.
+
+```js
+let myPeer = new Peer();
+```
+
+And we'll add our replica to it.
+
+```js
+myPeer.addStorage(replica);
+```
+
+Now we have a peer, we can sync it with other peers! We can do this with peers remotely over the network, but for now let's just pretend and sync with a local one.
+
+```js
+let otherReplica = new Earthstar.StorageAsync(shareAddress, Earthstar.FormatValidatorEs4, driver);
+```
+
+If we run `otherReplica.getLatestDocs`, we'll get an empty array. It doesn't have any documents in it yet. Let's put this replica in another peer so we can change that!
+
+```js
+let otherPeer = new Peer();
+otherPeer.addStorage(otherReplica);
+```
+
+Now that we have our two peers, let's sync them:
+
+```js
+const syncer = new Earthstar.SyncerLocal(myPeer);
+await syncer.addPeer(otherPeer);
+```
+
+And now if we ask for documents:
+
+```js
+await otherReplica.getLatestDocs
+```
+
+You'll see the document we made from before has synced over.
+
+
 
 <ModuleInject/>

@@ -46,7 +46,7 @@ export function Paragraph(props: React.HTMLAttributes<HTMLParagraphElement>) {
 export function BlockQuote(props: React.HTMLAttributes<HTMLQuoteElement>) {
   return (
     <blockquote
-      className="px-4 py-2 bg-gray-100 max-w-prose border-l-2 border-purple-200 my-2"
+      className="px-4 py-0.5 bg-gray-100 max-w-prose border-l-2 border-purple-200 my-2"
       {...props}
     />
   );
