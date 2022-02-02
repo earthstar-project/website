@@ -643,10 +643,6 @@ video {
 	margin-top: 0.75rem;
 	margin-bottom: 0.75rem;
 }
-.my-8 {
-	margin-top: 2rem;
-	margin-bottom: 2rem;
-}
 .my-6 {
 	margin-top: 1.5rem;
 	margin-bottom: 1.5rem;
@@ -687,8 +683,8 @@ video {
 .hidden {
 	display: none;
 }
-.h-32 {
-	height: 8rem;
+.h-24 {
+	height: 6rem;
 }
 .h-16 {
 	height: 4rem;
@@ -698,12 +694,6 @@ video {
 }
 .h-8 {
 	height: 2rem;
-}
-.h-24 {
-	height: 6rem;
-}
-.h-20 {
-	height: 5rem;
 }
 .w-24 {
 	width: 6rem;
@@ -744,14 +734,14 @@ video {
 .items-baseline {
 	align-items: baseline;
 }
+.gap-4 {
+	gap: 1rem;
+}
 .gap-2 {
 	gap: 0.5rem;
 }
 .gap-6 {
 	gap: 1.5rem;
-}
-.gap-4 {
-	gap: 1rem;
 }
 .self-start {
 	align-self: flex-start;
@@ -779,10 +769,6 @@ video {
 	--tw-border-opacity: 1;
 	border-color: rgba(5, 173, 96, var(--tw-border-opacity));
 }
-.border-es-blue {
-	--tw-border-opacity: 1;
-	border-color: rgba(11, 113, 195, var(--tw-border-opacity));
-}
 .border-es-purple {
 	--tw-border-opacity: 1;
 	border-color: rgba(173, 60, 255, var(--tw-border-opacity));
@@ -799,16 +785,13 @@ video {
 	--tw-bg-opacity: 1;
 	background-color: rgba(255, 255, 255, var(--tw-bg-opacity));
 }
-.bg-gray-200 {
-	--tw-bg-opacity: 1;
-	background-color: rgba(229, 231, 235, var(--tw-bg-opacity));
-}
 .bg-purple-50 {
 	--tw-bg-opacity: 1;
 	background-color: rgba(245, 243, 255, var(--tw-bg-opacity));
 }
-.p-2 {
-	padding: 0.5rem;
+.bg-gray-200 {
+	--tw-bg-opacity: 1;
+	background-color: rgba(229, 231, 235, var(--tw-bg-opacity));
 }
 .p-1 {
 	padding: 0.25rem;
@@ -816,17 +799,20 @@ video {
 .p-4 {
 	padding: 1rem;
 }
-.px-4 {
-	padding-left: 1rem;
-	padding-right: 1rem;
+.p-2 {
+	padding: 0.5rem;
 }
-.py-2 {
-	padding-top: 0.5rem;
-	padding-bottom: 0.5rem;
+.px-2 {
+	padding-left: 0.5rem;
+	padding-right: 0.5rem;
 }
 .py-1 {
 	padding-top: 0.25rem;
 	padding-bottom: 0.25rem;
+}
+.px-4 {
+	padding-left: 1rem;
+	padding-right: 1rem;
 }
 .py-0\.5 {
 	padding-top: 0.125rem;
@@ -836,9 +822,9 @@ video {
 	padding-top: 0px;
 	padding-bottom: 0px;
 }
-.px-2 {
-	padding-left: 0.5rem;
-	padding-right: 0.5rem;
+.py-2 {
+	padding-top: 0.5rem;
+	padding-bottom: 0.5rem;
 }
 .pl-6 {
 	padding-left: 1.5rem;
@@ -849,14 +835,14 @@ video {
 .pl-4 {
 	padding-left: 1rem;
 }
-.pl-0 {
-	padding-left: 0px;
-}
 .pt-1 {
 	padding-top: 0.25rem;
 }
 .pb-2 {
 	padding-bottom: 0.5rem;
+}
+.pl-0 {
+	padding-left: 0px;
 }
 .text-center {
 	text-align: center;
@@ -889,14 +875,6 @@ video {
 	font-size: 0.875rem;
 	line-height: 1.25rem;
 }
-.text-4xl {
-	font-size: 2.25rem;
-	line-height: 2.5rem;
-}
-.text-xl {
-	font-size: 1.25rem;
-	line-height: 1.75rem;
-}
 .font-bold {
 	font-weight: 700;
 }
@@ -909,6 +887,10 @@ video {
 .text-blue-500 {
 	--tw-text-opacity: 1;
 	color: rgba(59, 130, 246, var(--tw-text-opacity));
+}
+.text-gray-600 {
+	--tw-text-opacity: 1;
+	color: rgba(75, 85, 99, var(--tw-text-opacity));
 }
 .text-es-blue {
 	--tw-text-opacity: 1;
@@ -925,14 +907,6 @@ video {
 .text-es-green {
 	--tw-text-opacity: 1;
 	color: rgba(5, 173, 96, var(--tw-text-opacity));
-}
-.text-gray-500 {
-	--tw-text-opacity: 1;
-	color: rgba(107, 114, 128, var(--tw-text-opacity));
-}
-.text-gray-600 {
-	--tw-text-opacity: 1;
-	color: rgba(75, 85, 99, var(--tw-text-opacity));
 }
 .underline {
 	text-decoration: underline;
@@ -981,26 +955,21 @@ video {
     background-position: 0 0, 21px 21px;
     background-size: 42px 42px;
   }
-
 .last\:mr-0:last-child {
 	margin-right: 0px;
 }
-
 .odd\:text-gray-600:nth-child(odd) {
 	--tw-text-opacity: 1;
 	color: rgba(75, 85, 99, var(--tw-text-opacity));
 }
-
 .visited\:text-purple-900:visited {
 	--tw-text-opacity: 1;
 	color: rgba(76, 29, 149, var(--tw-text-opacity));
 }
-
 .visited\:text-purple-800:visited {
 	--tw-text-opacity: 1;
 	color: rgba(91, 33, 182, var(--tw-text-opacity));
 }
-
 @media (min-width: 768px) {
 
 	.md\:my-8 {
@@ -1024,10 +993,6 @@ video {
 		flex-direction: column;
 	}
 
-	.md\:p-4 {
-		padding: 1rem;
-	}
-
 	.md\:px-4 {
 		padding-left: 1rem;
 		padding-right: 1rem;
@@ -1047,7 +1012,6 @@ video {
 		line-height: 2.5rem;
 	}
 }
-
 @media (min-width: 1024px) {
 
 	.lg\:m-0 {
