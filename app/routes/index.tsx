@@ -6,7 +6,7 @@ import stylesUrl from "../styles/index.css";
 export let meta: MetaFunction = () => {
   return {
     title: "Earthstar",
-    description: "A distributed, syncable database.",
+    description: "Sync stuff you care about with people you know. A distributed, syncable database with signed documents.",
   };
 };
 
