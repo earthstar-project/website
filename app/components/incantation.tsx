@@ -1,4 +1,4 @@
-import {Link, Paragraph as P } from "~/components/html"
+import { Link, Paragraph as P } from "~/components/html";
 
 export default function () {
   return (
@@ -14,7 +14,7 @@ export default function () {
         <a href="https://nlnet.nl" className="text-blue-500 underline">NLnet</a>
         {" "}
         with financial support from the European Commission's{" "}
-        <Link  href="https://ngi.eu/">
+        <Link href="https://ngi.eu/">
           Next Generation Internet
         </Link>{" "}
         programme, under the aegis of DG Communications Networks, Content and

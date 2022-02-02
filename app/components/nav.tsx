@@ -25,7 +25,7 @@ const sitemap: Sitemap = {
   Links: {
     "Open Collective": "https://opencollective.com/earthstar",
     Discord: "https://discord.gg/EFJnuyKbTv",
-    Github: "https://github.com/earthstar-project/earthstar",
+    Github: "https://github.com/earthstar-project/stone-soup",
   },
 };
 

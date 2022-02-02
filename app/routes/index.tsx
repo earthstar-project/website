@@ -6,7 +6,7 @@ import stylesUrl from "../styles/index.css";
 export let meta: MetaFunction = () => {
   return {
     title: "Earthstar",
-    description: "Sync stuff you care about with people you know. A distributed, syncable database with signed documents.",
+    description: "Sync stuff you care about with people you know.",
   };
 };
 
@@ -103,7 +103,7 @@ export default function Index() {
         <FItem>Node.</FItem>
       </ul>
 
-<hr className="my-4 md:my-8" />
+      <hr className="my-4 md:my-8" />
       <div>
         <Incantation />
       </div>
