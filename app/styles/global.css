@@ -930,21 +930,26 @@ video {
     background-position: 0 0, 21px 21px;
     background-size: 42px 42px;
   }
+
 .last\:mr-0:last-child {
 	margin-right: 0px;
 }
+
 .odd\:text-gray-600:nth-child(odd) {
 	--tw-text-opacity: 1;
 	color: rgba(75, 85, 99, var(--tw-text-opacity));
 }
+
 .visited\:text-purple-900:visited {
 	--tw-text-opacity: 1;
 	color: rgba(76, 29, 149, var(--tw-text-opacity));
 }
+
 .visited\:text-purple-800:visited {
 	--tw-text-opacity: 1;
 	color: rgba(91, 33, 182, var(--tw-text-opacity));
 }
+
 @media (min-width: 768px) {
 
 	.md\:h-40 {
@@ -971,6 +976,7 @@ video {
 		padding-left: 1rem;
 	}
 }
+
 @media (min-width: 1024px) {
 
 	.lg\:m-0 {
