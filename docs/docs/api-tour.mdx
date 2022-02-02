@@ -24,16 +24,16 @@ It can be imported via URL into a browser:
 Or Deno:
 
 ```
-import * as Earthstar from "https://deno.land/x/stone-soup@v8.0.0/mod.ts";n
+import * as Earthstar from "https://deno.land/x/stone-soup@v8.0.0/mod.ts";
 ```
 
 or installed with NPM:
 
 ```
-npm install earthstar
+npm install stone-soup
 ```
 
-To integrate Earthstar into your program, your application will probably need a single instance of Earthstar's `Peer` class, which manages many shares and is responsible for synchronising them.
+To integrate Earthstar into your program, your application will probably need a single instance of Earthstar's `Peer` class, which holds many shares. You'll also want to initate one or more kinds of syncers to synchronise your Peer with others.
 
 <img src="/api-tour/application.svg" class="bg-gray-200 p-4"/>
 
@@ -43,7 +43,7 @@ Nearly all of Earthstar's classes can be configured to suit your specific use-ca
 
 <img src="/api-tour/peer.svg" class="bg-gray-200 p-4"/>
 
-A `Peer` is responsible for managing many `StorageAsync`, and synchronising them across different transports. 
+A `Peer` is responsible for holding many `StorageAsync`, and offers many ways to get the underlying replicas for use.
 
 ```typescript
 const myPeer = new Peer();
@@ -51,6 +51,27 @@ const myPeer = new Peer();
 myPeer.workspaces();
 // [] - Nothing here yet!
 // Learn how to add storages in the StorageAsync section.
+```
+
+## Syncers
+
+<img src="/api-tour/syncer.svg" class="bg-gray-200 p-4"/>
+
+Earthstar has a few different Syncer classes to help you sync peers across different kinds of transports: HTTP, Websockets, or just locally.
+
+```typescript
+const myPeer = new Peer();
+
+const localSyncer = new SyncerLocal(myPeer);
+const otherPeer = new Peer();
+localSyncer.addPeer(otherPeer);
+
+const httpSyncer = new SyncerHttpClient(myPeer);
+httpSyncer.addServer("https://myfriends.pub");
+
+// Don't forget to close once done!
+localSyncer.close();
+httpSyncer.close();
 ```
 
 ## StorageAsync
