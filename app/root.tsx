@@ -29,6 +29,7 @@ function Document({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="mask-icon" href="/favicon.svg" color="#AD3BFF" />
+        <meta property="og:image" content="/og_image.png" />
         <Meta />
         <Links />
       </head>
@@ -49,7 +50,7 @@ export default function App() {
     <Document>
       <Nav />
       <div
-        className={`px-2 py-1 md:px-4 md:py-2 overflow-auto   lg:w-full lg:m-0 ${
+        className={`px-2 py-1 md:px-4 md:py-2 overflow-auto lg:w-full lg:m-0 ${
           transition.type === "normalLoad" ? "opacity-50" : ""
         } transition-opacity`}
       >
