@@ -48,6 +48,12 @@ export default async function getDoc(
       return options;
     },
   });
+  
+  if (mdxResult.errors.length > 0) {
+    for (const err in mdxResult.errors) {
+      console.error(err)
+    }
+  }
 
   return {
     title: mdxResult.frontmatter.meta.title,

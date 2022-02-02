@@ -1,6 +1,5 @@
 import * as React from "react";
 import {
-  HeadersFunction,
   json,
   LinksFunction,
   LoaderFunction,
@@ -11,6 +10,20 @@ import {
 import { getMDXComponent } from "mdx-bundler/client";
 import getDoc, { MdxDoc } from "~/getDoc.server";
 import cache from "../cache";
+import {
+  BlockQuote,
+  Code,
+  H1,
+  H2,
+  H3,
+  H4,
+  Link,
+  ListItem,
+  OrderedList,
+  Paragraph,
+  Pre,
+  UnorderedList,
+} from "~/components/html";
 
 export let meta: MetaFunction = ({ data }) => {
   const { doc } = data as LoaderType;
@@ -51,69 +64,6 @@ export let loader: LoaderFunction = async ({ params }) => {
 type LoaderType = {
   doc: MdxDoc;
 };
-
-function H1(props: {}) {
-  return <h1 {...props} className={"text-3xl my-2 font-display"} />;
-}
-
-function H2(props: {}) {
-  return (
-    <h2
-      {...props}
-      className={"text-2xl mt-6 font-display max-w-prose"}
-    />
-  );
-}
-
-function H3(props: {}) {
-  return <h3 {...props} className={"text-lg mt-4 mb-1 font-bold"} />;
-}
-
-function H4(props: {}) {
-  return <h4 {...props} className={"font-bold"} />;
-}
-
-function Link(props: {}) {
-  return <a className={"underline text-blue-500"} {...props} />;
-}
-
-function ListItem(props: {}) {
-  return <li className={""} {...props} />;
-}
-
-function UnorderedList(props: {}) {
-  return <ul className={"pl-6 max-w-prose list-disc"} {...props} />;
-}
-
-function OrderedList(props: {}) {
-  return <ul className={"pl-6 max-w-prose list-decimal"} {...props} />;
-}
-
-function Code(props: {}) {
-  return <code className={"p-1 bg-gray-100 text-sm"} {...props} />;
-}
-
-function Paragraph(props: {}) {
-  return <p className={"max-w-prose my-4 "} {...props} />;
-}
-
-function BlockQuote(props: {}) {
-  return (
-    <blockquote
-      className="px-4 py-2 bg-gray-100 max-w-prose border-l-2 border-purple-200 my-2"
-      {...props}
-    />
-  );
-}
-
-function Pre(props: {}) {
-  return (
-    <pre
-      className={"overflow-auto my-2 my-2 text-sm"}
-      {...props}
-    />
-  );
-}
 
 export default function Post() {
   const { doc } = useLoaderData<LoaderType>();

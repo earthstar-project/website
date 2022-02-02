@@ -1,0 +1,74 @@
+---
+meta:
+  title: Playground
+  description: Isn't this awesome?
+---
+
+import ModuleInject from '../app/components/module-inject.tsx';
+
+# Playground
+
+You can play with the Earthstar API right here in your browser.
+
+Open your browser's development console and start typing in `Earthstar`. It's been added to the global scope. You can find full documentation for the API [here](https://doc.deno.land/https://deno.land/x/stone_soup@v8.0.0/mod.ts).
+  
+Let's begin by creating an identity. We'll use this to write some data shortly.
+
+```js
+let identity = await Earthstar.Crypto.generateAuthorKeypair("suzy");
+```
+
+Feel free to change the shortname to whatever you want, as long as it's four lowercase letters or numbers.
+
+We want to write some data, so let's make a replica. A replica is a local copy of a share's data which can synchronise with other replicas.
+
+We should decide on a cool name for our share. You can change it to whatever you like, just make sure it starts with a `+` and that the part after the dot begins with a letter. Lowercase letters and numbers only.
+
+```js
+let shareAddress = "+pizza2nite.p34axr";
+```
+
+With that settled, we need a storage driver to tell our replica how to save data. As we're just playing around in a console, let's persist everything to memory for now.
+
+```js
+let driver = new Earthstar.StorageDriverAsyncMemory('+myshare.a123');
+```
+
+Now to instantiate our replica with the driver we just made:
+
+```js
+let replica = new Earthstar.StorageAsync(shareAddress, Earthstar.FormatValidatorEs4, driver);
+```
+
+Our replica is ready to go. Let's put some data in it with the identity we made earlier.
+
+```js
+replica.set(identity, { content: 'Pizza Margerita!', path: '/my-order.txt', format: 'es.4'});
+```
+
+Let's check if it worked.
+
+```js
+await replica.getLatestDoc();
+```
+
+```
+[
+	{
+		_localIndex: 0,
+		author: "@suzy.bklqpp6wuzv4t4qynjqvd2o7gaefk4776cb67fwo34xu6jfgwyaza",
+		content: "Hello!",
+		contentHash: "bgngqc33vltlnywgfhkdoda4if6hmct2s7mctiwehzcs63vbmq63q",
+		deleteAfter: null,
+		format: "es.4",
+		path: "/greetings.txt",
+		signature: "bcjpcgxxo7o5setztnoo4mgemlhh7ixloz6tnrdm24xf3gy62nbiafszdjpsdlildyqd6cp5gp46jxb4nummkxjmki4whnlgcjew4caa",
+		timestamp: 1643809349409000,
+		workspace: "+myshare.a123"
+	}
+]
+```
+
+Great! We should synchronise this to our friends so they know which pizza to order for us. I'll add instructions for that as soon as we merge some form of syncing into Earthstar.
+
+<ModuleInject/>

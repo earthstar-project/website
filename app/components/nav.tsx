@@ -11,6 +11,7 @@ const sitemap: Sitemap = {
   Docs: {
     "Developer Tour": "/docs/api-tour",
     "API": "https://doc.deno.land/https://deno.land/x/stone_soup@v8.0.0/mod.ts",
+    "Playground": "/docs/playground",
   },
   Specifications: {
     "Data specification": "/specs/data-spec",
@@ -44,6 +45,7 @@ function LinkOrSection({
           className="text-es-blue visited:text-purple-900"
           to={item}
           onClick={collapseDetails}
+          prefetch="intent"
         >
           {title}
         </NavLink>
@@ -78,6 +80,7 @@ function LinkOrSection({
                     }`}
                   to={url}
                   onClick={collapseDetails}
+                  prefetch="intent"
                 >
                   {title}
                 </NavLink>

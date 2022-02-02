@@ -635,13 +635,13 @@ video {
 	margin-top: 0.5rem;
 	margin-bottom: 0.5rem;
 }
-.my-3 {
-	margin-top: 0.75rem;
-	margin-bottom: 0.75rem;
-}
 .my-4 {
 	margin-top: 1rem;
 	margin-bottom: 1rem;
+}
+.my-3 {
+	margin-top: 0.75rem;
+	margin-bottom: 0.75rem;
 }
 .my-8 {
 	margin-top: 2rem;
@@ -756,19 +756,19 @@ video {
 .border-2 {
 	border-width: 2px;
 }
-.border-b-2 {
-	border-bottom-width: 2px;
-}
 .border-l-2 {
 	border-left-width: 2px;
 }
-.border-es-green {
-	--tw-border-opacity: 1;
-	border-color: rgba(5, 173, 96, var(--tw-border-opacity));
+.border-b-2 {
+	border-bottom-width: 2px;
 }
 .border-purple-200 {
 	--tw-border-opacity: 1;
 	border-color: rgba(221, 214, 254, var(--tw-border-opacity));
+}
+.border-es-green {
+	--tw-border-opacity: 1;
+	border-color: rgba(5, 173, 96, var(--tw-border-opacity));
 }
 .border-es-blue {
 	--tw-border-opacity: 1;
@@ -778,13 +778,13 @@ video {
 	--tw-bg-opacity: 1;
 	background-color: rgba(249, 250, 251, var(--tw-bg-opacity));
 }
-.bg-white {
-	--tw-bg-opacity: 1;
-	background-color: rgba(255, 255, 255, var(--tw-bg-opacity));
-}
 .bg-gray-100 {
 	--tw-bg-opacity: 1;
 	background-color: rgba(243, 244, 246, var(--tw-bg-opacity));
+}
+.bg-white {
+	--tw-bg-opacity: 1;
+	background-color: rgba(255, 255, 255, var(--tw-bg-opacity));
 }
 .bg-gray-200 {
 	--tw-bg-opacity: 1;
@@ -807,14 +807,14 @@ video {
 	padding-top: 0.5rem;
 	padding-bottom: 0.5rem;
 }
+.pl-6 {
+	padding-left: 1.5rem;
+}
 .pl-2 {
 	padding-left: 0.5rem;
 }
 .pl-4 {
 	padding-left: 1rem;
-}
-.pl-6 {
-	padding-left: 1.5rem;
 }
 .pl-0 {
 	padding-left: 0px;
@@ -834,10 +834,6 @@ video {
 .font-display {
 	font-family: Dover Sans Display, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
-.text-sm {
-	font-size: 0.875rem;
-	line-height: 1.25rem;
-}
 .text-3xl {
 	font-size: 1.875rem;
 	line-height: 2.25rem;
@@ -849,6 +845,10 @@ video {
 .text-lg {
 	font-size: 1.125rem;
 	line-height: 1.75rem;
+}
+.text-sm {
+	font-size: 0.875rem;
+	line-height: 1.25rem;
 }
 .text-4xl {
 	font-size: 2.25rem;
