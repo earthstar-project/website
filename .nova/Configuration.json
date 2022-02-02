@@ -1,8 +1,8 @@
 {
-  "co.gwil.deno.config.enableLinting": "false",
-  "co.gwil.deno.config.enableLsp": "false",
-  "co.gwil.deno.config.formatOnSave": "true",
-  "workspace.preview_append_paths": false,
-  "workspace.preview_type": "custom",
-  "workspace.preview_url": "http:\/\/localhost:3000"
+  "co.gwil.deno.config.enableLinting" : "false",
+  "co.gwil.deno.config.enableLsp" : "false",
+  "co.gwil.deno.config.formatOnSave" : "true",
+  "workspace.preview_append_paths" : false,
+  "workspace.preview_type" : "custom",
+  "workspace.preview_url" : "http:\/\/localhost:3000"
 }

@@ -33,12 +33,9 @@ export default async function handleRequest(
   responseHeaders.set("Content-Type", "text/html");
   responseHeaders.set("ETag", etag(markup));
 
-  console.log(responseHeaders.get("ETag"));
-  console.log(request.headers.get("If-None-Match"));
-
   if (request.headers.get("If-None-Match") === responseHeaders.get("ETag")) {
     // and send an empty Response with status 304 and the headers.
-    console.log("hit!");
+
     return new Response("", { status: 304, headers: responseHeaders });
   }
 
