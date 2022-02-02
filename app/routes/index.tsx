@@ -1,5 +1,5 @@
-import type { MetaFunction, LinksFunction, LoaderFunction } from "remix";
-import { useLoaderData, Link } from "remix";
+import type { MetaFunction, LinksFunction } from "remix";
+import Incantation from '../components/incantation'
 
 import stylesUrl from "../styles/index.css";
 
@@ -78,7 +78,7 @@ export default function Index() {
       </ul>
       <ul className="pl-0 text-lg max-w-prose">
         <FItem>Author verification with ed25519.</FItem>
-        <FItem>Resumable sync.</FItem>
+        <FItem hidden>Resumable sync.</FItem>
         <FItem>Protocol-agnostic sync.</FItem>
         <FItem>One identity across many devices.</FItem>
         <FItem>Multiwriter.</FItem>
@@ -88,12 +88,17 @@ export default function Index() {
         <FItem>Deno.</FItem>
         <FItem>Node.</FItem>
       </ul>
+      <hr className="my-8" />
+      <div >
+      <Incantation/>
+      </div>
     </div>
   );
 }
 
-function FItem({ children }: { children: React.ReactNode }) {
+function FItem({ children, hidden }: { children: React.ReactNode, hidden?: boolean }) {
   return (
+    hidden? null :
     <li className="inline-block even:text-gray-1000 odd:text-gray-600 mr-1 last:mr-0">
       {children}
     </li>
