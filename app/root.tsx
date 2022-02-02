@@ -1,5 +1,14 @@
 import type { LinksFunction } from "remix";
-import { Meta, Links, Scripts, LiveReload, useCatch, Outlet, ScrollRestoration } from "remix";
+import {
+  Links,
+  LiveReload,
+  Meta,
+  Outlet,
+  Scripts,
+  ScrollRestoration,
+  useCatch,
+  useTransition,
+} from "remix";
 import Nav from "./components/nav";
 
 import stylesUrl from "./styles/global.css";
@@ -19,14 +28,12 @@ function Document({
     <html lang="en">
       <head>
         <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1"/>
-        
-        
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
-        
-        <link rel="mask-icon" href="/favicon.svg" color="#AD3BFF"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-        
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+        <link rel="mask-icon" href="/favicon.svg" color="#AD3BFF" />
+
         {title ? <title>{title}</title> : null}
         <Meta />
         <Links />
@@ -42,10 +49,16 @@ function Document({
 }
 
 export default function App() {
+  const transition = useTransition();
+
   return (
     <Document>
       <Nav />
-      <div className="p-2 md:p-4 overflow-auto   lg:w-full lg:m-0 ">
+      <div
+        className={`p-2 md:p-4 overflow-auto   lg:w-full lg:m-0 ${
+          transition.type === "normalLoad" ? "opacity-50" : ""
+        } transition-opacity`}
+      >
         <Outlet />
       </div>
     </Document>
@@ -69,7 +82,7 @@ export function CatchBoundary() {
 
     default:
       throw new Error(
-        `Unexpected caught response with status: ${caught.status}`
+        `Unexpected caught response with status: ${caught.status}`,
       );
   }
 }

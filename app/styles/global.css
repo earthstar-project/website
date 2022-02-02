@@ -628,17 +628,12 @@ video {
 .top-0 {
 	top: 0px;
 }
-.float-right {
-	float: right;
-}
-.float-left {
-	float: left;
-}
 .m-auto {
 	margin: auto;
 }
-.m-4 {
-	margin: 1rem;
+.my-2 {
+	margin-top: 0.5rem;
+	margin-bottom: 0.5rem;
 }
 .my-3 {
 	margin-top: 0.75rem;
@@ -648,10 +643,6 @@ video {
 	margin-top: 1rem;
 	margin-bottom: 1rem;
 }
-.my-2 {
-	margin-top: 0.5rem;
-	margin-bottom: 0.5rem;
-}
 .my-8 {
 	margin-top: 2rem;
 	margin-bottom: 2rem;
@@ -659,10 +650,6 @@ video {
 .my-6 {
 	margin-top: 1.5rem;
 	margin-bottom: 1.5rem;
-}
-.my-1 {
-	margin-top: 0.25rem;
-	margin-bottom: 0.25rem;
 }
 .mt-6 {
 	margin-top: 1.5rem;
@@ -678,9 +665,6 @@ video {
 }
 .mr-1 {
 	margin-right: 0.25rem;
-}
-.mb-2 {
-	margin-bottom: 0.5rem;
 }
 .block {
 	display: block;
@@ -715,26 +699,14 @@ video {
 .h-8 {
 	height: 2rem;
 }
-.w-7 {
-	width: 1.75rem;
-}
-.w-64 {
-	width: 16rem;
-}
 .w-24 {
 	width: 6rem;
 }
-.w-32 {
-	width: 8rem;
+.w-7 {
+	width: 1.75rem;
 }
 .max-w-prose {
 	max-width: 65ch;
-}
-.max-w-sm {
-	max-width: 24rem;
-}
-.max-w-xs {
-	max-width: 20rem;
 }
 .flex-shrink {
 	flex-shrink: 1;
@@ -818,10 +790,6 @@ video {
 	--tw-bg-opacity: 1;
 	background-color: rgba(229, 231, 235, var(--tw-bg-opacity));
 }
-.bg-blue-500 {
-	--tw-bg-opacity: 1;
-	background-color: rgba(59, 130, 246, var(--tw-bg-opacity));
-}
 .p-2 {
 	padding: 0.5rem;
 }
@@ -866,13 +834,13 @@ video {
 .font-display {
 	font-family: Dover Sans Display, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
-.text-3xl {
-	font-size: 1.875rem;
-	line-height: 2.25rem;
-}
 .text-sm {
 	font-size: 0.875rem;
 	line-height: 1.25rem;
+}
+.text-3xl {
+	font-size: 1.875rem;
+	line-height: 2.25rem;
 }
 .text-2xl {
 	font-size: 1.5rem;
@@ -895,6 +863,10 @@ video {
 .lowercase {
 	text-transform: lowercase;
 }
+.text-blue-500 {
+	--tw-text-opacity: 1;
+	color: rgba(59, 130, 246, var(--tw-text-opacity));
+}
 .text-es-blue {
 	--tw-text-opacity: 1;
 	color: rgba(11, 113, 195, var(--tw-text-opacity));
@@ -907,10 +879,6 @@ video {
 	--tw-text-opacity: 1;
 	color: rgba(173, 60, 255, var(--tw-text-opacity));
 }
-.text-blue-500 {
-	--tw-text-opacity: 1;
-	color: rgba(59, 130, 246, var(--tw-text-opacity));
-}
 .text-es-green {
 	--tw-text-opacity: 1;
 	color: rgba(5, 173, 96, var(--tw-text-opacity));
@@ -918,12 +886,27 @@ video {
 .underline {
 	text-decoration: underline;
 }
+.opacity-50 {
+	opacity: 0.5;
+}
 .shadow {
 	--tw-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
 	box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 .filter {
 	filter: var(--tw-filter);
+}
+.transition {
+	transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+	transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+	transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+	transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+	transition-duration: 150ms;
+}
+.transition-opacity {
+	transition-property: opacity;
+	transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+	transition-duration: 150ms;
 }
 .checked {
     background-color: #f9f7fc;

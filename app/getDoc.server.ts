@@ -1,8 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { bundleMDX } from "mdx-bundler";
-import rehypeHighlight from 'rehype-highlight'
-
+import rehypeHighlight from "rehype-highlight";
 
 export type MdxDoc = {
   title: string;
@@ -12,7 +11,7 @@ export type MdxDoc = {
 
 export default async function getDoc(
   section: string,
-  slug: string
+  slug: string,
 ): Promise<MdxDoc | undefined> {
   const docPath = path.resolve(`./docs/${section}/${slug}.mdx`);
 
@@ -21,22 +20,34 @@ export default async function getDoc(
   if (!docExists) {
     return undefined;
   }
-  
-  const { default: remarkToc } = await import("remark-toc");
-  const { default: rehypeSlug } = await import('rehype-slug');
-  const { default: rehypeAutolinkHeadings } = await import('rehype-autolink-headings');
 
-  const mdxResult = await bundleMDX({ file: docPath, xdmOptions(options) {
+  const { default: remarkToc } = await import("remark-toc");
+  const { default: rehypeSlug } = await import("rehype-slug");
+  const { default: rehypeAutolinkHeadings } = await import(
+    "rehype-autolink-headings"
+  );
+
+  const mdxResult = await bundleMDX({
+    file: docPath,
+    xdmOptions(options) {
       // this is the recommended way to add custom remark/rehype plugins:
       // The syntax might look weird, but it protects you in case we add/remove
       // plugins in the future.
-     
-      
-      options.remarkPlugins = [[remarkToc, {tight: true}], ...(options.remarkPlugins ?? [])]
-      options.rehypePlugins = [...(options.rehypePlugins ?? []), rehypeHighlight, rehypeSlug, rehypeAutolinkHeadings]
-    
-      return options
-    } });
+
+      options.remarkPlugins = [
+        [remarkToc, { tight: true }],
+        ...(options.remarkPlugins ?? []),
+      ];
+      options.rehypePlugins = [
+        ...(options.rehypePlugins ?? []),
+        rehypeHighlight,
+        rehypeSlug,
+        rehypeAutolinkHeadings,
+      ];
+
+      return options;
+    },
+  });
 
   return {
     title: mdxResult.frontmatter.meta.title,

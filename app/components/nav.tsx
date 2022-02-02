@@ -1,5 +1,5 @@
 import * as React from "react";
-import { NavLink, Link  } from "remix";
+import { Link, NavLink } from "remix";
 
 type Sitemap = Record<string, string | Record<string, string>>;
 
@@ -10,7 +10,7 @@ const sitemap: Sitemap = {
   },
   Docs: {
     "Developer Tour": "/docs/api-tour",
-    "API": "https://doc.deno.land/https://deno.land/x/stone_soup@v8.0.0/mod.ts"
+    "API": "https://doc.deno.land/https://deno.land/x/stone_soup@v8.0.0/mod.ts",
   },
   Specifications: {
     "Data specification": "/specs/data-spec",
@@ -57,24 +57,31 @@ function LinkOrSection({
       <ul className="pl-2">
         {Object.entries(item).map(([title, url]) => (
           <li key={title}>
-            {url.startsWith("http") ? (
-              <><a
-                className={"text-es-blue underline visited:text-purple-800 inline-block"}
-                href={url}
-                target={'_blank'}
-              >
-                {title}
-              </a> ↗</>
-            ) : (
-              <NavLink
-                className={({isActive}) => `text-es-blue underline visited:text-purple-800 ${isActive ? 'font-bold': ''}`}
-                to={url}
-                onClick={collapseDetails}
-                
-              >
-                {title}
-              </NavLink>
-            )}
+            {url.startsWith("http")
+              ? (
+                <>
+                  <a
+                    className={"text-es-blue underline visited:text-purple-800 inline-block"}
+                    href={url}
+                    target={"_blank"}
+                  >
+                    {title}
+                  </a>{" "}
+                  ↗
+                </>
+              )
+              : (
+                <NavLink
+                  className={({ isActive }) =>
+                    `text-es-blue underline visited:text-purple-800 ${
+                      isActive ? "font-bold" : ""
+                    }`}
+                  to={url}
+                  onClick={collapseDetails}
+                >
+                  {title}
+                </NavLink>
+              )}
           </li>
         ))}
       </ul>
@@ -96,7 +103,9 @@ export default function Nav() {
       <div className="hidden lg:block overflow-auto self-start sticky top-0">
         <h1 className="text-3xl text-display pl-2 md:pl-4 my-4 ">
           <Link to="/">
-            <span className="inline-block text-es-purple border-b-2 border-es-green">Earthstar</span>
+            <span className="inline-block text-es-purple border-b-2 border-es-green">
+              Earthstar
+            </span>
           </Link>
         </h1>
         <nav className="pl-2 md pl-4">
@@ -120,7 +129,9 @@ export default function Nav() {
           Navigate
           <h1 className="text-3xl text-display text-right flex-grow">
             <Link to="/">
-              <span className="inline-block text-es-purple border-b-2 border-es-green">Earthstar</span>
+              <span className="inline-block text-es-purple border-b-2 border-es-green">
+                Earthstar
+              </span>
             </Link>
           </h1>
         </summary>
