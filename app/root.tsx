@@ -29,7 +29,7 @@ function Document({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="mask-icon" href="/favicon.svg" color="#AD3BFF" />
-        <meta property="og:image" content="/og_image.png" />
+        <meta property="og:image" content="https://earthstar-project.org/og_image.png" />
         <Meta />
         <Links />
       </head>
