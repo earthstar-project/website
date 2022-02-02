@@ -6,17 +6,35 @@ meta:
 
 # Data specification
 
-## Table of contents
-
 Format: `es.4`
 
-Document version: 2021-04-23.0
+Document version: 2021-04-23.1
 
 > The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
 > NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and
 > "OPTIONAL" in this document are to be interpreted as described in
 > [RFC 2119](https://tools.ietf.org/html/rfc2119).
 > "WILL" means the same as "SHALL".
+
+## Warning: old vocabulary
+
+This document uses old vocabulary.  It should be updated:
+* **Workspaces** have been renamed to **Spaces**.
+* An instance of a space (a local database) is now called a **Replica**.
+
+## Scope
+
+This document describes:
+* The format of Earthstar documents
+* The cryptography used for identities and signatures
+* The procedures needed for running a single local replica: signing, ingesting, and verifying documents
+
+This document may discuss, but does NOT prescribe, these topics which are still in development:
+* Network protocols
+* Algorithms for syncing documents between multiple replicas
+* The API of a specific Earthstar implementation
+
+## Table of contents
 
 ## Libraries Needed to Implement Earthstar
 
