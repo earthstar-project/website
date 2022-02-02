@@ -49,7 +49,7 @@ export default function App() {
     <Document>
       <Nav />
       <div
-        className={`p-2 md:p-4 overflow-auto   lg:w-full lg:m-0 ${
+        className={`px-2 py-1 md:px-4 md:py-2 overflow-auto   lg:w-full lg:m-0 ${
           transition.type === "normalLoad" ? "opacity-50" : ""
         } transition-opacity`}
       >

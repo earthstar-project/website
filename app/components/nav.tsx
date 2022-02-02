@@ -128,9 +128,9 @@ export default function Nav() {
         ref={detailsRef}
         className="lg:hidden shadow sticky top-0 bg-white"
       >
-        <summary className="text-sm flex items-baseline p-2">
+        <summary className="text-sm flex items-baseline px-2 md:px-4 pt-1 pb-2 text-gray-600">
           Navigate
-          <h1 className="text-3xl text-display text-right flex-grow">
+          <h1 className="text-2xl text-display text-right flex-grow">
             <Link to="/">
               <span className="inline-block text-es-purple border-b-2 border-es-green">
                 Earthstar
@@ -138,7 +138,7 @@ export default function Nav() {
             </Link>
           </h1>
         </summary>
-        <nav className="bg-gray-50 p-2">
+        <nav className="bg-purple-50 px-2 md:px-4 py-1">
           <ul>
             {Object.entries(sitemap).map(([title, urlOrSection]) => (
               <LinkOrSection

@@ -1,6 +1,6 @@
 export default function () {
   return (
-    <>
+    <div className="text-gray-600">
       <a href="https://nlnet.nl">
         <img className="w-24 my-2" src="/nlnet.svg" />
       </a>
@@ -18,6 +18,6 @@ export default function () {
         programme, under the aegis of DG Communications Networks, Content and
         Technology under grant agreement No 957073.
       </p>
-    </>
+    </div>
   );
 }

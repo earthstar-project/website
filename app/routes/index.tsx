@@ -14,51 +14,58 @@ export let links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: stylesUrl }];
 };
 
+function Explainer(
+  { imgSrc, children }: { imgSrc: string; children: React.ReactNode },
+) {
+  return (
+    <div className="flex flex-row gap-4 items-center md:flex-col">
+      <img
+        src={imgSrc}
+        className="flex-shrink h-24 md:h-40"
+      />
+      <p className="text-lg max-w-prose ">
+        {children}
+      </p>
+    </div>
+  );
+}
+
 export default function Index() {
   return (
     <div>
-      <div className=" gap-2 flex flex-col items-start my-8">
-        <p className="text-4xl max-w-prose font-display">
+      <div className="gap-2 flex flex-col items-start my-4 md:my-8">
+        <p className="text-2xl md:text-4xl max-w-prose font-display">
           Sync stuff you care about with people you know.
         </p>
       </div>
-      <hr className="my-8" />
+
+      <hr className="my-4 md:my-8" />
 
       <div className="flex flex-col md:flex-row items-baseline gap-6">
-        <div className="flex flex-row gap-4 items-center md:flex-col">
-          <img
-            src="/landing/share.svg"
-            className="flex-shrink h-32 md:h-40"
-          />
+        <Explainer imgSrc="/landing/share.svg">
           <p className="text-lg max-w-prose ">
             A <span className="text-es-purple">share</span>{" "}
             is a collection of data — messages, blog posts, photos,{" "}
             <em>anything</em> — synchronised across the devices of its users.
           </p>
-        </div>
-        <div className="flex flex-row gap-4 items-center  md:flex-col">
-          <img
-            src="/landing/replica.svg"
-            className="flex-shrink h-32 md:h-40"
-          />
+        </Explainer>
+
+        <Explainer imgSrc="/landing/replica.svg">
           <p className=" max-w-prose text-lg">
             Your data is here for the long haul. Everyone keeps a working{" "}
             <span className="text-es-blue text-bold">replica</span>{" "}
             of their share, so servers are just a nice-to-have.
           </p>
-        </div>
-        <div className="flex flex-row gap-4 items-center md:flex-col">
-          <img
-            src="/landing/interface.svg"
-            className="flex-shrink h-32 md:h-40"
-          />
+        </Explainer>
+
+        <Explainer imgSrc="/landing/interface.svg">
           <p className=" max-w-prose text-lg">
             Interact with your <span className="text-es-green">documents</span>
             {" "}
             however you want: through home-cooked browser apps, command-line
             interfaces, or native apps.
           </p>
-        </div>
+        </Explainer>
       </div>
 
       <a
@@ -68,7 +75,7 @@ export default function Index() {
         Learn more
       </a>
 
-      <hr className="my-8" />
+      <hr className="my-4 md:my-8" />
 
       <ul className="pl-0 text-lg max-w-prose mb-4">
         <FItem>Works offline.</FItem>
@@ -95,7 +102,8 @@ export default function Index() {
         <FItem>Deno.</FItem>
         <FItem>Node.</FItem>
       </ul>
-      <hr className="my-8" />
+
+<hr className="my-4 md:my-8" />
       <div>
         <Incantation />
       </div>
