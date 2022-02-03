@@ -6,7 +6,7 @@ import stylesUrl from "../styles/index.css";
 export let meta: MetaFunction = () => {
   return {
     title: "Earthstar",
-    description: "Sync stuff you care about with people you know.",
+    description: "Sync stuff you care about with people you know. Earthstar is a specification and Javascript library for building online tools you can truly call your own.",
   };
 };
 
@@ -37,6 +37,7 @@ export default function Index() {
         <p className="text-2xl md:text-4xl max-w-prose font-display">
           Sync stuff you care about with people you know.
         </p>
+        <p className="text-gray-700">Earthstar is a specification and Javascript library for building online tools you can <strong>truly call your own</strong>.</p>
       </div>
 
       <hr className="my-4 md:my-8" />
