@@ -69,6 +69,8 @@ await replica.getLatestDocs();
 ]
 ```
 
+> The next part uses a syncing API that is not yet publicly available.
+
 Great! We should synchronise this to our friends so they know which pizza to order for us. First we'll need to put our replica inside a `Peer`, which is used to manage shares and coordinate with syncers.
 
 ```js
