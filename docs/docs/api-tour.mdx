@@ -34,77 +34,66 @@ or installed with NPM:
 npm install stone-soup
 ```
 
-To integrate Earthstar into your program, your application will probably need a single instance of Earthstar's `Peer` class, which holds many shares. You'll also want to initate one or more kinds of syncers to synchronise your Peer with others.
+To integrate Earthstar into your program, your application will probably need a single instance of Earthstar's `Peer` class, which holds the replicas for many shares and is able to synchronise them with other peers.
 
 <img src="/api-tour/application.svg" class="bg-gray-200 p-4"/>
 
-Nearly all of Earthstar's classes can be configured to suit your specific use-case, e.g. a `StorageAsync` can be configured to persist data to IndexedDB if you're building a browser app.
+Nearly all of Earthstar's classes can be configured to suit your specific use-case, For example, a `Replica` can be configured to persist data to IndexedDB if you're building a browser app, or Sqlite if you're building a server or command-line tool.
 
 ## Peer
 
 <img src="/api-tour/peer.svg" class="bg-gray-200 p-4"/>
 
-A `Peer` is responsible for holding many `StorageAsync`, and offers many ways to get the underlying replicas for use.
+A `Peer` is responsible for holding many `Replica`s, and offers many ways to access and manage them. A `Peer` can hold one `Replica` for each share.
+
+There is also a `Peer.sync` method which can be passed 'syncable' things such as another `Peer` or a Websocket or HTTP URL to a replica server. The `Peer` will automatically create a new syncer
 
 ```typescript
 const myPeer = new Peer();
 
-myPeer.workspaces();
-// [] - Nothing here yet!
-// Learn how to add storages in the StorageAsync section.
+// Add a replica
+myPeer.addReplica(myReplica);
+
+// Sync with a local instance of a `Peer`
+myPeer.sync(myOtherPeer);
+// Sync with a replica server using Websockets
+myPeer.sync("wss://our.club/earthstar");
+
+// ... Some time later...
+
+myPeer.stopSyncing();
 ```
 
-## Syncers
+When two peers synchronise with one another, they perform a 'salted handshake' to determine if they have any shares in common without actually revealing what those shares are. Whichever shares they have in common are synced.
 
-> The API for Syncers is still being decided upon and no implementation is being distributed yet. But very soon!
-
-<img src="/api-tour/syncer.svg" class="bg-gray-200 p-4"/>
-
-Earthstar has a few different Syncer classes to help you sync peers across different kinds of transports: HTTP, Websockets, or just locally.
-
-```typescript
-const myPeer = new Peer();
-
-const localSyncer = new SyncerLocal(myPeer);
-const otherPeer = new Peer();
-localSyncer.addPeer(otherPeer);
-
-const httpSyncer = new SyncerHttpClient(myPeer);
-httpSyncer.addServer("https://myfriends.pub");
-
-// Don't forget to close once done!
-localSyncer.close();
-httpSyncer.close();
-```
-
-## StorageAsync
+## Replica
 
 <img src="/api-tour/replica.svg" class="bg-gray-200 p-4"/>
 
-A local replica of a share's documents. Provides operations for querying and setting documents. [Complete API documentation here.](https://doc.deno.land/https://deno.land/x/stone_soup@v8.0.0/mod.ts/~/StorageAsync)
+A local replica of a share's documents. Provides operations for querying and setting documents. [Complete API documentation here.](https://doc.deno.land/https://deno.land/x/stone_soup@v8.0.0/mod.ts/~/ReplicaAsync)
 
 ```typescript
-import { StorageAsync, ValidatorEs4, StorageDriverMemory } from "earthstar";
+import { ReplicaAsync, ValidatorEs4, ReplicaDriverMemory } from "earthstar";
 
-// Construct a storage
-const myStorage = new StorageAsync(
-  // Needs a share address
+// Construct a replica
+const myReplica = new Replica(
+  // Needs a share address,
   `+myshare.a8puorlpz1`,
-  // At least one validator
-  [ValidatorEs4],
+  // A document validator,
+  ValidatorEs4,
   // And a driver to teach it how to read and write documents
-  StorageDriverMemory
+  new ReplicaDriverMemory(`+myshare.a8puorlpz1`)
 );
 
 // Query for documents
-const txtResults = myStorage.query({
+const txtResults = myReplica.query({
   filter: {
     pathEndsWith: ".txt"
   }
 });
 
 // Set a document
-await myStorage.set(myKeypair, {
+await myReplica.set(myKeypair, {
   format: "es.4",
   path: "notes/ink.txt",
   content: "Don't forget to get some new ink."
@@ -112,22 +101,30 @@ await myStorage.set(myKeypair, {
 
 ```
 
-## Storage drivers
+## Replica drivers
 
 <img src="/api-tour/storage-driver.svg" class="bg-gray-200 p-4"/>
 
-Earthstar can be used on in browsers, on servers, or on the command line. There's no single way to persist data in all these environments, which is why `StorageAsync` is able to use different `StorageDrivers` suited to the environment its being used in.
+Earthstar can be used on in browsers, on servers, the command line, or anywhere JavaScript can be run. There's no single way to persist data in all these environments, which is why we made `Replica` able to use different `ReplicaDrivers` suited to the environment its being used in.
 
-Built-in Universal drivers:
+Universal drivers:
 
-- `StorageDriverMemory` (no persistence)
+- `ReplicaDriverMemory` (no persistence)
 
 Web platform drivers:
 
-- `StorageDriverLocalStorage`
-- `StorageDriverIndexedDB`
+- `ReplicaDriverLocalReplica`
+- `ReplicaDriverIndexedDB`
 
-It's possible to create your own storage drivers which conform to `IStorage`. [See the details here.](https://doc.deno.land/https://deno.land/x/stone_soup@v8.0.0/mod.ts/~/IStorageDriverAsync)
+Deno drivers:
+
+- `ReplicaDriverSqlite`
+
+Node drivers:
+
+- `ReplicaDriverSqlite`
+
+It's possible to create your own replica drivers which conform to `IReplicaDriver`. [See the details here.](https://doc.deno.land/https://deno.land/x/stone_soup@v8.0.0/mod.ts/~/IReplicaDriver)
 
 ## Validators
 
@@ -135,7 +132,7 @@ It's possible to create your own storage drivers which conform to `IStorage`. [S
 
 Earthstar shares are able to store documents of different formats. But most of the time, you'll want to use the built-in one from this library: `es.4`. As such, Earthstar currenly only offers one format validator: `FormatValidatorEs4` ([API documentation here.](https://doc.deno.land/https://deno.land/x/stone_soup@v8.0.0/mod.ts/~/FormatValidatorEs4))
 
-Every time a new document is ingested by a `StorageAsync` it is checked by a validator.  In the case of `FormatValidatorEs4`, it checks whether a document's signature matches its  author, space address, and content.
+Every time a new document is ingested by a `ReplicaAsync` it is checked by a validator.  In the case of `FormatValidatorEs4`, it checks whether a document's signature matches its  author, space address, and content.
 
 It's possible to write your own validator which adheres to [`IFormatValidator`](https://doc.deno.land/https://deno.land/x/stone_soup@v8.0.0/src/format-validators/format-validator-types.ts/~/IFormatValidator).
 
@@ -155,13 +152,13 @@ Technically speaking, these are ed25519 keypairs encoded in base32.
 
 <img src="/api-tour/query.svg" class="bg-gray-200 p-4"/>
 
-Used to describe a document query. Used with `StorageAsync.query` and `QueryFollower`. [Full API details here](https://doc.deno.land/https://deno.land/x/stone_soup@v8.0.0/mod.ts/~/Query).
+Used to describe a document query. Used with `ReplicaAsync.query` and `QueryFollower`. [Full API details here](https://doc.deno.land/https://deno.land/x/stone_soup@v8.0.0/mod.ts/~/Query).
 
 ## Doc
 
 <img src="/api-tour/doc.svg" class="bg-gray-200 p-4"/>
 
-Represents some cryptographically-signed user data. The contents of a `Doc` can only be changed via `StorageAsync`. A document cannot be moved from one share to another. [Full API documentation here](https://doc.deno.land/https://deno.land/x/stone_soup@v8.0.0/mod.ts/~/Doc).
+Represents some cryptographically-signed user data. The contents of a `Doc` can only be changed via `ReplicaAsync`. A document cannot be moved from one share to another. [Full API documentation here](https://doc.deno.land/https://deno.land/x/stone_soup@v8.0.0/mod.ts/~/Doc).
 
 ## Crypto
 
@@ -195,16 +192,41 @@ import { setGlobalCryptoDriver, CryptoDriverChloride } from "earthstar";
 setGlobalCryptoDriver(CryptoDriverChloride);
 ```
 
+## Syncers
+
+<img src="/api-tour/syncer.svg" class="bg-gray-200 p-4"/>
+
+Most of the time you will want to use the `Peer.sync` convenience method to synchronise with other peers. But if you are building something special — for example a server, or something with Web Workers and [`BroadcastChannel`](https://developer.mozilla.org/en-US/docs/Web/API/BroadcastChannel) — `Syncer` provides a more flexible API which you can use in combination with classes conforming to `earthstar-streaming-rpc`'s `ITransport` type.
+
+```typescript
+import * as Rpc from "https://deno.land/x/earthstar_streaming_rpc/mod.ts";
+
+const myPeer = new Peer();
+
+// This syncer will listen for other syncers using the `my_channel` BroadcastChannel.
+const broadcastChannelSyncer = new Syncer(
+  myPeer,
+  (methods) => new Rpc.TransportBroadcastChannel({
+    methods,
+    deviceId: myPeer.peerId,
+    channel: 'my_channel'
+  })
+);
+
+// Don't forget to close once done!
+broadcastChannelSyncer.close();
+```
+
 ## QueryFollower
 
 <img src="/api-tour/query-follower.svg" class="bg-gray-200 p-4"/>
 
-Listens to events from a `StorageAsync`, and if it matches the given query, sends an event to a [`SuperBus`](https://github.com/cinnamon-bun/superbus).
+Listens to events from a `Replica`, and if it matches the given query, sends an event to a [`SuperBus`](https://github.com/cinnamon-bun/superbus).
 
 Here's a basic usage:
 
 ```typescript
-const myMarkdownFollower = new QueryFollower(myStorage, {
+const myMarkdownFollower = new QueryFollower(myReplica, {
   filter: {
     pathEndsWith: ".md",
   },
@@ -229,20 +251,20 @@ When you're done with a `QueryFollower`, you should close it to stop callbacks f
 myJpgFollower.close();
 ```
 
-## StorageCache
+## ReplicaCache
 
 <img src="/api-tour/replica-cache.svg" class="bg-gray-200 p-4"/>
 
-`StorageAsync` offers a strictly asynchronous interface to a share's contents. Sometimes a synchronous API would make life far easier, and `StorageCache` does its best to provide that.
+`ReplicaAsync` offers a strictly asynchronous interface to a share's contents. Sometimes a synchronous API would make life far easier, and `ReplicaCache` does its best to provide that.
 
-`StorageCache` offers a synchronous API for fetching documents by storing queried documents in an internal cache.
+`ReplicaCache` offers a synchronous API for fetching documents by storing queried documents in an internal cache.
 
-When you first query a document, there is no result. But StorageCache can be subscribed to for updates, at which point you return to the cache and get an instant result:
+When you first query a document, there is no result. But ReplicaCache can be subscribed to for updates, at which point you return to the cache and get an instant result:
 
 ```typescript
-import { StorageCache } from "earthstar";
+import { ReplicaCache } from "earthstar";
 
-const cache = new StorageCache(myStorage);
+const cache = new ReplicaCache(myReplica);
 
 const myQuery = { filter: { pathStartsWith: "/about/" } };
 
@@ -254,10 +276,10 @@ cache.onCacheUpdated(() => {
 });
 ```
 
-`StorageCache` has an optional TTL (time-to-live) option which can be provided to its constructor:
+`ReplicaCache` has an optional TTL (time-to-live) option which can be provided to its constructor:
 
 ```typescript
-const cache = new StorageCache(myStorage, 2000); // ms, 1000 by default
+const cache = new ReplicaCache(myReplica, 2000); // ms, 1000 by default
 ```
 
-When you fetch an expired result from the cache, StorageCache will then return the latest result from its backing storage.
+When you fetch an expired result from the cache, ReplicaCache will then return the latest result from its backing replica.
