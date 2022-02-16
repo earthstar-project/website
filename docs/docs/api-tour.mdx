@@ -18,14 +18,14 @@ It can be imported via URL into a browser:
 
 ```
 <script type="module">
-  import * as Earthstar from "https://cdn.earthstar-project.org/js/earthstar.bundle.v8.0.0.js";
+  import * as Earthstar from "https://cdn.earthstar-project.org/js/earthstar.bundle.v7.0.0.js";
 </script>
 ```
 
 Or Deno:
 
 ```
-import * as Earthstar from "https://deno.land/x/stone-soup@v8.0.0/mod.ts";
+import * as Earthstar from "https://deno.land/x/earthstar@v7.0.0/mod.ts";
 ```
 
 or installed with NPM:
@@ -70,7 +70,7 @@ When two peers synchronise with one another, they perform a 'salted handshake' t
 
 <img src="/api-tour/replica.svg" class="bg-gray-200 p-4"/>
 
-A local replica of a share's documents. Provides operations for querying and setting documents. [Complete API documentation here.](https://doc.deno.land/https://deno.land/x/stone_soup@v8.0.0/mod.ts/~/ReplicaAsync)
+A local replica of a share's documents. Provides operations for querying and setting documents. [Complete API documentation here.](https://doc.deno.land/https://deno.land/x/earthstar@v7.0.0/mod.ts/~/Replica)
 
 ```typescript
 import { ReplicaAsync, ValidatorEs4, ReplicaDriverMemory } from "earthstar";
@@ -124,23 +124,23 @@ Node drivers:
 
 - `ReplicaDriverSqlite`
 
-It's possible to create your own replica drivers which conform to `IReplicaDriver`. [See the details here.](https://doc.deno.land/https://deno.land/x/stone_soup@v8.0.0/mod.ts/~/IReplicaDriver)
+It's possible to create your own replica drivers which conform to `IReplicaDriver`. [See the details here.](https://doc.deno.land/https://deno.land/x/earthstar@v7.0.0/mod.ts/~/IReplicaDriver)
 
 ## Validators
 
 <img src="/api-tour/validator.svg" class="bg-gray-200 p-4"/>
 
-Earthstar shares are able to store documents of different formats. But most of the time, you'll want to use the built-in one from this library: `es.4`. As such, Earthstar currenly only offers one format validator: `FormatValidatorEs4` ([API documentation here.](https://doc.deno.land/https://deno.land/x/stone_soup@v8.0.0/mod.ts/~/FormatValidatorEs4))
+Earthstar shares are able to store documents of different formats. But most of the time, you'll want to use the built-in one from this library: `es.4`. As such, Earthstar currenly only offers one format validator: `FormatValidatorEs4` ([API documentation here.](https://doc.deno.land/https://deno.land/x/earthstar@v7.0.0/mod.ts/~/FormatValidatorEs4))
 
 Every time a new document is ingested by a `ReplicaAsync` it is checked by a validator.  In the case of `FormatValidatorEs4`, it checks whether a document's signature matches its  author, space address, and content.
 
-It's possible to write your own validator which adheres to [`IFormatValidator`](https://doc.deno.land/https://deno.land/x/stone_soup@v8.0.0/src/format-validators/format-validator-types.ts/~/IFormatValidator).
+It's possible to write your own validator which adheres to [`IFormatValidator`](https://doc.deno.land/https://deno.land/x/earthstar@v7.0.0/mod.ts/~/IFormatValidator).
 
 ## Identity
 
 <img src="/api-tour/identity.svg" class="bg-gray-200 p-4"/>
 
-An identity is a keypair containing a public address and a secret. This keypair is used to sign documents whenever they're written. The public address can be freely distributed, but the secret should be, well, secret. [API docs here](https://doc.deno.land/https://deno.land/x/stone_soup@v8.0.0/mod.ts/~/AuthorKeypair).
+An identity is a keypair containing a public address and a secret. This keypair is used to sign documents whenever they're written. The public address can be freely distributed, but the secret should be, well, secret. [API docs here](https://doc.deno.land/https://deno.land/x/earthstar@v7.0.0/mod.ts/~/AuthorKeypair).
 
 You can generate identities using [Crypto](#crypto).
 
@@ -152,19 +152,19 @@ Technically speaking, these are ed25519 keypairs encoded in base32.
 
 <img src="/api-tour/query.svg" class="bg-gray-200 p-4"/>
 
-Used to describe a document query. Used with `ReplicaAsync.query` and `QueryFollower`. [Full API details here](https://doc.deno.land/https://deno.land/x/stone_soup@v8.0.0/mod.ts/~/Query).
+Used to describe a document query. Used with `ReplicaAsync.query` and `QueryFollower`. [Full API details here](https://doc.deno.land/https://deno.land/x/earthstar@v7.0.0/mod.ts/~/Query.
 
 ## Doc
 
 <img src="/api-tour/doc.svg" class="bg-gray-200 p-4"/>
 
-Represents some cryptographically-signed user data. The contents of a `Doc` can only be changed via `ReplicaAsync`. A document cannot be moved from one share to another. [Full API documentation here](https://doc.deno.land/https://deno.land/x/stone_soup@v8.0.0/mod.ts/~/Doc).
+Represents some cryptographically-signed user data. The contents of a `Doc` can only be changed via `ReplicaAsync`. A document cannot be moved from one share to another. [Full API documentation here](https://doc.deno.land/https://deno.land/x/earthstar@v7.0.0/mod.ts/~/Doc).
 
 ## Crypto
 
 <img src="/api-tour/crypto.svg" class="bg-gray-200 p-4"/>
 
-`Crypto` ([full API docs](https://doc.deno.land/https://deno.land/x/stone_soup@v8.0.0/mod.ts/~/Crypto)) is used internally for signing and verifying documents using [ed25519](https://ed25519.cr.yp.to). In most cases, you will want to use it to generate new identity keypairs:
+`Crypto` ([full API docs](https://doc.deno.land/https://deno.land/x/earthstar@v7.0.0/mod.ts/~/Crypto)) is used internally for signing and verifying documents using [ed25519](https://ed25519.cr.yp.to). In most cases, you will want to use it to generate new identity keypairs:
 
 ```typescript
 const keypair = Crypto.generateAuthorKeypair("suzy");

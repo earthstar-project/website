@@ -11,7 +11,7 @@ const sitemap: Sitemap = {
   },
   Docs: {
     "Developer Tour": "/docs/api-tour",
-    "API": "https://doc.deno.land/https://deno.land/x/stone_soup@v8.0.0/mod.ts",
+    "API": "https://doc.deno.land/https://deno.land/x/earthstar@v7.0.0/mod.ts",
     "Playground": "/docs/playground",
   },
   Specifications: {
