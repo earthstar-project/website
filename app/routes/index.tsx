@@ -3,10 +3,13 @@ import Incantation from "../components/incantation";
 
 import stylesUrl from "../styles/index.css";
 
+const description = "Sync stuff you care about with people you know. Earthstar is a specification and Javascript library for building online tools you can truly call your own."
+
 export let meta: MetaFunction = () => {
   return {
     title: "Earthstar",
-    description: "Sync stuff you care about with people you know. Earthstar is a specification and Javascript library for building online tools you can truly call your own.",
+    description,
+    "og:description": description
   };
 };
 

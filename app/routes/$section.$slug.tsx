@@ -31,6 +31,7 @@ export let meta: MetaFunction = ({ data }) => {
   return {
     title: `${doc.title} - Earthstar Project`,
     description: doc.description,
+    "og:description": doc.description
   };
 };
 
