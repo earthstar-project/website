@@ -7,6 +7,7 @@ const sitemap: Sitemap = {
   // Blog: "/blog",
   "Get started": {
     "How it works": "/get-started/how-it-works",
+    "Like a bicycle": '/get-started/like-a-bicycle'
   },
   Docs: {
     "Developer Tour": "/docs/api-tour",
