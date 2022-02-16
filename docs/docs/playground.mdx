@@ -31,19 +31,19 @@ let shareAddress = "+pizza2nite.p34axr";
 With that settled, we need a storage driver to tell our replica how to save data. As we're just playing around in a console, let's persist everything to memory for now.
 
 ```js
-let driver = new Earthstar.StorageDriverAsyncMemory('+myshare.a123');
+let driver = new Earthstar.ReplicaDriverMemory('+myshare.a123');
 ```
 
 Now to instantiate our replica with the driver we just made:
 
 ```js
-let replica = new Earthstar.StorageAsync(shareAddress, Earthstar.FormatValidatorEs4, driver);
+let replica = new Earthstar.Replica(shareAddress, Earthstar.FormatValidatorEs4, driver);
 ```
 
 Our replica is ready to go. Let's put some data in it with the identity we made earlier.
 
 ```js
-replica.set(identity, { content: 'Pizza Margerita!', path: '/my-order.txt', format: 'es.4'});
+replica.set(identity, { content: 'Pizza Margherita!', path: '/my-order.txt', format: 'es.4'});
 ```
 
 Let's check if it worked.
@@ -69,8 +69,6 @@ await replica.getLatestDocs();
 ]
 ```
 
-> The next part uses a syncing API that is not yet publicly available.
-
 Great! We should synchronise this to our friends so they know which pizza to order for us. First we'll need to put our replica inside a `Peer`, which is used to manage shares and coordinate with syncers.
 
 ```js
@@ -80,37 +78,34 @@ let myPeer = new Peer();
 And we'll add our replica to it.
 
 ```js
-myPeer.addStorage(replica);
+myPeer.addReplica(replica);
 ```
 
 Now we have a peer, we can sync it with other peers! We can do this with peers remotely over the network, but for now let's just pretend and sync with a local one.
 
 ```js
-let otherReplica = new Earthstar.StorageAsync(shareAddress, Earthstar.FormatValidatorEs4, driver);
+let otherReplica = new Earthstar.Replica(shareAddress, Earthstar.FormatValidatorEs4, driver);
 ```
 
 If we run `otherReplica.getLatestDocs`, we'll get an empty array. It doesn't have any documents in it yet. Let's put this replica in another peer so we can change that!
 
 ```js
 let otherPeer = new Peer();
-otherPeer.addStorage(otherReplica);
+otherPeer.addReplica(otherReplica);
 ```
 
 Now that we have our two peers, let's sync them:
 
 ```js
-const syncer = new Earthstar.SyncerLocal(myPeer);
-await syncer.addPeer(otherPeer);
+myPeer.sync(otherPeer);
 ```
 
 And now if we ask for documents:
 
 ```js
-await otherReplica.getLatestDocs
+await otherReplica.getLatestDocs();
 ```
 
 You'll see the document we made from before has synced over.
-
-
 
 <ModuleInject/>
