@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Link, NavLink } from "remix";
+import { LATEST_EARTHSTAR_VERSION } from '~/constants'
 
 type Sitemap = Record<string, string | Record<string, string>>;
 
@@ -11,7 +12,7 @@ const sitemap: Sitemap = {
   },
   Docs: {
     "Developer Tour": "/docs/api-tour",
-    "API": "https://doc.deno.land/https://deno.land/x/earthstar@v7.0.0/mod.ts",
+    "API": `https://doc.deno.land/https://deno.land/x/earthstar@v${LATEST_EARTHSTAR_VERSION}/mod.ts`,
     "Playground": "/docs/playground",
   },
   Specifications: {

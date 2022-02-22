@@ -4,6 +4,13 @@ meta:
   description: Get to know the Earthstar API with this illustrated tour.
 ---
 
+import { LATEST_EARTHSTAR_VERSION, LATEST_DOCS_URL } from '../app/constants.ts'
+import { Pre, Code, Link } from '../app/components/html.tsx';
+
+export function DocLink({ apiName }) {
+  return <Link href={`${LATEST_DOCS_URL}/~/${apiName}`}>Technical docs for <Code>{apiName}</Code></Link> 
+}
+
 # earthstar API tour
 
 ## Table of contents
@@ -14,23 +21,24 @@ meta:
 
 It can be imported via URL into a browser:
 
-```
-<script type="module">
-  import * as Earthstar from "https://cdn.earthstar-project.org/js/earthstar.bundle.v7.0.0.js";
-</script>
-```
+<Pre>
+{`<script type="module">
+  import * as Earthstar from "https://cdn.earthstar-project.org/js/earthstar.bundle.v${LATEST_EARTHSTAR_VERSION}.js";
+</script>`}
+</Pre>
 
 Or Deno:
 
-```
-import * as Earthstar from "https://deno.land/x/earthstar@v7.0.0/mod.ts";
-```
+<Pre>
+{`import * as Earthstar from "https://deno.land/x/earthstar@v${LATEST_EARTHSTAR_VERSION}/mod.ts";`}
+</Pre>
+
 
 or installed with NPM:
 
-```
-npm install earthstar
-```
+<Pre>
+{`npm install earthstar@${LATEST_EARTHSTAR_VERSION}`}
+</Pre>
 
 To integrate Earthstar into your program, your application will probably need a single instance of Earthstar's `Peer` class, which holds the replicas for many shares and is able to synchronise them with other peers.
 
@@ -64,11 +72,13 @@ myPeer.stopSyncing();
 
 When two peers synchronise with one another, they perform a 'salted handshake' to determine if they have any shares in common without actually revealing what those shares are. Whichever shares they have in common are synced.
 
+<DocLink apiName="Peer"/>
+
 ## Replica
 
 <img src="/api-tour/replica.svg" class="bg-gray-200 p-4"/>
 
-A local replica of a share's documents. Provides operations for querying and setting documents. [Complete API documentation here.](https://doc.deno.land/https://deno.land/x/earthstar@v7.0.0/mod.ts/~/Replica)
+A local replica of a share's documents. Provides operations for querying and setting documents.
 
 ```typescript
 import { ReplicaAsync, ValidatorEs4, ReplicaDriverMemory } from "earthstar";
@@ -99,6 +109,8 @@ await myReplica.set(myKeypair, {
 
 ```
 
+<DocLink apiName="Replica"/>
+
 ## Replica drivers
 
 <img src="/api-tour/storage-driver.svg" class="bg-gray-200 p-4"/>
@@ -122,23 +134,23 @@ Node drivers:
 
 - `ReplicaDriverSqlite`
 
-It's possible to create your own replica drivers which conform to `IReplicaDriver`. [See the details here.](https://doc.deno.land/https://deno.land/x/earthstar@v7.0.0/mod.ts/~/IReplicaDriver)
+It's possible to create your own replica drivers which conform to `IReplicaDriver`. <DocLink apiName="IReplicaDriver"/>
 
 ## Validators
 
 <img src="/api-tour/validator.svg" class="bg-gray-200 p-4"/>
 
-Earthstar shares are able to store documents of different formats. But most of the time, you'll want to use the built-in one from this library: `es.4`. As such, Earthstar currenly only offers one format validator: `FormatValidatorEs4` ([API documentation here.](https://doc.deno.land/https://deno.land/x/earthstar@v7.0.0/mod.ts/~/FormatValidatorEs4))
+Earthstar shares are able to store documents of different formats. But most of the time, you'll want to use the built-in one from this library: `es.4`. As such, Earthstar currenly only offers one format validator: `FormatValidatorEs4`.
 
 Every time a new document is ingested by a `ReplicaAsync` it is checked by a validator.  In the case of `FormatValidatorEs4`, it checks whether a document's signature matches its  author, space address, and content.
 
-It's possible to write your own validator which adheres to [`IFormatValidator`](https://doc.deno.land/https://deno.land/x/earthstar@v7.0.0/mod.ts/~/IFormatValidator).
+It's possible to write your own validator which adheres to `IFormatValidator`. <DocLink apiName="IFormatValidator"/>
 
 ## Identity
 
 <img src="/api-tour/identity.svg" class="bg-gray-200 p-4"/>
 
-An identity is a keypair containing a public address and a secret. This keypair is used to sign documents whenever they're written. The public address can be freely distributed, but the secret should be, well, secret. [API docs here](https://doc.deno.land/https://deno.land/x/earthstar@v7.0.0/mod.ts/~/AuthorKeypair).
+An identity is a keypair containing a public address and a secret. This keypair is used to sign documents whenever they're written. The public address can be freely distributed, but the secret should be, well, secret.
 
 You can generate identities using [Crypto](#crypto).
 
@@ -146,23 +158,29 @@ Note that documents are not *encrypted* (yet), only *signed*.  This means we can
 
 Technically speaking, these are ed25519 keypairs encoded in base32.
 
+<DocLink apiName="AuthorKeypair"/>
+
 ## Query
 
 <img src="/api-tour/query.svg" class="bg-gray-200 p-4"/>
 
-Used to describe a document query. Used with `ReplicaAsync.query` and `QueryFollower`. [Full API details here](https://doc.deno.land/https://deno.land/x/earthstar@v7.0.0/mod.ts/~/Query.
+Used to describe a document query. Used with `ReplicaAsync.query` and `QueryFollower`.
+
+<DocLink apiName="Query"/>
 
 ## Doc
 
 <img src="/api-tour/doc.svg" class="bg-gray-200 p-4"/>
 
-Represents some cryptographically-signed user data. The contents of a `Doc` can only be changed via `ReplicaAsync`. A document cannot be moved from one share to another. [Full API documentation here](https://doc.deno.land/https://deno.land/x/earthstar@v7.0.0/mod.ts/~/Doc).
+Represents some cryptographically-signed user data. The contents of a `Doc` can only be changed via `ReplicaAsync`. A document cannot be moved from one share to another. 
+
+<DocLink apiName="Doc"/>
 
 ## Crypto
 
 <img src="/api-tour/crypto.svg" class="bg-gray-200 p-4"/>
 
-`Crypto` ([full API docs](https://doc.deno.land/https://deno.land/x/earthstar@v7.0.0/mod.ts/~/Crypto)) is used internally for signing and verifying documents using [ed25519](https://ed25519.cr.yp.to). In most cases, you will want to use it to generate new identity keypairs:
+`Crypto` is used internally for signing and verifying documents using [ed25519](https://ed25519.cr.yp.to). In most cases, you will want to use it to generate new identity keypairs:
 
 ```typescript
 const keypair = Crypto.generateAuthorKeypair("suzy");
@@ -175,6 +193,8 @@ console.log(keypair);
   }
 */
 ```
+
+<DocLink apiName="Crypto"/>
 
 ## setGlobalCryptoDriver
 
@@ -189,6 +209,8 @@ import { setGlobalCryptoDriver, CryptoDriverChloride } from "earthstar";
 
 setGlobalCryptoDriver(CryptoDriverChloride);
 ```
+
+<DocLink apiName="setGlobalCryptoDriver"/>
 
 ## Syncers
 
@@ -214,6 +236,8 @@ const broadcastChannelSyncer = new Syncer(
 // Don't forget to close once done!
 broadcastChannelSyncer.close();
 ```
+
+<DocLink apiName="Syncer"/>
 
 ## QueryFollower
 
@@ -249,6 +273,8 @@ When you're done with a `QueryFollower`, you should close it to stop callbacks f
 myJpgFollower.close();
 ```
 
+<DocLink apiName="IQueryFollower"/>
+
 ## ReplicaCache
 
 <img src="/api-tour/replica-cache.svg" class="bg-gray-200 p-4"/>
@@ -281,3 +307,5 @@ const cache = new ReplicaCache(myReplica, 2000); // ms, 1000 by default
 ```
 
 When you fetch an expired result from the cache, ReplicaCache will then return the latest result from its backing replica.
+
+<DocLink apiName="ReplicaCache"/>
