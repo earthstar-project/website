@@ -55,7 +55,7 @@ export function BlockQuote(props: React.HTMLAttributes<HTMLQuoteElement>) {
 export function Pre(props: React.HTMLAttributes<HTMLPreElement>) {
   return (
     <pre
-      className={"overflow-auto my-2 my-2 text-sm"}
+      className={"overflow-auto my-2 text-sm"}
       {...props}
     />
   );

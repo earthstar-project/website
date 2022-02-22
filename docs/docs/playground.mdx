@@ -5,12 +5,14 @@ meta:
 ---
 
 import ModuleInject from '../app/components/module-inject.tsx';
+import { LATEST_DOCS_URL } from '../app/constants.ts';
+import { Link } from '../app/components/html.tsx';
 
 # Playground
 
 You can play with the Earthstar API right here in your browser.
 
-Open your browser's development console and start typing in `Earthstar`. It's been added to the global scope. You can find full documentation for the API [here](https://doc.deno.land/https://deno.land/x/earthstar@v7.0.0/mod.ts).
+Open your browser's development console and start typing in `Earthstar`. It's been added to the global scope. <Link href={LATEST_DOCS_URL}>You can find full documentation for the API here</Link>.
   
 Let's begin by creating an identity. We'll use this to write some data shortly.
 
