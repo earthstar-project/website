@@ -40,6 +40,14 @@ or installed with NPM:
 {`npm install earthstar@${LATEST_EARTHSTAR_VERSION}`}
 </Pre>
 
+And import what you need for your specific platform:
+
+```typescript
+import { Replica } from "earthstar";
+import { ReplicaDriverIndexedDB } from "earthstar/browser";
+import { ReplicaDriverSqlite } from "earthstar/node";
+```
+
 To integrate Earthstar into your program, your application will probably need a single instance of Earthstar's `Peer` class, which holds the replicas for many shares and is able to synchronise them with other peers.
 
 <img src="/api-tour/application.svg" class="bg-gray-200 p-4"/>
