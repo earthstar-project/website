@@ -33,7 +33,7 @@ let shareAddress = "+pizza2nite.p34axr";
 With that settled, we need a storage driver to tell our replica how to save data. As we're just playing around in a console, let's persist everything to memory for now.
 
 ```js
-let driver = new Earthstar.ReplicaDriverMemory('+myshare.a123');
+let driver = new Earthstar.ReplicaDriverMemory(shareAddress);
 ```
 
 Now to instantiate our replica with the driver we just made:
