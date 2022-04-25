@@ -48,7 +48,7 @@ export let links: LinksFunction = () => {
 export let loader: LoaderFunction = async ({ params }) => {
   const cachedDoc = cache.get(`post.${params.section}/${params.slug}`);
 
-  if (cachedDoc) {
+  if (cachedDoc && process.env.NODE_ENV !== 'development') {
     return json({ doc: cachedDoc });
   }
 
