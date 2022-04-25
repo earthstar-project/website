@@ -8,12 +8,18 @@ const sitemap: Sitemap = {
   // Blog: "/blog",
   "Get started": {
     "How it works": "/get-started/how-it-works",
+    "Install the CLI": "/get-started/install-cli",
+    "Run a replica server ⏳": "/get-started/replica-server",
     "Like a bicycle": '/get-started/like-a-bicycle'
+  },
+  Tutorials: {
+    "Start a co-site ⏳": "/tutorials/run-a-site"
   },
   Docs: {
     "Developer Tour": "/docs/api-tour",
     "API": `https://doc.deno.land/https://deno.land/x/earthstar@v${LATEST_EARTHSTAR_VERSION}/mod.ts`,
     "Playground": "/docs/playground",
+    "Replica servers ⏳": '/docs/replica-servers'
   },
   Specifications: {
     "Data specification": "/specs/data-spec",
