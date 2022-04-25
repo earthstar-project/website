@@ -4,12 +4,10 @@ meta:
   description: Learn about Earthstar's shares, replicas, documents and identities, and how they help you synchronise data in a safe and empowering way.
 ---
 
-> At this stage Earthstar is ready for enthusiasts and contributors who want to build stuff with it. We'll have off-the-shelf things for ordinary users soon!
-
 # How it works
 
 
-In a nutshell, Earthstar helps you do two things:
+Earthstar helps you do two things:
 
 <table class="border-2">
   <tbody>
@@ -26,17 +24,19 @@ In a nutshell, Earthstar helps you do two things:
 
 This all works without a central server, but you can run server(s) to make it easier for devices to connect with each other.
 
-These things combined can be used to make rich collaborative applications, like chatrooms, games, or message boards.
+These things combined can be used to make rich collaborative applications, like chatrooms, games, or message boards — or web services, like websites, wikis or image galleries!
 
 ## <img src="/how-it-works/share.svg" class="inline-block h-7 align-text-top mr-1"/> Share
 
 > Previously known as: *workspace*, *space*
 
-A share is like a shared folder.  Typically it's shared with a small group of trusted people.
+A share is like a shared folder. They're typically used by a small group people who trust each other: a group of long-time friends; a family, or a community tied together by a common interest.
 
 Each share has an address like `+bookclub.a18bu7axtn`. The first part helps you see which share you're interacting with, and the second, scrambly part makes it hard for others to guess.
 
-Anyone who knows the address can view and edit the data, so keep it out of public and share it only with people you trust.
+It's important that it's hard to guess, because anyone who knows the address can read and write data to that share. So it should be kept out of public view and shared only with people you trust.
+
+A share is *just* an address. It describes a self-contained universe of data peers are interested in.
 
 A share's data is stored on its users' devices using **replicas**.
 
@@ -48,7 +48,7 @@ A replica is a concrete copy of the data in a share.
 
 Replicas are stores of data which you can put wherever you want: your computer, a USB key, a friend's internet-connected Raspberry Pi. They can use different storage technologies to persist their data, such as SQLite or IndexedDB.
 
-When two replicas are configured to use the same share address, they can synchronise with each other, and this can be used to create collaborative applications like chatrooms, forums, or games.
+When two replicas are configured to use the same share address, they can synchronise their data with each other, and this can be used to create collaborative applications like chatrooms, forums, or games.
 
 Each **replica** holds the data for one **share**.
 
@@ -60,11 +60,11 @@ Documents describe and contain your share's data.
 
 Every document has a **path** like `/my-story.txt`. Paths can be used to group different bits of data together and make them more discoverable, e.g. `/posts/2021/bird-thoughts.md`.
 
-Our community has used this to create a few conventions for storing documents for different purposes e.g. profile information, micro-blogging, long-form discussions.  These emerging standards allow multiple apps to use the same data.
+Our community has used this to create a few conventions for storing documents for different purposes e.g. profile information, micro-blogging, long-form discussions. These emerging standards allow multiple apps to use the same data.
 
-Documents can be temporary: they can optionally state the time at which they should be auto-deleted.  After this time, replicas will delete that document completely.  Users can also delete documents on demand by overwriting them with empty documents.
+Documents can be temporary: they can optionally state the time at which they should be auto-deleted. After this time, replicas will delete that document completely. Users can also delete documents on demand by overwriting them with empty documents.
 
-Documents can either belong to a single user, or be writable by everyone with the share address.  In that case many people can write to the same document, and your pocket will store the last version from each author. This means you can always roll back or resolve conflicts if something went wrong.
+Documents can either belong to a single user, or be writable by everyone with the share address. In that case many people can write to the same document, and your pocket will store the last version from each author. This means you can always roll back or resolve conflicts if something went wrong.
 
 Every document has a signature to help Earthstar verify its authorship. So if a document claims it was written by `@suzy`, you can be confident it was really written by `@suzy` and not altered by anyone else. These signatures are created using **identities**.
 
@@ -84,29 +84,29 @@ This kind of information is stored as documents within the commons, e.g. in your
 
 ## Applications
 
-Applications are just programs which write and read through a pocket's documents and re-present it as a friendly user interface. For example, imagine a program which reads a folder full of images and displays them as a gallery.
+Applications are just programs which write and read through a replica's documents and re-present it as a friendly user interface. For example, imagine a program which reads a folder full of images and displays them as a gallery.
 
 Earthstar has **no opinion** on how applications are created, and provides a Javascript API that you can use in your vanilla JS, jQuery, React, Svelte, Vue, Angular, or whatever app.
 
-Earthstar apps can typically run in browsers, or can be native apps.  They just need to be able to talk to the other peers to sync data.
+Earthstar apps can typically run in browsers, or can be native apps. They just need to be able to talk to the other peers to sync data.
 
-## Servers & Peers
+## Replica servers & Peers
 
 > Replica Servers: previously known as: *pub servers*, *cloud pockets*
 
-Most laptops and phones are not able to connect directly to each other, so we need some third share they can both connect to where data can be temporarily stashed for syncing.
+Most laptops and phones are not able to connect directly to each other, so we need some third place they can both connect to where data can be temporarily stashed for syncing.
 
-These are called **Replica Servers**.  You can run your own replica server(s) for your community on a small device like a raspberry pi, or hosted in the cloud.
+These are called **Replica Servers**.  You can run your own replica server(s) for your community on a small device like a Raspberry Pi, or hosted in the cloud.
 
-Every computer running Earthstar, even servers, is a **Peer**.  Replica servers are just Peers like regular users' computers; they're just online all the time and they have reachable URLs.
+Every computer running Earthstar, even replica servers, is a **Peer**.  Replica servers are just Peers like regular users' computers; they're just online all the time and they have reachable URLs.
 
-Servers have no control over user permissions, and there can be many servers running at once for a particular share.  This is good for redundancy and reliabilty; ask your friends to run a server too!  Earthstar works best when the infrastructure is controlled by the people using the share.
+Servers have no control over user permissions, and there can be many servers running at once for a particular share. This is good for redundancy and reliabilty; ask your friends to run a replica server too! Earthstar works best when the infrastructure is controlled by the people using the share.
 
-Every share has its own separate network of Peers; data does not spread from one share to another.  But a Peer can hold multiple share at a time.
+Every share has its own separate network of Peers; data does not spread from one share to another. But a Peer can hold multiple share replicas at a time.
 
 ## Important reminder about secrets
 
-A **share** address gives you full read and write permission to the documents stored there.  Only share it with people when you want to invite them to the share.  It's not currently possible to remove people from a share; instead you can make a new share and migrate everybody else there instead.
+A **share** address gives you full read and write permission to the documents stored there.  Only share it with people when you want to invite them to the share. It's not currently possible to remove people from a share; instead you can make a new share and migrate everybody else there instead.
 
 * Example share address: `+gardening.boaifjo2w3ij`
 
@@ -123,15 +123,14 @@ Apps will be able to encrypt the content of documents and Earthstar will provide
 
 ## Blocking & harassment
 
-We care deeply about making safe and healthy online spaces.  That said, blocking is difficult due to the distributed nature of Earthstar and we're still figuring it out.
+We care deeply about making safe and healthy online spaces. That said, blocking is difficult due to the distributed nature of Earthstar and we're still figuring it out.
 
-As a first step, replica servers tend to be the bottlenecks in the network so they might be a natural place to apply blocklists.  Apps should also provide users with the ability to hide other users.
+As a first step, replica servers tend to be the bottlenecks in the network so they might be a natural place to apply blocklists. Apps should also provide users with the ability to hide other users.
 
 We are also interested in distributed/delegated blocking and reputation ideas such as [TrustNet](https://cblgh.org/dl/trustnet-cblgh.pdf).
 
 ## Get started
 
-If you'd like to start building a tool, application, or even an implementation of Earthstar:
-
+- [Install the CLI](/get-started/install-cli)
 - [Take a tour of `earthstar`, the Javascript reference implementation](/docs/api-tour)
 - [Read the data specification](/specs/data-spec)
