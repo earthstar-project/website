@@ -31,7 +31,7 @@ export let meta: MetaFunction = ({ data }) => {
   return {
     title: `${doc.title} - Earthstar Project`,
     description: doc.description,
-    "og:description": doc.description
+    "og:description": doc.description,
   };
 };
 
@@ -48,7 +48,7 @@ export let links: LinksFunction = () => {
 export let loader: LoaderFunction = async ({ params }) => {
   const cachedDoc = cache.get(`post.${params.section}/${params.slug}`);
 
-  if (cachedDoc) {
+  if (cachedDoc && process.env.NODE_ENV !== "development") {
     return json({ doc: cachedDoc });
   }
 
@@ -73,7 +73,7 @@ export default function Post() {
   const Component = React.useMemo(() => getMDXComponent(doc.code), [doc.code]);
 
   return (
-    <article>
+    <article className="mb-8">
       <Component
         components={{
           p: Paragraph,

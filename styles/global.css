@@ -33,7 +33,9 @@
 @layer utilities {
   
 
-
+.border-3 {
+  border-width: 3px;
+}
   
   .border-outset {
     border-style: outset;

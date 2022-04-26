@@ -1,0 +1,209 @@
+---
+meta:
+  title: Earthstar CLI
+  description: Start using Earthstar through its command line interface.
+---
+
+# Earthstar CLI
+
+Comfortable around a console? We've created a complete command-line suite for everything Earthstar.
+
+## Table of contents
+
+## Overview
+
+- Generate and store Earthstar identities
+- Create, add, modify and synchronise Earthstar shares
+- Keep a list of known replica servers to sync with
+- Synchronise share data with your filesystem!
+
+The best part is that everything is stored locally, so it all works offline. 
+
+> A command-line interface is a way of giving commands to a computer by giving textual commands, and receiving text output. They're simple yet powerful tools, which is why hackers in movies seem to love them so much.
+
+A complete overview of the CLI's commands can be found at the project's [README](https://github.com/earthstar-project/earthstar-cli), or can be summoned using `earthstar --help`. 
+
+Let's take a quick tour and put it through its paces!
+
+## Installation
+
+Installing the CLI requires an installation of Deno. You can find instruction on [how to install Deno here](https://deno.land/manual/getting_started/installation).
+
+Once Deno has been installed, paste, copy, and run the following command in your console (double click to highlight the whole thing):
+
+```
+deno install --allow-read --allow-write --allow-net --allow-run --allow-env --no-check --unstable -f --location https://earthstar-project.org -n earthstar https://deno.land/x/earthstar_cli/src/main.ts
+```
+
+You should see a message indicating a successful installation.
+
+## Generate an identity
+
+To write data with Earthstar you'll need an *identity*. Let's generate one:
+
+```bash
+earthstar identities generate <name> --current
+```
+
+Where `<name>` is a four-character nickname made of lowercase letters or numbers. This will be the permanent shortname of your new identity.
+
+> Don't worry about the shortname being permanent. It's meant as a way to let you and others more easily know which keypair you're interacting with. The important bits of online identity — display names, avatars, bios — can be changed as many times as you want.
+
+Your new identity will be stored in the CLI for use by other commands. The `--current` flag we passed will set this new identity as the one in current use.
+
+## Create and modify a share
+
+You can sync data around to other peers using a *share*. You can add as many or as few shares as you want. Right now you won't have any, so let's make a new one:
+
+```bash
+earthstar shares generate <name>
+```
+
+You'll be prompted where you'd like to store your Earthstar shares on disk. This is where the CLI will persist your share data as self-contained database files.
+
+I chose the name `bananas`, and got this output:
+
+```bash
+Generated share address.
+Added +bananas.oa8rorxt2e6r
+```
+
+Our new share is completely empty. Let's change that:
+
+```bash
+earthstar shares set
+```
+
+The CLI will then interactively guide you through setting a document on +bananas:
+
+``` bash
+? Choose a share › +bananas.oa8rorxt2e6r
+? Choose a path › /best-ways-to-eat.txt
+? Enter document content › Frozen, and mixed with peanut butter.
+```
+
+And presents the resulting document and its attributes:
+
+```bash
+┌──────────────┬────────────────────────────────────────────────────┐
+│ Path         │ /best-ways-to-eat.txt                              │
+├──────────────┼────────────────────────────────────────────────────┤
+│ Content      │ Frozen, and mixed with peanut butter.              │
+├──────────────┼────────────────────────────────────────────────────┤
+│ Author       │ @gwil.b63a5eqlqqkv5im37s6vebgf3ledhkyt63gzt4ylvcya │
+│              │ tlxmrprma                                          │
+├──────────────┼────────────────────────────────────────────────────┤
+│ Timestamp    │ 1650878618805000 (less than a minute ago)          │
+├──────────────┼────────────────────────────────────────────────────┤
+│ Signature    │ buhn2a3l6e2o3qem3ltwj5rjqcexhtx7jrfnqhi63imm5j6u5p │
+│              │ fgq2n63retar3a46saa6h5wfw2shcsntyyzck3yfbwq54aoxfc │
+│              │ xcdq                                               │
+├──────────────┼────────────────────────────────────────────────────┤
+│ Content hash │ bp67oe5o6l4nfwwu25uf7xb5ylebsijvwocktdng6uk7x3skkp │
+│              │ fma                                                │
+├──────────────┼────────────────────────────────────────────────────┤
+│ Format       │ es.4                                               │
+└──────────────┴────────────────────────────────────────────────────┘
+```
+
+There's a much nicer way than this to view and modify data on your share, though.
+
+## Synchronising with the filesystem
+
+We're going to interact with our share's data on the filesystem. First, let's make a directory we'll keep the data in using `mkdir`:
+
+```bash
+mkdir bananas && cd bananas
+```
+
+Now we're in the directory which we'll sync our share with. Run the following:
+
+```bash
+earthstar shares sync-files
+```
+
+It'll prompt you as to which share you'd like to sync with this directory:
+
+```bash
+? Choose a share › +bananas.oa8rorxt2e6r
+Synced +bananas with /Users/gwil/bananas
+```
+
+In your directory you'll now see a folder with a single `bananas.txt` file inside. Try modifying the contents of this file, adding new files, or even new directories. 
+
+> Right now the maximum size of an Earthstar document is **4 megabytes**. Attempting to sync files larger than this will fail. We're addressing the limitation in the near future. 
+
+We're going to sync them back to the +bananas replica using the same command as before:
+
+```bash
+earthstar shares sync-files
+```
+
+And we can check that they were synced to the replica:
+
+```bash
+earthstar shares paths
+```
+
+```bash
+? Choose a share › +bananas.oa8rorxt2e6r
+/best-ways-to-eat.txt
+/recipes/banana-porridge.md
+/recipes/banana-split.md
+```
+
+As these files have been written back into the replica, they can now be synced with other peers who care about +bananas.
+
+## Syncing, Replica Servers, and friends.
+
+Earthstar's preferred method of syncing between peers is via **Replica servers**, always-online peers that you can sync with via the internet.
+
+Every share is supported by one or many replica servers which let individual devices sync with one another. Most importantly, these replica servers are run by shares' users themselves.
+
+We want to make running a replica server as simple as possible, so we've created a project you can deploy in one click using Glitch.
+
+[![Remix on Glitch](https://cdn.glitch.com/2703baf2-b643-4da7-ab91-7ee2a2d00b5b%2Fremix-button-v2.svg)](https://glitch.com/edit/#!/remix/earthstar-replica-server)
+
+1. Click the button above.
+2. In the new webpage clicking the button opened, create a new file called `.data/known_shares.json`.
+3. In `known_shares.json`, add an array containing your share's address, like this: `[ "+bananas.oa8rorxt2e6r" ]`.
+4. In Glitch's UI, open the logs for the address you need to sync with. It'll look something like this: `Sync with this server at https://saucy-slipper-jazz.glitch.me/earthstar-api/v2`
+
+Now that you have a replica server, let's add it to our list of known servers:
+
+```bash
+earthstar servers add https://earthstar-replica-server.glitch.me/earthstar-api/v2
+```
+
+and now let's sync our data which we created earlier:
+
+```bash
+earthstar shares sync
+```
+
+```
+Syncing with https://earthstar-replica-server.glitch.me/earthstar-api/v2...
+┌─────────────────────────┐
+│ https://earthstar-repli │
+│ ca-server.glitch.me/ear │
+│ thstar-api/v2/          │
+├──────────┬────────┬─────┤
+│ Share    │ Pulled │ New │
+├──────────┼────────┼─────┤
+│ +bananas │ 3      │ 0   │
+└──────────┴────────┴─────┘
+Synced.
+```
+
+Now you can bring your friends in. Somehow coax them into the following:
+
+1. Install the CLI.
+2. Run `earthstar shares add +yourshare.a123`
+3. Run `earthstar servers add https://your.server/earthstar-api/v2`
+4. Run `earthstar shares sync`
+
+And they can start modifying the data on your share, and sync those changes back to you.
+
+You can use this as a way to collaboratively create a shared knowledgebase, a common drive of funny pictures, or even a website served by the replica server.
+
+The Earthstar CLI offers many more commands which you can find at the project's [README](https://github.com/earthstar-project/earthstar-cli).

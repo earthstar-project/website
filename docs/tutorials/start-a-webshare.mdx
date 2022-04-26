@@ -1,0 +1,129 @@
+---
+meta:
+  title: Start a webshare
+  description: Learn about configuring and running your own extensible Earthstar replica server.
+---
+
+# Start a webshare
+
+Earthstar shares are **private universes of data accessible only to those who know the address**.
+
+Earthstar replica servers are **always online** and **publicly reachable via URL**.
+
+In this tutorial, we're going to combine these two things so that you and your friends can **privately collaborate** on a wiki, website, or image gallery while **publicly exposing it to the web**.
+
+It's kind of like a website. It's kind of like a bucket of files. Let's call it a **webshare**.
+
+To follow this tutorial, you'll need to be able to run commands in a console.
+
+## Table of contents
+
+## Generate an identity
+
+To start using Earthstar, we need an identity. Let's generate a new one using the [Earthstar CLI](/getting-started/install-cli).
+
+> Installing the CLI requires an installation of Deno. You can find instruction on [how to install Deno here](https://deno.land/manual/getting_started/installation).
+>
+> Once Deno has been installed, paste, copy, and run the following command in your console (double click to highlight the whole thing):
+>
+> ```
+> deno install --allow-read --allow-write --allow-net --allow-run --allow-env --no-check --unstable -f --location https://earthstar-project.org -n earthstar https://deno.land/x/earthstar_cli/src/main.ts
+> ```
+
+Once you have the CLI installed, run the following command in your console:
+
+```bash
+earthstar identities generate <name> --current
+```
+
+Where `<name>` is a four-character nickname made of lowercase letters or numbers. This will be the permanent shortname of your new identity.
+
+> Don't worry about the shortname being permanent. It's meant as a way to let you and others more easily know which keypair you're interacting with. The important bits of online identity — display names, avatars, bios — can be changed as many times as you want.
+
+Think of this identity as a stamp you use on documents to assert that they were really written by you.
+
+## Start a new share
+
+We're going to curate data within a whole new self-contained universe, a **share**. Let's create one now.
+
+```
+earthstar shares generate <name>
+```
+
+Where `name` is something like `bookclub` or `gamereviews` or `localevents`. You'll get an address that looks like this:
+
+```
++localevents.b9a8qcl1bb6r
+```
+
+This is your share. Let's write something in it.
+
+## Write your first post
+
+The nicest way to write stuff is the way you like best. We're going to use the tools you already know to write data to the share you just made.
+
+First, make a new directory where your share data will be held. You can do this with your filesystem UI, or in the console. You can call it whatever:
+
+```
+mkdir localevents
+```
+
+Inside your new folder, create a new text file. It can be a .txt file, a .md file, whatever you're comfortable with. Write something in it using your favourite editor. Here's my file `next-sunday.md`:
+
+```md
+We'll be riding our bikes up and down from the harbour for charity next weekend. **Big lunch after**.
+```
+
+Great. Now let's get that into our share. Navigate to that directory in your console with `cd`:
+
+```
+cd localevents
+```
+
+and run `earthstar shares sync-files`:
+
+```
+? Choose a share › +localevents.b9a8qcl1bb6r
+Synced +bananas with /Users/gwil/localevents
+```
+
+Your files are now synced into the share. Let's sync them to a replica server, and out into the world!
+
+## Deploy your own replica server
+
+In this step we're going to deploy a replica server you and others will be able to sync with, and which will expose your curated data to the world.
+
+[![Remix on Glitch](https://cdn.glitch.com/2703baf2-b643-4da7-ab91-7ee2a2d00b5b%2Fremix-button-v2.svg)](https://glitch.com/edit/#!/remix/earthstar-showcase-replica-server)
+
+1. Click the button above.
+2. In the page that opens, use the Glitch web UI to create a file at `.data/known_shares.json`
+3. Add the shares you'd like your replica server to know about as an array, like
+	 this: `["+myshare.a123", "yourshare.b234"]`
+4. Open the `.env` file and assign a share to `SOURCE_SHARE`, like this: `SOURCE_SHARE=+myshare.a123`
+4. Check the logs for the URL to sync with!
+
+You'll have a URL like `https://slimy-funny-door.glitch.me/earthstar-api/v2`. Let's add it to our list of servers we like to sync with:
+
+```
+earthstar servers add https://slimy-funny-door.glitch.me/earthstar-api/v2
+```
+
+And then sync!
+
+```
+earthstar shares sync
+```
+
+Once the sync has completed, you should be able to browse to an address like `https://slimy-funny-door.glitch.me/next-sunday.md` (use the name of the file you wrote earlier), and see its contents displayed in your browser!
+
+## Work together!
+
+Now that you've done the work of deploying the replica servers, you can bring others on board! Get them to:
+
+1. Install the CLI
+2. Add your share with `earthstar shares add <address>`
+3. Add your replica server with `earthstar servers add <address>`
+4. Sync it with `earthstar shares sync`
+5. Sync it to the filesystem with `earthstar shares sync-files`
+
+And then start editing away! They'll sync their edits back to your replica server, ready for the world to see. The replica server you deployed is able to serve text, markdown, HTML, images, and a few different media types. So it only takes a little imagination to turn it into a full-blown wiki.

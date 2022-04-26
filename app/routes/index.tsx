@@ -3,13 +3,14 @@ import Incantation from "../components/incantation";
 
 import stylesUrl from "../styles/index.css";
 
-const description = "Sync stuff you care about with people you know. Earthstar is a specification and Javascript library for building online tools you can truly call your own."
+const description =
+  "Sync stuff you care about with people you know. Earthstar is a specification and Javascript library for building online tools you can truly call your own.";
 
 export let meta: MetaFunction = () => {
   return {
     title: "Earthstar",
     description,
-    "og:description": description
+    "og:description": description,
   };
 };
 
@@ -33,6 +34,17 @@ function Explainer(
   );
 }
 
+function CallToAction(
+  { className, ...props }: React.AnchorHTMLAttributes<HTMLAnchorElement>,
+) {
+  return (
+    <a
+      className={`${className} border-2 rounded-md p-2 text-md mr-2 text-center `}
+      {...props}
+    />
+  );
+}
+
 export default function Index() {
   return (
     <div>
@@ -40,10 +52,41 @@ export default function Index() {
         <p className="text-2xl md:text-4xl max-w-prose font-display">
           Sync stuff you care about with people you know.
         </p>
-        <p className="text-gray-700">Earthstar is a specification and Javascript library for building online tools you can <strong>truly call your own</strong>.</p>
+        <p className="text-gray-700">
+          Earthstar is a specification and Javascript library for building
+          online tools you can <strong>truly call your own</strong>.
+        </p>
+
+        <div className="flex items-stretch md:items-baseline flex-col md:flex-row space-y-2 self-stretch">
+          <CallToAction
+            href="/get-started/how-it-works"
+            className="text-es-purple border-es-purple"
+          >
+            Learn more
+          </CallToAction>
+
+          <CallToAction
+            href="/get-started/install-cli"
+            className="border-es-blue text-es-blue"
+          >
+            Install the CLI
+          </CallToAction>
+          <CallToAction
+            href="/get-started/replica-server"
+            className="border-es-green text-es-green"
+          >
+            Run a replica server
+          </CallToAction>
+          <CallToAction
+            href="/tutorials/start-a-webshare"
+            className="border-es-yellow text-es-yellow"
+          >
+            Start a webshare
+          </CallToAction>
+        </div>
       </div>
 
-      <hr className="my-4 md:my-8" />
+      <hr className="my-4 md:my-6" />
 
       <div className="flex flex-col md:flex-row items-baseline gap-6">
         <Explainer imgSrc="/landing/share.svg">
@@ -72,14 +115,7 @@ export default function Index() {
         </Explainer>
       </div>
 
-      <a
-        href="/get-started/how-it-works"
-        className="font-display text-es-purple text-2xl block text-center py-2 md:w-96 lg:hidden font-bold m-auto border-2 border-es-purple my-6 rounded bg-purple-50"
-      >
-        Learn more
-      </a>
-
-      <hr className="my-4 md:my-8" />
+      <hr className="my-4 md:my-6" />
 
       <ul className="pl-0 text-lg max-w-prose mb-4">
         <FItem>Works offline.</FItem>

@@ -1,0 +1,63 @@
+---
+meta:
+  title: Run a replica server
+  description: Run and control your own online infrastructure using Earthstar.
+---
+
+# Replica Servers
+
+![A topology of users chained together by replica servers](/replica-servers.svg)
+
+Most laptops and phones are not able to connect directly to each other, so we need some third place they can both connect to where share data is held for syncing.
+
+These are called **Replica Servers**.  You can run your own replica server(s) for your community on a small device like a Raspberry Pi, or hosted in the cloud.
+
+Every computer running Earthstar, even replica servers, is a **Peer**.  Replica servers are just Peers like regular users' computers; the only difference is they're online all the time and they have reachable URLs.
+
+Replica servers have no control over user permissions, and there can be many servers running at once for a particular share. This is good for redundancy and reliabilty; ask your friends to run a replica server too! Earthstar works best when the infrastructure is controlled by the people using the share.
+
+Most importantly, replica servers are _simple and undemanding_. We want to enable people of all skill levels — and schedules — to run replica servers for their friends, families and communities without having to dedicate lots of effort and time to them.
+
+## Running your own Replica server
+
+### The easy way
+
+Here's the simplest way to start hosting a replica server we've come up with.
+
+[![Remix on Glitch](https://cdn.glitch.com/2703baf2-b643-4da7-ab91-7ee2a2d00b5b%2Fremix-button-v2.svg)](https://glitch.com/edit/#!/remix/earthstar-replica-server)
+
+1. Click the button above. This will deploy a new replica server for you.
+2. In the new webpage that was opened, use Glitch's UI to create a new file called `.data/known_shares.json`.
+3. In this new `known_shares.json`, add an array containing your share's address, like this: `[ "+bananas.oa8rorxt2e6r" ]` (you can use the [Earthstar CLI](/getting-started/install-cli#create-and-modify-a-share) to help you create a new share).
+4. In Glitch's UI, open the logs for the address you need to sync with. It'll look something like this: `Sync with this server at https://saucy-slipper-jazz.glitch.me/earthstar-api/v2`. This is the URL you should share with friends.
+
+This gives you a simple replica server which you can use to sync data between different peers.
+
+### The more involved, but still comparatively easy way
+
+If you're comfortable with deploying web services yourself, we've developed a complete framework for creating replica servers which can be extended with new functionality, such as serving content from an Earthstar share over the web.
+
+It comes with a few pre-configured servers for you to use: 
+
+- **Glitch**: For Node environments. Known share list, HTTP sync.
+- **Showcase**: Put the fruits of your share on display. Known share list,
+	HTTP/Websocket sync, able to serve content one share through the browser.
+- **Heritage**: Backwards compatibility with older Earthstar clients and peers.
+	Known share list, Websocket sync, Classic Earthstar (pre-v7) sync via HTTP.
+- **Nimble**: Known share list, Websocket sync.
+
+These replica servers can be deployed on hosting services like [Fly](https://fly.io), or even run from home on a Raspberry Pi.
+
+[Here's a template for a configurable replica server for Fly.io, with deployment instructions](https://github.com/earthstar-project/replica-server-fly).
+
+> In future, we'll have options for one-click self-hosting solutions like Yunohost.
+
+It's also possible to create completely customised replica servers using a selection of extensions. We've tried to make it as easy as possible [to create your own extensions, too](http://localhost:3000/docs/replica-servers#developing-extensions).
+
+You can find more about the Replica server framework at the [replica server framework page](/docs/replica-servers) and via the [API documentation](https://doc.deno.land/https://deno.land/x/earthstar_replica_server/mod.ts).
+
+
+
+
+
+

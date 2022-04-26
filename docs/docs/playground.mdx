@@ -86,7 +86,11 @@ myPeer.addReplica(replica);
 Now we have a peer, we can sync it with other peers! We can do this with peers remotely over the network, but for now let's just pretend and sync with a local one.
 
 ```js
-let otherReplica = new Earthstar.Replica(shareAddress, Earthstar.FormatValidatorEs4, driver);
+let otherDriver = new Earthstar.ReplicaDriverMemory(shareAddress);
+```
+
+```js
+let otherReplica = new Earthstar.Replica(shareAddress, Earthstar.FormatValidatorEs4, otherDriver);
 ```
 
 If we run `otherReplica.getLatestDocs`, we'll get an empty array. It doesn't have any documents in it yet. Let's put this replica in another peer so we can change that!
