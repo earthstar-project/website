@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Link, NavLink } from "remix";
-import { LATEST_EARTHSTAR_VERSION } from '~/constants'
+import { LATEST_EARTHSTAR_VERSION, LATEST_RS_VERSION } from "~/constants";
 
 type Sitemap = Record<string, string | Record<string, string>>;
 
@@ -9,17 +9,20 @@ const sitemap: Sitemap = {
   "Get started": {
     "How it works": "/get-started/how-it-works",
     "Install the CLI": "/get-started/install-cli",
-    "Run a replica server ⏳": "/get-started/replica-server",
-    "Like a bicycle": '/get-started/like-a-bicycle'
+    "Run a replica server": "/get-started/replica-server",
+    "Like a bicycle": "/get-started/like-a-bicycle",
   },
   Tutorials: {
-    "Start a co-site ⏳": "/tutorials/run-a-site"
+    "Start a webshare": "/tutorials/start-a-webshare",
   },
   Docs: {
-    "Developer Tour": "/docs/api-tour",
-    "API": `https://doc.deno.land/https://deno.land/x/earthstar@v${LATEST_EARTHSTAR_VERSION}/mod.ts`,
     "Playground": "/docs/playground",
-    "Replica servers ⏳": '/docs/replica-servers'
+    "Developer Tour": "/docs/api-tour",
+    "Core API":
+      `https://doc.deno.land/https://deno.land/x/earthstar@v${LATEST_EARTHSTAR_VERSION}/mod.ts`,
+    "Replica servers": "/docs/replica-servers",
+    "Replica server API":
+      `https://doc.deno.land/https://deno.land/x/earthstar_replica_server@v${LATEST_RS_VERSION}/mod.ts`,
   },
   Specifications: {
     "Data specification": "/specs/data-spec",

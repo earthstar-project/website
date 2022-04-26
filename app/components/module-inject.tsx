@@ -1,4 +1,4 @@
-import {LATEST_EARTHSTAR_VERSION } from '~/constants'
+import { LATEST_EARTHSTAR_VERSION } from "~/constants";
 
 export default function ModuleInject() {
   return (
