@@ -628,9 +628,6 @@ video {
 .top-0 {
 	top: 0px;
 }
-.m-auto {
-	margin: auto;
-}
 .my-2 {
 	margin-top: 0.5rem;
 	margin-bottom: 0.5rem;
@@ -642,18 +639,6 @@ video {
 .my-3 {
 	margin-top: 0.75rem;
 	margin-bottom: 0.75rem;
-}
-.my-6 {
-	margin-top: 1.5rem;
-	margin-bottom: 1.5rem;
-}
-.my-10 {
-	margin-top: 2.5rem;
-	margin-bottom: 2.5rem;
-}
-.my-8 {
-	margin-top: 2rem;
-	margin-bottom: 2rem;
 }
 .mt-6 {
 	margin-top: 1.5rem;
@@ -667,17 +652,14 @@ video {
 .mb-8 {
 	margin-bottom: 2rem;
 }
+.mr-2 {
+	margin-right: 0.5rem;
+}
 .mb-4 {
 	margin-bottom: 1rem;
 }
 .mr-1 {
 	margin-right: 0.25rem;
-}
-.mr-2 {
-	margin-right: 0.5rem;
-}
-.block {
-	display: block;
 }
 .inline-block {
 	display: inline-block;
@@ -751,15 +733,6 @@ video {
 .items-stretch {
 	align-items: stretch;
 }
-.justify-center {
-	justify-content: center;
-}
-.justify-between {
-	justify-content: space-between;
-}
-.justify-around {
-	justify-content: space-around;
-}
 .gap-4 {
 	gap: 1rem;
 }
@@ -768,11 +741,6 @@ video {
 }
 .gap-6 {
 	gap: 1.5rem;
-}
-.space-y-3 > :not([hidden]) ~ :not([hidden]) {
-	--tw-space-y-reverse: 0;
-	margin-top: calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));
-	margin-bottom: calc(0.75rem * var(--tw-space-y-reverse));
 }
 .space-y-2 > :not([hidden]) ~ :not([hidden]) {
 	--tw-space-y-reverse: 0;
@@ -791,9 +759,6 @@ video {
 .rounded-md {
 	border-radius: 0.375rem;
 }
-.rounded {
-	border-radius: 0.25rem;
-}
 .border-2 {
 	border-width: 2px;
 }
@@ -810,10 +775,6 @@ video {
 .border-es-green {
 	--tw-border-opacity: 1;
 	border-color: rgba(5, 173, 96, var(--tw-border-opacity));
-}
-.border-black {
-	--tw-border-opacity: 1;
-	border-color: rgba(0, 0, 0, var(--tw-border-opacity));
 }
 .border-es-purple {
 	--tw-border-opacity: 1;
@@ -856,9 +817,6 @@ video {
 .p-4 {
 	padding: 1rem;
 }
-.p-3 {
-	padding: 0.75rem;
-}
 .px-2 {
 	padding-left: 0.5rem;
 	padding-right: 0.5rem;
@@ -878,10 +836,6 @@ video {
 .py-0 {
 	padding-top: 0px;
 	padding-bottom: 0px;
-}
-.py-2 {
-	padding-top: 0.5rem;
-	padding-bottom: 0.5rem;
 }
 .pl-6 {
 	padding-left: 1.5rem;
@@ -931,10 +885,6 @@ video {
 .text-sm {
 	font-size: 0.875rem;
 	line-height: 1.25rem;
-}
-.text-xl {
-	font-size: 1.25rem;
-	line-height: 1.75rem;
 }
 .font-bold {
 	font-weight: 700;
@@ -998,9 +948,6 @@ video {
 	transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 	transition-duration: 150ms;
 }
-.border-3 {
-  border-width: 3px;
-}
 .checked {
     background-color: #f9f7fc;
     opacity: 0.8;
@@ -1057,10 +1004,6 @@ video {
 
 	.md\:h-40 {
 		height: 10rem;
-	}
-
-	.md\:w-96 {
-		width: 24rem;
 	}
 
 	.md\:flex-row {
