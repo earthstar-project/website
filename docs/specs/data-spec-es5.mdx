@@ -1,14 +1,12 @@
 ---
 meta:
-  title: Data specification
-  description: The es.4 data specification.
+  title: es.5 data format
+  description: The es.5 data format specification.
 ---
 
-# Data specification
+# es5 Data Format
 
-Format: `es.4`
-
-Document version: 2021-04-23.1
+Document version: 2022-08-22.1
 
 > The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
 > NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and
@@ -16,18 +14,12 @@ Document version: 2021-04-23.1
 > [RFC 2119](https://tools.ietf.org/html/rfc2119).
 > "WILL" means the same as "SHALL".
 
-## Warning: old vocabulary
-
-This document uses old vocabulary.  It should be updated:
-* **Workspaces** have been renamed to **Spaces**.
-* An instance of a space (a local database) is now called a **Replica**.
-
 ## Scope
 
 This document describes:
 * The format of Earthstar documents
 * The cryptography used for identities and signatures
-* The procedures needed for running a single local replica: signing, ingesting, and verifying documents
+* The procedures needed for running a single local replica: signing, ingesting, and verifying documents; ingesting a verifying attachments.
 
 This document may discuss, but does NOT prescribe, these topics which are still in development:
 * Network protocols
@@ -52,7 +44,7 @@ We use [RFC4648](https://tools.ietf.org/html/rfc4648#section-6) with lowercase l
 
 Our encodings are always prefixed with an extra `b` character, following the [multibase](https://github.com/multiformats/multibase) standard. The `b` format is the only format supported in Earthstar. Libraries MUST enforce that encoded strings start with `b`, and MUST NOT allow any other encoding formats.
 
-Libraries MUST be strict when encoding and decoding -- only allow lowercase characters; don't allow a `1` to be treated as an `i`.
+Libraries MUST be strict when encoding and decoding — only allow lowercase characters; don't allow a `1` to be treated as an `i`.
 
 > **Why this encoding?**
 >
@@ -61,111 +53,174 @@ Libraries MUST be strict when encoding and decoding -- only allow lowercase char
 > - The choice of a specific base32 variant was arbitrary and was influenced by the ones available in the multibase standard, which is widely implemented.
 > - The leading `b` character serves two purposes: it defines which base32 format we're using, and it prevents encoded strings from starting with a digit. This makes it possible to use encoded strings as standards-complient URL locations, as in `earthstar://gardening.bajfoqa3joia3jao2df`.
 
-### base64 Encoding
-
-Document contents may only contain utf-8 strings, not arbitrary binary bytes. Applications wishing to store binary data SHOULD encode it as base64.
-
-The recommended format is [RFC4648](https://tools.ietf.org/html/rfc4648#section-4) base64, regular (not-URLsafe), with padding. This is the same format used by `atob()` and `btoa()` in Javascript.
-
-> **Why?**
->
-> - This encoding is built into web browsers and probably implemented by native code, making it faster for large amounts of data and easier to integrate with other web APIs such as canvas, IndexedDb, displaying images, etc.
-> - It's more widely used than base32.
-> - It uses less space than base32, which matters more because this will be used for large files.
-> - We don't have the same character set restrictions for this use case that we do for the base32 use cases (paths, author addresses, etc).
-
 ### Indexed Storage
 
 Earthstar messages are typically queried in a variety of ways. This is easiest to implement using a database like SQLite, but if you manage your own indexes you can also use a key-value database like leveldb.
 
 ## Vocabulary and concepts
 
-**Library, Earthstar library** -- In this context, an implementation of Earthstar itself.
+**Library, Earthstar library** — In this context, an implementation of Earthstar itself.
 
-**App** -- Software which uses Earthstar to store data.
+**App** — Software which uses Earthstar to store data.
 
-**Document** -- The unit of data storage in Earthstar, similar to a document in a NoSQL database. A document has metadata fields (author, timestamp, etc) and a **content** field.
+**Document** — The unit of data storage in Earthstar, similar to a document in a NoSQL database. A document has metadata fields (author, timestamp, etc), a **text** field, and optionally fields describing an associated attachment.
 
-**Path** -- Similar to a key in leveldb or a path in a filesystem, each document is stored at a specific path.
+**Path** — Similar to a key in leveldb or a path in a filesystem, each document is stored at a specific path.
 
-**Author** -- A person who writes documents to a workspace. Authors are identified by an ed25519 public key in a format called an **author address**. It's safe for an author to use the same identity from multiple devices simultaneously.
+**Identity** — A keypair which writes documents to a share. Identities are identified by an ed25519 public key in a format called an **identity address**. It's safe to use the identity keypair from multiple devices simultaneously.
 
-**Workspace** -- A collection of documents. Workspaces are identified by a **workspace address**. Workspaces are separate, unrelated worlds of data. Each document exists within exactly one workspace.
+**Share** — A collection of documents. Shares are identified by a **share address**. Share are separate, unrelated worlds of data. Each document exists within exactly one share.
 
-**Format, Validator** -- The Earthstar document specification is versioned. Each version of the specification is called a document **format**, and the code that handles that format is called a **Validator**.
+**Format** — The Earthstar document specification is versioned. Each version of the specification is called a document **format**, and the code that handles that format is called a **formatter**.
 
-**Peer** -- A device which holds Earthstar data and wishes to sync with other peers. Peers may be individual users' devices and/or pub servers. A peer may hold data from multiple workspaces.
+**Peer** — A device which holds Earthstar data and wishes to sync with other peers. Peers may be individual users' devices and/or replica servers. A peer may hold data from multiple shares.
 
-**Pub server** -- (short for "public server") -- A peer whose purpose is to provide uptime and connectivity for many users. Usually these are cloud servers with publically routable IP addresses.
+**Attachment** — Arbitrary binary data which a document may refer to.
+
+**Replica server** — A peer whose purpose is to provide uptime and connectivity for many users. Usually these are cloud servers with publically routable IP addresses.
 
 ## Data model
 
-```
-// Simplified example of data stored in a workspace
+A share's data is a collection of documents authored by various identities, as well as any attachments those documents correspond to.
 
-Workspace: "+gardening.friends"
+```
+// Simplified example of data stored in a share
+
+Share: "+gardening.friends"
   Path: "/wiki/shared/Flowers"
     Documents in this path:
-      { author: @suzy.b..., timestamp: 1500094, content: 'pretty' }
-      { author: @matt.b..., timestamp: 1500073, content: 'nice petals' }
-      { author: @fern.b..., timestamp: 1500012, content: 'smell good' }
+      { author: @suzy.b..., timestamp: 1500094, text: 'pretty' }
+      { author: @matt.b..., timestamp: 1500073, text: 'nice petals' }
+      { author: @fern.b..., timestamp: 1500012, text: 'smell good' }
   Path: "/wiki/shared/Bugs"
     Documents in this path:
-      { author: @suzy.b..., timestamp: 1503333, content: 'wiggly' }
+      { author: @suzy.b..., timestamp: 1503333, text: 'wiggly' }
+  Path: "/audio/nightinggale.mp3",
+    Documents in this path:
+      { author: @suzy.b..., timestamp: 1500094, text: 'Nightingale's song (better recording)', attachmentSize: 1000203, attachmentHash: bk2xrjl90  }
+      { author: @matt.b..., timestamp: 1500073, text: 'Nightingale's song. Location unknown.', attachmentSize: 900384, attachmentHash: b84ahi8ah }
+      { author: @fern.b..., timestamp: 1500012, text: 'Nightingale's song', attachmentSize: 900384, attachmentHash: b84ahi8ah }
+  Attachments:
+    bk2xrjl90: <bytes>
+    b84ahi8ah: <bytes>
 ```
 
-A peer MAY hold data from many workspaces. Each workspace's data is treated independently. Each document within a workspace is also independent; they don't form a chain or feed; they don't have Merkle backlinks.
+A peer MAY hold data from many shares. Each share's data is treated independently. Each document within a share is also independent; they don't form a chain or feed or refer to each other (e.g. Merkle backlinks).
 
-A workspace's data is a collection of documents by various authors. A peer MAY hold some or all of the documents from a workspace, in any combination. Apps MUST assume that any combination of docs may be missing.
+Certain documents may have a corresponding attachment. For each known document the peer MAY also hold a corresponding attachment. A peer MUST NOT hold attachments with no corresponding documents.
 
-Each document in a workspace exists at a path. For each path, Earthstar keeps the newest document from each author who has ever written to that path.
+### Documents
 
-In this example, the `/wiki/shared/Flowers` path contains 3 documents, because 3 different authors have written there. They may have written there hundreds of times, but we only keep the newest document from each author, in that path.
+A peer MAY hold some or all of the documents from a share, in any combination. Apps MUST assume that any combination of docs may be missing.
+
+Each document in a share exists at a path. For each path, Earthstar keeps the newest document from each identity who has ever written to that path.
+
+In this example, the `/wiki/shared/Flowers` path contains 3 documents, because 3 different identities have written there. They may have written there hundreds of times, but we only keep the newest document from each identity, in that path.
 
 "Newest" is determined by comparing the `timestamp` field in the documents. See the next section for details about trusting timestamps.
 
-When looking up a path to retrieve a document, the newest document is returned by default. Apps can also query for the full set of document versions at a path; the older ones are called **history documents**.
+When looking up a path to retrieve a document, the newest document MUST be returned by default. Apps can also query for the full set of document versions at a path; the older ones are called **history documents**.
 
 ### Ingesting Documents
 
-When a new document arrives and an existing one is already there (from the same author and same path), the new document overwrites the old one. Earthstar libraries MUST actually delete the older, overwritten document. The author's intent is to remove the old data.
+When a new document arrives and an existing one is already there (from the same identity and same path), the new document overwrites the old one. Earthstar libraries MUST actually delete the older, overwritten document. The author's intent is to remove the old data.
 
 The process of validating and potentially saving an incoming document is called **ingesting**, and it MUST happen to newly obtained documents, whether they come from other peers or are made as local writes. Earthstar libraries MUST use this ingestion process:
 
 ```typescript
 // Pseudocode
 
-Ingest(newDoc):
-    // Check doc validity -- bad data types, bad signature,
+IngestDoc(newDoc):
+    // Check doc validity — bad data types, bad signature,
     // expired ephemeral doc, wrong format string,
     // timestamp too far in the future, ...
     if !isValid(newDoc):
         return "rejected an invalid doc"
 
     // Check if it's obsolete
-    // (Do we have a newer doc with same path and same author?)
+    // (Do we have a newer doc with same path and same identity?)
     let existingDoc = query({author: newDoc.author, path: newDoc.path});
     if existingDoc exists && existingDoc.timestamp >= newDoc.timestamp;
         return "ignored an obsolete doc"
 
-    // Overwrite older doc with same path and same author
+    // Overwrite older doc with same path and same identity
     if existingDoc exists:
         remove(existingDoc)
     save(newDoc)
     return "accepted a doc"
 ```
 
-Each document has a `format` field which specifies which data [Format](#format) it is. The `isValid` function in this pseudocode represents a call to the [Format Validator](#format) which is responsible for enforcing the rules of that format.
+Each document has a `format` field which specifies which data [Format](#format) it is. The `isValid` function in this pseudocode represents a call to the [Formatter](#formatter) which is responsible for enforcing the rules of that format.
+
+Deleting old versions of documents may result in 'dangling' attachments without corresponding documents. Peers MUST delete these dangling attachments within an hour of their corresponding doc being deleted. 
+
+## Attachments
+
+A peer MAY hold some or all of the attachments in a share, provided it already has a corresponding document. Apps MUST assume that any combination of attachments may be absent.
+
+Because many documents may refer to the same attachment (e.g. different history versions of a document at the same path), the peer SHOULD only store each individual attachment once.
+
+## Ingesting Attachments
+
+Newly arrived attachments are only saved if a corresponding document is known, the peer does not yet have the attachment saved, and the attachment's size and hash match the size and hash on the document.
+
+The process of validating and potentially saving an incoming attachment is also called **ingesting**, and it MUST happen to newly obtained attachments, whether they come from other peers or are made as local writes. Earthstar libraries MUST use this ingestion process:
+
+```typescript
+// Pseudocode
+
+IngestAttachment(doc, attachment):
+    // Check that the doc for this attachment is already ingested
+    if !isIngested(doc):
+        return "rejected an attachment we don't have the doc for"
+
+    // Check if it's obsolete
+    // (Do we already have an attachment with the same hash, for the same format?)
+    let existingAttachment = query({hash: doc.attachmentHash, format: doc.format });
+    if existingAttachment exists
+        return "already have this attachment"
+
+    // Check attachment validity
+    let attachmentHash = hash(attachment)
+    let attachmentSize = size(attachment)
+    
+    if attachmentHash !== doc.attachmentHash || attachmentSize !== doc.attachmentSize:
+      return "attachment does not match doc"
+        
+    // Persist the attachment
+    save(attachment)
+    return "persisted an attachment"
+```
 
 ### Timestamps and Clock Skew
 
-TODO: discuss timestamps
+Earthstar uses timestamps to order documents, as integers can be ordered even when there are gaps (i.e. missing documents).
 
-For now, see the [Timestamp](#timestamp) section, lower in this document, for rules about handling clock skew and documents from the future.
+For this reason, peers MUST NOT save two documents at the same path with the same timestamp.
 
-Also see the (non-normative) document [How does Earthstar handle timestamps, and can it recover from a device with a very inaccurate clock?](https://github.com/earthstar-project/earthstar/blob/main/docs/timestamps.md)
+When a user sets a new document without specifying a timestamp themselves, the document MUST be written with a timestamp of whichever value is greater:
 
-## Identities, Authors, Workspaces
+- The current time in microseconds since the Unix epoch
+- The timestamp of the latest document at the same path
+
+Or in pseudocode:
+
+```typescript
+let timestamp = max(previouslyLatestDoc.timestamp + 1, nowInMicroseconds)
+```
+
+#### Trusting timestamps
+
+Because peers write their own timestamps using their clocks or user input, there are several scenarios in which timestamps can be inaccurate:
+
+1. A user writes a timestamp in the past
+2. A user writes a timestamp in the future (presumably to make their document take precedence)
+3. A peer writes a timestamp of 2^53 - 2 to cause overflow problems.
+4. A peer writes an inaccurate timestamp due to clock skew.
+
+In order to mitigate scenarios 2, 3, and 4, peers MUST consider documents with timestamps further than ten minutes in the future invalid.
+
+## Identities, Authors, Shares
 
 ### Character Set Definitions
 
@@ -188,10 +243,10 @@ PRINTABLE_ASCII = characters " " to "~", inclusive
 
 In this document, everywhere we say ASCII we mean "standard ASCII and not extended ASCII". Only characters less than or equal to `0x7f`, none higher.
 
-### Workspace Addresses
+### Share Addresses
 
 ```
-WORKSPACE_ADDRESS = "+" NAME "." SUFFIX
+SHARE_ADDRESS = "+" NAME "." SUFFIX
 NAME = one ALPHA_LOWER followed by 0 to 14 ALPHA_LOWER_OR_DIGIT
 SUFFIX = one ALPHA_LOWER followed by 0 to 52 ALPHA_LOWER_OR_DIGIT
 ```
@@ -202,7 +257,7 @@ Example:
 +gardening.jfao38ifjhaolie
 ```
 
-A workspace address is a sequence of: plus character `+`, **name**, period `.`, **suffix**.
+A share address is a sequence of: plus character `+`, **name**, period `.`, **suffix**.
 
 It MUST have those four elements in that order.
 
@@ -241,39 +296,20 @@ Invalid examples:
 
 > **Why these rules?**
 >
-> These rules allow workspace addresses to be used as the location part of regular URLs, after removing the `+`.
+> These rules allow share addresses to be used as the location part of regular URLs, after removing the `+`.
 
-Workspace suffixes may be used in a variety of ways:
+Share suffixes may be used in a variety of ways:
 
 - meaningful words similar to domain name TLDs
-- random strings that make the workspace hard to guess
-- public keys in base32 format, starting with `b`, to be used as the **workspace key** in future versions of Earthstar (see below).
+- random strings that make the share hard to guess
+- public keys in base32 format, starting with `b`, to be used as the **share key** in future versions of Earthstar (see below).
 
-Note that anyone can write to and read from a workspace if they know its full workspace address, so it's important to keep workspace addresses secret if you want to limit their audience.
+Note that anyone can write to and read from a share if they know its full share address, so it's important to keep share addresses secret if you want to limit their audience.
 
-#### Invite-only Workspaces (coming soon)
-
-(This is also discussed in the Future Directions section: [Invite-only Workspaces](#invite-only-workspaces) )
-
-In the future, Earthstar will support **invite-only** workspaces.
-
-These separate "read permission" from "read and write permission". This enables use-cases such as
-
-- Workspaces where a few authors publish content to a wide audience of readers (who otherwise would be able to write to the workspace once they know its address)
-- Pub servers which host workspaces without the ability to write their own docs into the workspace
-
-Invite-only workspaces will have a **workspace key** and **workspace secret**. The key is used as the workspace suffix, and the secret is given out-of-band to authors who should be able to write.
-
-Only authors who know the workspace key can write to an invite-only workspace. They will sign their documents with the workspace secret (in a new field, `workspaceSignature`, in addition to the regular author signature).
-
-This will limit who can write, but anyone knowing the workspace address can still read. To limit readers, authors may choose to encrypt their document content using the workspace key so that anyone with the workspace secret can decrypt it.
-
-TODO: We need a way to tell if a workspace is invite-only or not just by looking at its address. Perhaps it's invite-only if the suffix looks like a base32 pubkey (53 chars starting with 'b').
-
-### Author Addresses
+### Identity Addresses
 
 ```
-AUTHOR_ADDRESS = "@" SHORTNAME "." B32_PUBKEY
+IDENTITY_ADDRESS = "@" SHORTNAME "." B32_PUBKEY
 SHORTNAME = one ALPHA_LOWER followed by three ALPHA_LOWER_OR_DIGIT
 B32_PUBKEY = "b" followed by 52 B32_CHAR
 
@@ -290,19 +326,19 @@ address: @js80.bnkivt7pdzydgjagu4ooltwmhyoolgidv6iqrnlh5dc7duiuywbfq
 secret: b4p3qioleiepi5a6iaalf6pm3qhgapkftxnxcszjwa352qr6gempa
 ```
 
-An author address starts with `@` and combines a **shortname** with a **public key**.
+An identity address starts with `@` and combines a **shortname** with a **public key**.
 
-- **Shortnames** are chosen by users when creating an author identity. They cannot be changed later. They are exactly 4 lowercase ASCII letters or digits, and cannot start with a digit.
+- **Shortnames** are chosen by users when creating an identity keypair. They cannot be changed later. They are exactly 4 lowercase ASCII letters or digits, and cannot start with a digit.
 
 - **Public keys** are 32-byte ed25519 public keys (just the integer portion, no wrapper or surrounding data structures), encoded as base32 with an extra leading "b". This results in 52 characters of base32 plus the "b", for a total of 53 characters.
 
 - **Private keys** (called "secrets") are also 32 bytes of binary data (just the secret integer), encoded as base32 in the same way as the public key.
 
-Apps MUST treat authors as separate and distinct when their addresses differ, even if only the shortname is different and the pubkeys are the same.
+Apps MUST treat identities as separate and distinct when their addresses differ, even if only the shortname is different and the pubkeys are the same.
 
-Note that authors also have Unicode **display names** stored in their **profile documents**, and those can be changed and allow more freedom of expression. See the next section.
+Note that identities also have Unicode **display names** stored in their **profile documents**, and those can be changed and allow more freedom of expression. See the next section.
 
-### FAQ: Author Shortnames
+### FAQ: Identity Shortnames
 
 > **Why shortnames?**
 >
@@ -316,7 +352,7 @@ Note that authors also have Unicode **display names** stored in their **profile 
 >
 > For example, let's say an app shows "✅" when you're following an account. "✅ Cat Pictures @3hj29dhj..." renames itself to "✅ Samantha @3hj29dhj...", which is hard to tell apart from your actual friend "✅ Samantha @9c2j392hx...".
 >
-> Adding an immutable shortname to the author address makes this attack more difficult. Users can now notice when display name is different than expected.
+> Adding an immutable shortname to the identity address makes this attack more difficult. Users can now notice when display name is different than expected.
 >
 > For example "✅ Cat Pictures @cats.3hj29dhj..." renames itself to "✅ Samantha @cats.3hj29dhj...", which is easier to tell apart from your actual friend "✅ Samantha @samm.9c2j392hx...".
 >
@@ -348,15 +384,15 @@ Note that authors also have Unicode **display names** stored in their **profile 
 >
 > Yes. They are considered two distinct identities, although you can infer that they belong to the same person.
 
-### Author Display Names and Profile Info
+### Identity Display Names and Profile Info
 
-An author can have a **profile** containing their **display name**, biographic information, etc. Profile data is stored in the `content` of a variety of documents under `/about/`:
+An identity can have a **profile** containing their **display name**, biographic information, etc. Profile data is stored in the `content` of a variety of documents under `/about/`:
 
 ```
-displayNamePath = "/about/~" + authorAddress + "/displayName.txt"
+displayNamePath = "/about/~" + identityAddress + "/displayName.txt"
 
 Example:
-/about/~@suzy.bo5sotcncvkr7p4c3lnexxpb4hjqi5tcxcov5b4irbnnz2teoifua/displayName.txt
+/about/~@suzy.bo5sotcncvkr7p4c3lnexxpb4hjqi5tcxcov5b4irbnnz2teoifua/displayName
 ```
 
 Display names stored in profile information can be changed frequently and can contain Unicode.
@@ -402,17 +438,17 @@ PATH = one or more PATH_SEGMENT
 - Paths MUST NOT contain any characters except those listed above. To include other characters such as spaces, double quotes, emojis, or other non-ASCII characters, apps SHOULD use [URL-style percent-encoding as defined in RFC3986](https://tools.ietf.org/html/rfc3986#section-2.1). First encode the string as utf-8, then percent-encode the utf-8 bytes.
 - A path MUST contain one or more `!` characters, anywhere, IF AND ONLY IF the document is ephemeral (because `deleteAfter` is non-null). See the section on [Ephemeral Documents](#ephemeral-documents-deleteafter).
 
-In the following examples, `...` is used to shorten author addresses for easier reading.
+In the following examples, `...` is used to shorten identity addresses for easier reading.
 `...` is not actually related to the Path specification.
 
 ```
 Example paths
 
 Valid:
-    /todos/123.json
-    /wiki/shared/Dolphins.md
-    /wiki/shared/Dolphin%20Sounds.md
-    /about/~@suzy.bo5sotcn...fua/profile.json
+    /todos/123
+    /wiki/shared/Dolphins
+    /wiki/shared/Dolphin%20Sounds.mp3
+    /about/~@suzy.bo5sotcn...fua/bio
     /wall/@suzy.bo5sotcn...fua/post123.md
 
 Invalid: path segment must have one or more path characters
@@ -440,9 +476,9 @@ Invalid: starts with "/@"
 > https://mypub.com/+gardening.friends/@suzy.bo5sotcncvkr7...  (etc)
 > ```
 >
-> The restriction on `/@` allows us to tell paths and author addresses apart in this setting. It also encourages app authors to put their data in a more organized top-level prefix such as `/wiki/` instead of putting each author at the root of the path.
+> The restriction on `/@` allows us to tell paths and identity addresses apart in this setting. It also encourages app authors to put their data in a more organized top-level prefix such as `/wiki/` instead of putting each identity at the root of the path.
 >
-> Another solution was to use a double slash `//` to begin paths and avoid confusion with authors:
+> Another solution was to use a double slash `//` to begin paths and avoid confusion with identities:
 >
 > ```
 > Don't do this:
@@ -458,7 +494,11 @@ Invalid: starts with "/@"
 - `!` - used if and only if the document is ephemeral
 - `~` - (tilde) defines author write permissions
 - `%` - for percent-encoding other characters
-- `+@.` - used in workspace and author addresses but allowed elsewhere too
+- `+@.` - used in share and author addresses but allowed elsewhere too
+
+### Path Patterns with Special Meaning
+
+- A path ending with a file extension denotes a document has an attachment
 
 ### Disallowed Path Characters
 
@@ -501,7 +541,7 @@ Character - reason for being disallowed
 
 ### Write Permissions and Path Ownership
 
-Paths can encode information about which authors are allowed to write to them. Documents that break these rules are invalid and will be ignored.
+Paths can encode information about which identities are allowed to write to them. Documents that break these rules are invalid and will be ignored.
 
 A path is **shared** if it contains no `~` (tilde) characters. Any author can write a document to a shared path.
 
@@ -511,7 +551,7 @@ Example **shared** paths:
 
 ```
 Anyone can write here:
-/todos/123.json
+/todos/123
 
 Anyone can write here because there's no tilde "~"
 /wall/@suzy.bo5sotcncvkr7p4c3lnexxpb4hjqi5tcxcov5b4irbnnz2teoifua/info.txt
@@ -533,17 +573,57 @@ This path can't be written by anyone. It's **owned** because it contains a tilde
 /nobody/can/ever/write/this/path/~
 ```
 
-(TODO: loosen this restriction; treat `~` without a following `@` as a shared path?)
-
-The `tilde + author address` pattern can occur anywhere in the path: beginning, middle or end.
+The `tilde + identity address` pattern can occur anywhere in the path: beginning, middle or end.
 
 Note that documents are mutable but their path can never change (or it would be a different document!) so the ownership of a particular path/document is permanent. You can't change the ownership of a document; you have to create a new document at a different path.
 
+### File Extensions
+
+Documents may have arbitrary binary bytes associated with them, referred to as attachments. If a document is associated with an attachment, it MUST have a file extension.
+
+The file extension is there to help applications know how to interpret attachment data. For example, documents with JPEG image attachments should have paths ending in `.jpg`, and documents with MP3 audio attachments should have paths ending in `.mp3`.
+
+The file extension MUST be positioned at the end of the path to indicate a document with an attachment:
+
+```
+Valid path for document with attachment:
+
+/images/squirrel.png
+
+Invalid path for document with attachment:
+/images.png/squirrel
+```
+
+A path ending with an identity address MUST NOT be interpreted as a document with an attachment:
+
+```
+/info/~@suzy.bo5sotcncvkr7p4c3lnexxpb4hjqi5tcxcov5b4irbnnz2teoifua
+```
+
+Documents without attachments MUST NOT use the filename extension to indicate how to interpret their contents. 
+
+```
+Invalid paths for documents without attachments:
+/todos/123.json
+/blog/post.md
+
+Valid paths for documents without attachments:
+/todos/123
+/blog/post
+```
+
+Instead, documents SHOULD enclose the file extension of the text contents in parentheses, excluding `.`:
+
+```
+/todos/123(json)
+/blog/post(md)
+```
+
 ### Path and Filename Conventions
 
-Multiple apps can put data in the same workspace. Here are guidelines to help them interoperate:
+Multiple apps can put data in the same share. Here are guidelines to help them interoperate:
 
-The first path segment SHOULD be a description of the data type OR the application that will read/write it. Examples: `/wiki/`, `/chess/`, `/chat/`, `/posts/`, `/earthstagram/`, `/sillywiki/`.
+The first path segment SHOULD be a description of the data type OR the application that will read/write it. Examples: `/wiki/`, `/chess/`, `/chat/`, `m/posts/`, `/earthstagram/`, `/sillywiki/`.
 
 > **Why?**
 >
@@ -555,16 +635,6 @@ Consider including a version number in the path representing the version of the 
 
 Consider choosing a unique name for your app's data, like `/magic-todo-list/` instead of an obvious choice like `/todos/`, to avoid accidental collision with other apps you might not even know about.
 
-### File Extensions
-
-The last path segment SHOULD have a file extension to help applications know how to interpret the data. For example, plain text documents should have paths ending in `.txt` and data encoded as JSON should have paths ending in `.json`.
-
-Apps SHOULD use these file extensions to guess how to read and decode documents.
-
-There is no way to explicitly signal that document content is binary (encoded as base64). Applications will need to guess based on the file extension. TODO: improve this.
-
-See the [Content](#content) section for more details on base64 encoding of binary data.
-
 ## Documents and Their Fields
 
 This example document is shown as JSON though it can exist in many serialization formats:
@@ -572,14 +642,13 @@ This example document is shown as JSON though it can exist in many serialization
 ```json
 {
   "author": "@suzy.bjzee56v2hd6mv5r5ar3xqg3x3oyugf7fejpxnvgquxcubov4rntq",
-  "content": "Flowers are pretty",
-  "contentHash": "bt3u7gxpvbrsztsm4ndq3ffwlrtnwgtrctlq4352onab2oys56vhq",
-  "deleteAfter": null,
-  "format": "es.4",
+  "text": "Flowers are pretty",
+  "textHash": "bt3u7gxpvbrsztsm4ndq3ffwlrtnwgtrctlq4352onab2oys56vhq",
+  "format": "es.5",
   "path": "/wiki/shared/Flowers",
   "signature": "bjljalsg2mulkut56anrteaejvrrtnjlrwfvswiqsi2psero22qqw7am34z3u3xcw7nx6mha42isfuzae5xda3armky5clrqrewrhgca",
   "timestamp": 1597026338596000,
-  "workspace": "+gardening.friends"
+  "share": "+gardening.friends"
 }
 ```
 
@@ -588,14 +657,20 @@ Document schema in Typescript:
 ```typescript
 interface Doc {
   author: string; // an author address
-  content: string; // an arbitary string of utf-8
-  contentHash: string; // sha256(content) encoded as base32 with a leading 'b'
-  deleteAfter: number | null; // integer.  when the document expires.  null for non-expiring documents.
-  format: "es.4"; // the format version that this document adheres to.
+  text: string; // an arbitary string of utf-8
+  textHash: string; // sha256(content) encoded as base32 with a leading 'b'
+  
+  format: "es.5"; // the format version that this document adheres to.
   path: string; // a path
   signature: string; // ed25519 signature of encoded document, signed by author
   timestamp: number; // integer.  when the document was created
-  workspace: string; // a workspace address
+  share: string; // a share address
+  
+  // optional fields
+  
+  deleteAfter?: number; // integer.  when the document expires.  absent for non-expiring documents.
+  attachmentSize?: number; // integer. The size of the document's attachment in bytes. Absent for docs without attachments.
+  attachmentHash?: string; // string. The Sha256 hash of the document's attachment. Absent for docs without attachments.
 }
 ```
 
@@ -603,53 +678,17 @@ Here we use the words "fields" and "properties" to mean the same thing.
 
 The fields above are called the "core fields". All core fields are REQUIRED. Some core fields may be null; these MUST NOT be omitted; they MUST be exlicitly set to null if they are null.
 
-Extra fields are FORBIDDEN as part of this core document schema, but are allowed during syncing -- see the **Extra Fields For Syncing** section below.
+Extra fields are FORBIDDEN as part of this core document schema.
 
-All string fields MUST BE limited to `PRINTABLE_ASCII` characters except for `content`, which is utf-8, or string fields can be null if specified above. `PRINTABLE_ASCII` is defined earlier, and notably does not contain newline or tab characters, which are reserved for use in the serialization format we use for hashing and signing.
+All string fields MUST BE limited to `PRINTABLE_ASCII` characters except for `text`, which is utf-8, or string fields can be null if specified above. `PRINTABLE_ASCII` is defined earlier, and notably does not contain newline or tab characters, which are reserved for use in the serialization format we use for hashing and signing.
 
 All number fields MUST BE integers, and cannot be NaN or Infinity, but they can be null if specified above.
 
 The order of fields is unspecified except for hashing and signing purposes (see section below). For consistency, the recommended canonical order is sorted lexicographically by field name.
 
-### Extra Fields For Syncing
-
-When sending documents over the network, peers may add additional properties as synchronization metadata. These extra fields MUST all have names beginning with an underscore to separate them from the core fields, and the the receiving peer MUST remove these fields before storing the document.
-
-Likewise, when Earthstar libraries store documents internally, and send them over the network, they MAY add their own extra fields which MUST have names beginning with an underscore.
-
-In other words, during storage the extra fields are "owned" by the local peer that's doing the storage. During syncing, the fields are "owned" by the sending peer, and they are observed and removed by the receiving peer, which may in turn set its own extra fields before storing the document and/or before sending it again over the network. The content of extra fields MUST NOT propagate or spread across the network of peers except for the brief moment of a single transmission, before they are removed by the receiving peer.
-
-Extra fields are NOT included in the document's signature.
-
-> **Example of extra fields for syncing:**
->
-> These extra fields are not standardized yet.
->
-> ```typescript
-> interface DocWithExtraFields extends Doc {
->   // (...The core fields will be present here also.)
->
->   // All extra fields must begin with an underscore.
->
->   // An integer >= 0, from the peer that sent the doc or
->   // or the peer storing it.  This represents the order
->   // in which the peer obtained the document compared to
->   // the other documents in its storage (in the same workspace).
->   // This is kept locally in storage, and sent when syncing.
->   // It's observed and removed from incoming docs when syncing
->   // (and replaced with the receiving peer's own localIndex value)
->   _localIndex: number;
->
->   // A unique ID of the storage instance that sent the doc.
->   // This is only present when the doc is being sent,
->   // it's not kept when the doc is at rest in storage.
->   _fromStorageId: string;
-> }
-> ```
-
 ### Document Validity
 
-A document MUST be **valid** in order to be ingested into storage, either from a local write or a sync.
+A document MUST be **valid** in order to be ingested into a replica, either from a local write or a sync.
 
 Invalid documents MUST be individually ignored when peers are syncing, and the sync MUST NOT be halted just because an invalid document was encountered. Continue syncing in case there are more valid documents.
 
@@ -657,16 +696,18 @@ Documents can be temporarily invalid depending on their timestamp and the curren
 
 To be **valid** a document MUST pass ALL these rules, which are described in more detail in the following sections:
 
-- `author` is a valid author address string
-- `content` is a string holding utf-8 data
-- `contentHash` is the sha256 hash of the `content`, encoded as base32 with a leading `b`, for a total length of 53 characters.
+- `author` is a valid identity address string
+- `text` is a string holding utf-8 data
+- `textHash` is the sha256 hash of the `text`, encoded as base32 with a leading `b`, for a total length of 53 characters.
 - `timestamp` is an integer between 10^13 and 2^53-2, inclusive
-- `deleteAfter` is null, or is a timestamp integer in the same range as `timestamp`
+- `deleteAfter` is absent, or is a timestamp integer in the same range as `timestamp`
 - `format` is a string of printable ASCII characters
 - `path` is a valid path string
 - `signature` is a base32 string with a leading `b`. For the `es.4` format it must be 104 characters long including the `b`.
-- `workspace` is a valid workspace address string which matches the local workspace we are intending to write the document to
-- No extra fields. Any **extra fields for syncing** as described above should be removed before testing for validity.
+- `share` is a valid share address string which matches the local share we are intending to write the document to
+- `attachmentSize` is an integer between 0 or 2^53-2, or absent
+- `attachmentHash` is a sha256 hash of the associated attachment, encoded as base32 with a leading `b` for a total length of 53 characters, or absent
+- No extra fields.
 - No missing fields
 - Additional rules about `timestamp` and `deleteAfter` relative to the current wall clock (see below)
 - Author has write permission to path based on tilde placement
@@ -674,47 +715,31 @@ To be **valid** a document MUST pass ALL these rules, which are described in mor
 
 ### Author
 
-The `author` field holds an author address, formatted according to the rules described earlier in [Author Addresses](#author-addresses).
+The `author` field holds an identity address, formatted according to the rules described earlier in [Author Addresses](#author-addresses).
 
-### Content
+### Text
 
-The `content` field contains arbitrary utf-8 encoded data. If the data is not valid utf-8, the document is still considered valid but the library's behavior is undefined when trying to access the content.
+The `text` field contains arbitrary utf-8 encoded data. If the data is not valid utf-8, the document is still considered valid but the library's behavior is undefined when trying to access the content.
 
-The `content` field may be an empty string. In fact, the recommended way to remove data from Earthstar is to overwrite the document with a new one which has `content = ""`. Documents with empty-string content SHOULD be considered to be "deleted" and therefore omitted from some query results so that apps don't see them. This depends on context; when syncing documents it's important to sync the "deleted" documents too because they act as tombstones.
+The `text` field may be an empty string. In fact, the recommended way to remove data from Earthstar is to overwrite the document with a new one which has `text = ""`. See [Wiping Document Contents](#wiping-document-contents) for more information.
 
-The maximum length of the content field is 4 million bytes (4,000,000 bytes). This is measured as "bytes when encoded as utf-8", not naive string length. (This means the overall document, when encoded as JSON, can be slightly larger than 4 million bytes - the rest of the fields add about 450 bytes more.)
+The maximum length of the text field is eight thousand bytes (8,000 bytes). This is measured as "bytes when encoded as utf-8", not naive string length. (This means the overall document, when encoded as JSON, can be slightly larger than 8,000 bytes - the rest of the fields add about 450 bytes more.)
 
-To store raw binary data in a utf-8 string, apps SHOULD encode it as base64. In this case apps SHOULD put a file extension on the path that's well-known to be a binary format. If you don't know what file extension to choose, use `.b64`.
+When a document has an associated attachment, the text field's contents MUST have a length greater than zero and SHOULD be used to describe the contents of the attachment. This description can be used by peers to evaluate the content of an attachment before downloading it.
 
-When reading, apps SHOULD use the path's file extension to guess if a document contains textual data or base64-encoded binary data.
+When storing formatted text (e.g. JSON or Markdown) apps SHOULD enclose the file extension in parentheses at the end of the path, e.g. `/todos/123(json)`. If the document has an attachment **and** formatted text, the pathname SHOULD NOT include this information, in order to prioritise the attachment's file extension instead. 
 
-TODO: We will be adding support for binary data and a way to unambiguously know which data is binary and which is utf8.
+### Text Hash
 
-> **Why no native support for binary data yet?**
->
-> Common encodings such as JSON, and protocols built on them such as JSON-RPC and GraphQL, have to way to represent binary data, and we want to support the "least common denominator" standards that are widely used and known.
-
-#### Sparse Mode (eventually)
-
-We plan to add "sparse mode". This will allow `content` to be `null`, meaning the local peer don't know what the content is. This allows handling documents' metadata without their actual content, in case the peer wants to save space now and fetch the actual content later, perhaps on-demand.
-
-This is not allowed yet; in the current version `content` MUST NOT be null.
-
-Once [Sync Queries](#sync-queries) are implemented, peers will be able to sync the full content of small documents and get sparse versions of large documents.
-
-It will be possible to verify the signature on sparse documents because it's based on the `contentHash`, which is always present.
-
-### Content Hash
-
-The `contentHash` is the `sha256` hash of the `content` data. The hash digest is then encoded from binary to base32 following the usual Earthstar format, with a leading `b`.
+The `text` is the `sha256` hash of the `text` data. The hash digest is then encoded from binary to base32 following the usual Earthstar format, with a leading `b`.
 
 Note that hash digests are usually encoded in hex format, but we use base32 instead to be consistent with the rest of Earthstar's encodings.
 
-Wrong: `binary hash digest --> hex encoded string --> base32 encoded string`
+Wrong: `binary hash digest —> hex encoded string —> base32 encoded string`
 
-Correct: `binary hash digest --> base32 encoded string`
+Correct: `binary hash digest —> base32 encoded string`
 
-Also be careful not to accidentally change the content string to a different encoding (such as utf-16) before hashing it -- hash the utf-8 bytes.
+Also be careful not to accidentally change the content string to a different encoding (such as utf-16) before hashing it — hash the utf-8 bytes.
 
 ### Format
 
@@ -722,25 +747,22 @@ The format is a short string describing which version of the Earthstar specifica
 
 It MUST consist only of `PRINTABLE_ASCII` characters.
 
-TODO: max length of format?
-
-The current format version is `es.4` ("es" is short for Earthstar.)
+The current format version is `es.5` ("es" is short for Earthstar.)
 
 If the specification is changed in a way that breaks forwards or backwards compatability, the format version MUST be incremented. The version number SHOULD be a single integer, not a semver.
 
 Other format families may someday exist, such as a hypothetical `ssb.1` which would embed Scuttlebutt messages in Earthstar documents, with special rules for validating the original embedded Scuttlebutt signatures as part of validating the document.
 
-#### Format Validator Responsibilities
+#### Formatter Responsibilities
 
-Earthstar libraries SHOULD separate out the code related to each format version, so that they can handle old and new documents side-by-side. Code for handling a format version is called a **Validator**. Validators are responsible for:
+Earthstar libraries SHOULD separate out the code related to each format, so that they can handle old and new documents side-by-side. Code for handling a format version is called a **Formatter**. Formatters are responsible for:
 
 - Hashing documents
-- Signing new documents
+- Generating new documents (and possibly attachments) from a given input
+- Wiping user content from documents (i.e. text and attachments)
 - Checking document validity when ingesting documents. See the [Document Validity](#document-validity) section for more info.
 
-Therefore each different format can have different ways of hashing, signing, and validating documents.
-
-TODO: define basic rules that documents of all formats must follow
+Therefore each different format can have different ways of generating, hashing, signing, and validating documents.
 
 ### Path
 
@@ -748,7 +770,9 @@ The `path` field is a string following the rules described in [Paths](#paths).
 
 The document is invalid if the author does not have permission to write to the path, following the rules described in [Write Permissions and Path Ownership](#write-permissions-and-path-ownership).
 
-The path MUST contain at least one `!` character, anywhere, IF AND ONLY IF the document is ephemeral (has non-null `deleteAfter`).
+The path MUST contain at least one `!` character, anywhere, IF AND ONLY IF the document is ephemeral (has non-absent `deleteAfter`).
+
+The path MUST end in a file extension (`.something`), at the end of path, IF AND ONLY IF the document has an attachment (has non-absent `attachmentHash` and `attachmentSize` fields). The last portion of a identity's public address MUST NOT be interpreted as a file extension.
 
 ### Timestamp
 
@@ -812,11 +836,11 @@ Libraries MUST check for and delete all expired documents at least once an hour 
 
 Libraries MUST filter out expired documents from queries and lookups and not return them. Libraries MAY or MAY NOT actually delete them when they are encountered during querying; they may choose to wait until the next scheduled hourly deletion time.
 
-Expired documents MUST not be sent or accepted during a sync. Both peers in a sync should filter the incoming and outgoing documents to enforce this. This is the responsibility of the [Format Validator](#format).
+Expired documents MUST not be sent or accepted during a sync. Both peers in a sync should filter the incoming and outgoing documents to enforce this. This is the responsibility of the [Formatter](#format).
 
 The `deleteAfter` field holds the timestamp after which a document is to be deleted. It is a timestamp with the same format and range as the regular `timestamp` field.
 
-Regular, non-ephemeral documents have `deleteAfter: null`. The field is still required and may not be omitted.
+Regular, non-ephemeral documents omit the `deleteAfter` field.
 
 Unlike the `timestamp` field, the `deleteAfter` field is expected to be in the future compared to the current wall-clock time. Once the `deleteAfter` time is in the past, the document becomes invalid.
 
@@ -844,11 +868,35 @@ See [Serialization for Hashing and Signing](#serialization-for-hashing-and-signi
 
 Like the hashes and crypto keys in Earthstar, this is the raw binary signature encoded directly into base32. Do not encode the binary signature into a hex string and then into base32.
 
-### Workspace
+### Share
 
-The `workspace` field holds a workspace address, formatted according to the rules described in [Workspace Addresses](#workspace-addresses).
+The `share` field holds a share address, formatted according to the rules described in [Share Addresses](#share-addresses).
 
-Each document belongs to exactly one workspace and cannot be moved to another workspace (because that would cause the signature to become invalid).
+Each document belongs to exactly one share and cannot be moved to another share (because that would cause the signature to become invalid).
+
+### Attachments: `attachmentHash` and `attachmentSize`
+
+Documents may have attachments, which are arbitrary binary data. To be considered valid, a document must have the following IF AND ONLY IF said document has an attachment:
+
+- An `attachmentSize` field with the size of the document's attachment in bytes.
+- An `attachmentHash` field with the sha256 hash of the attachment encoded as base32.
+- A `path` ending with a file extension, e.g. `/docs/notes.pdf`
+
+> **Why documents with attachments need file extensions**
+>
+> File extensions are a human-readable and compact way to indicate what an attachment contains and how it should be interpreted. But in addition to this, allowing only documents with attachments with file extensions means that documents with and without attachments can never collide on the same path.
+
+## Wiping document contents
+
+The only way to truly delete every trace of a document is to use an ephemeral document. 
+
+However, non-ephemeral documents may have their contents (`text` and attachment) wiped from them. These documents retain all other fields, such as their path, author, and timestamp, and will continue to be synced with other peers. The attachment's bytes will be erased if no reference to them exists in other any document.
+
+A document can be wiped by setting the `text` field to an empty string.
+
+To erase an attachment, the `attachmentSize` field MUST be set to zero and the `attachmentHash` field MUST be set to the sha256 hash of an empty string encoded to base32 (`b4oymiquy7qobjgx36tejs35zeqt24qpemsnzgtfeswmrw6csxbkq`). The `text` field of the same document MUST be an empty string.
+
+A peer MUST delete an attachment with no corresponding documents within an hour.
 
 ## Document Serialization
 
@@ -862,7 +910,7 @@ They have different needs and we use different formats for each.
 
 ### Serialization for Hashing and Signing
 
-When an author signs a document, they're actually signing a hash of the document. We need a deterministic, standardized, and simple way to serialize a document to a sequence of bytes that we can hash. This is a **one-way** conversion -- we never need to deserialize this format.
+When an author signs a document, they're actually signing a hash of the document. We need a deterministic, standardized, and simple way to serialize a document to a sequence of bytes that we can hash. This is a **one-way** conversion — we never need to deserialize this format.
 
 Earthstar libraries MUST use this exact process.
 
@@ -877,9 +925,7 @@ let hashDocument(document): string => {
     //   All string fields must be printable ASCII only
     //   Fields must have one of the following types:
     //       string
-    //       string | null
     //       integer
-    //       integer | null
     //   Note that "string | integer" is not allowed
     //   because we'd have no way of telling "123" apart from 123.
 
@@ -888,10 +934,7 @@ let hashDocument(document): string => {
     For each field and value in the document, sorted in lexicographic order by field name: {
 
         // Skip the content and signatue fields
-        if (field === 'content' || field === 'signature') { continue; }
-
-        // Skip null fields
-        if (value === null) { continue; }
+        if (field === 'text' || field === 'signature') { continue; }
 
         // Otherwise, append the fieldname and value.
         // Tab and newline are our field separators.
@@ -932,103 +975,13 @@ let signDocument(authorKeypair, document): void => {
 
 Preconditions that make this work:
 
-- Documents can only hold integers, strings, and null -- no floats or nested objects that could increase complexity or be nondeterministic
+- Documents can only hold integers, strings, and null — no floats or nested objects that could increase complexity or be nondeterministic
 - No document field name or field content can contain `\t` or `\n`, except `content`, which is not directly used (we use `contentHash` instead). So we can safely use tab and newline as field separators.
 - We don't need to worry about telling strings and integers apart because each field can hold an integer, or a string, but not both. So we don't need to quote our strings with quote marks.
 
-The reference implementation is in `hashDocument()` in `src/validators/es4.ts`. Here's a summary:
-
-```typescript
-// Typescript-style psuedocode
-
-let serializeDocumentForHashing = (doc: Document): string => {
-  // We've hardcoded the algorithm here since we
-  //  know what the fields are.
-  // Fields are in lexicographic order.
-  // Convert numbers to strings.
-  // Omit properties that are null.
-  // Use the contentHash instead of the content.
-  // Omit the signature.
-  return (
-    `author\t${doc.author}\n` +
-    `contentHash\t${doc.contentHash}\n` +
-    (doc.deleteAfter === null ? "" : `deleteAfter\t${doc.deleteAfter}\n`) +
-    `format\t${doc.format}\n` +
-    `path\t${doc.path}\n` +
-    `timestamp\t${doc.timestamp}\n` +
-    `workspace\t${doc.workspace}\n`
-    // Note the \n is included on the last item too.
-  );
-};
-
-let hashDocument = (doc: Document): Base32String => {
-  return bufferToBase32(sha256AsBuffer(serializeDocumentForHashing(doc)));
-};
-
-let signDocument = (keypair: AuthorKeypair, doc: Document): Document => {
-  return {
-    ...doc,
-    signature: sign(keypair, hashDocument(doc)),
-  };
-};
-```
-
-Actual example data:
-
-```
-INPUT (shown as JSON, but is actually in memory before serialization)
-
-{
-  "format": "es.4",
-  "workspace": "+gardening.friends",
-  "path": "/wiki/shared/Flowers",
-  "contentHash": "bt3u7gxpvbrsztsm4ndq3ffwlrtnwgtrctlq4352onab2oys56vhq",
-  "content": "Flowers are pretty",
-  "author": "@suzy.bjzee56v2hd6mv5r5ar3xqg3x3oyugf7fejpxnvgquxcubov4rntq",
-  "timestamp": 1597026338596000,
-  "deleteAfter": null,
-  "signature": ""  // is empty before signing has occurred
-}
-
-SERIALIZED FOR HASHING
-(tabs and newlines should be real but
- are represented here as \t \n):
-
-author\t@suzy.bjzee56v2hd6mv5r5ar3xqg3x3oyugf7fejpxnvgquxcubov4rntq\n
-contentHash\tbt3u7gxpvbrsztsm4ndq3ffwlrtnwgtrctlq4352onab2oys56vhq\n
-format\tes.4\n
-path\t/wiki/shared/Flowers\n
-timestamp\t1597026338596000\n
-workspace\t+gardening.friends\n
-
-HASHED WITH SHA256 AND ENCODED AS BASE32:
-
-b6nyw25gum45gcxbhez3ykx3jopkhlfjj2rnmfb7rt6yhkszvidsa
-
-AUTHOR KEYPAIR:
-(author address must match the author in the document)
-
-{
-  "address": "@suzy.bjzee56v2hd6mv5r5ar3xqg3x3oyugf7fejpxnvgquxcubov4rntq",
-  "secret": "b6jd7p43h7kk77zjhbrgoknsrzpwewqya35yh4t3hvbmqbatkbh2a"
-}
-
-SIGNATURE AS BASE32:
-
-bjljalsg2mulkut56anrteaejvrrtnjlrwfvswiqsi2psero22qqw7am34z3u3xcw7nx6mha42isfuzae5xda3armky5clrqrewrhgca
-
-FINAL SIGNED DOCUMENT:
-
-{
-    ...same as the original, except with signature:
-
-    "signature": "bjljalsg2mulkut56anrteaejvrrtnjlrwfvswiqsi2psero22qqw7am34z3u3xcw7nx6mha42isfuzae5xda3armky5clrqrewrhgca"
-}
-```
-
-> **Why use `contentHash` instead of `content` for hashing documents?**
+> **Why use `textHash` instead of `text` for hashing documents?**
 >
-> This lets us drop the actual content (to save space) but still verify the document signature. This will be useful in the future for "sparse mode".
+> This lets us drop the actual content (to save space) but still verify the document signature.
 
 ### Serialization for Network
 
@@ -1037,20 +990,6 @@ This is a **two-way** conversion between memory and bytes.
 Earthstar doesn't have strong opinions about networking. This format does not need to be standardized, but it's good to choose widely used familiar tools.
 
 Apps and libraries SHOULD use JSON (encoded as UTF-8) as a default choice unless there are important reasons to choose otherwise. JSON is widely known, widely supported, and fits within most network protocols easily.
-
-**Other options to consider**:
-
-- Encodings
-  - JSON
-  - newline-delimited JSON for streaming lots of documents
-  - CBOR
-  - msgpack
-- Protocols
-  - REST
-  - JSON-RPC
-  - GraphQL (relies on JSON)
-  - gRPC?
-  - muxrpc (from SSB)
 
 ### Serialization for Storage
 
@@ -1070,9 +1009,9 @@ It would be nice if this was an archival format (corruption-resistant and widely
 - leveldb or similar key-value databases (with extra indexes)
 - a bunch of JSON files, one for each document (with extra indexes)
 
-For exporting and importing data:
+**For exporting and importing data**:
 
-- one giant newline-delimited JSON file, one document per line, is easier to parse than a giant JSON array of documents.
+- one giant newline-delimited JSON file, one document per line, is easier to parse than a giant JSON array of documents, and streamable.
 
 ## Querying
 
@@ -1082,100 +1021,42 @@ This query format will become standardized because it will be used for querying 
 
 This only supports relatively simple ways of querying and filtering documents because we want to make it easy to use many different kinds of backend storage which may have limited query capabilities. Apps and libraries MAY add extensions for more powerful querying if they're able to, but this should be considered the minimal set for compatability across peers.
 
-The recommended query object format, expressed in Typescript, is... (see [query.ts](https://github.com/earthstar-project/earthstar/blob/main/src/storage/query.ts) for the latest version of this):
+The recommended query object format, expressed in Typescript:
 
 ```typescript
-/**
- * Query objects describe how to query a Storage instance for documents.
- *
- * An empty query object returns all latest documents.
- * Each of the following properties adds an additional filter,
- * narrowing down the results further.
- * The exception is that history = 'latest' by default;
- * set it to 'all' to include old history documents also.
- *
- * HISTORY MODES
- * - `latest`: get latest docs, THEN filter those.
- * - `all`: get all docs, THEN filter those.
- */
 export interface Query {
-  //=== filters that affect all documents equally within the same path
+  /** Whether to fetch all historical versions of a document or just the latest versions. */
+  historyMode?: HistoryMode;
 
-  /** Path exactly equals... */
-  path?: string;
+  //   "path ASC" is actually "path ASC then break ties with timestamp DESC"
+  //   "path DESC" is the reverse of that
+  /** The order to return docs in. Defaults to `path ASC`. */
+  orderBy?: "path ASC" | "path DESC" | "localIndex ASC" | "localIndex DESC";
 
-  /** Path begins with... */
-  pathStartsWith?: string;
+  /** Only fetch documents which come after a certain point. */
+  startAfter?: {
+    /** Only documents after this localIndex. Only works when ordering by localIndex. */
+    localIndex?: number;
 
-  /** Path ends with this string.
-   * Note that pathStartsWith and pathEndsWith can overlap: for example
-   * { pathStartsWith: "/abc", pathEndsWith: "bcd" } will match "/abcd"
-   * as well as "/abc/xxxxxxx/bcd".
-   */
-  pathEndsWith?: string;
+    /** Only documents after this path. Only works when ordering by path. */
+    path?: string;
+  };
 
-  //=== filters that differently affect documents within the same path
+  // then apply filters, if any
+  filter?: {
+    path?: string;
+    pathStartsWith?: string;
+    pathEndsWith?: string;
+    author?: string;
+    timestamp?: number;
+    timestampGt?: number;
+    timestampLt?: number;
+  };
 
-  /** Timestamp exactly equals... */
-  timestamp?: number;
-
-  /** Timestamp is greater than... */
-  timestampGt?: number;
-
-  /** Timestamp is less than than... */
-  timestampLt?: number;
-
-  /**
-   * Document author.
-   *
-   * With history:'latest' this only returns documents for which
-   * this author is the latest author.
-   *
-   * With history:'all' this returns all documents by this author,
-   * even if those documents are not the latest ones anymore.
-   */
-  author?: AuthorAddress;
-
-  contentLength?: number; // in bytes as utf-8.  TODO: how to treat sparse docs with null content?
-  contentLengthGt?: number;
-  contentLengthLt?: number;
-
-  //=== other settings
-
-  /**
-   * If history === 'latest', return the most recent doc at each path,
-   * then apply other filters to that set.
-   *
-   * If history === 'all', return every doc at each path (with each
-   * other author's latest version), then apply other filters
-   * to that set.
-   *
-   * Default: latest
-   */
-  history?: HistoryMode;
-
-  /**
-   * Only return the first N documents.
-   * There's no offset; use continueAfter instead.
-   */
+  /** The maximum number of documents to return. */
   limit?: number;
 
-  /**
-   * Accumulate documents until the sum of their content length <= limitByts.
-   *
-   * Content length is measured in UTF-8 bytes, not unicode characters.
-   *
-   * If some docs have length zero, stop as soon as possible (don't include them).
-   */
-  limitBytes?: number;
-
-  /**
-   * Begin with the next matching document after this one:
-   */
-  continueAfter?: {
-    path: string;
-    author: string;
-  };
+  formats?: string[];
 }
 ```
 
@@ -1185,80 +1066,35 @@ Syncing is the process of trading documents between two peers to bring each othe
 
 Syncing can occur locally (within a process, between two Storage instances) as well as across a network.
 
-Documents are locked into specific workspaces; therefore syncing can't transfer documents between workspaces, only between different peers that hold the same workspace.
+Documents are locked into specific shares; therefore syncing can't transfer documents between shares, only between different peers that hold the same share.
 
-### Networking
+**The method used by peers to sync with each other is not yet stable, and will be standardized in a separate specification.**.
 
-The network protocols used by peers to sync documents are not standardized yet.
+### Share Secrecy
 
-### Workspace Secrecy
+Knowing a share address gives a user the power to read and write to that share, so they need to be kept secret.
 
-Knowing a workspace address gives a user the power to read and write to that workspace, so they need to be kept secret.
+It MUST be impossible to discover new shares through the syncing process. Peers MUST keep their shares secret and only transmit data when they are sure the other peer also knows the address of the same share.
 
-It MUST be impossible to discover new workspaces through the syncing process. Peers MUST keep their workspaces secret and only transmit data when they are sure the other peer also knows the address of the same workspace.
+One method of disclosing which shares two peers have in common is as follows:
 
-Here's an algorithm to exchange common workspaces without discovering new ones:
+- Peer A generates a random string to be used as a salt during hashing.
+- Peer A hashes the share addresses it knows of using the salt.
+- Peer A sends the salt and hashed addresses to Peer B.
+- Peer B hashes the share addresses it knows of using the salt obtained from Peer A.
+- Peer B sees if any of the hashes it has produced matches any of the hashes it received from Peer A.
 
-- Peer1 and Peer2 each generate a random string of entropy and send the entropy to each other.
-- Each peer shares `sha256(workspaceAddress + entropyFrom1 + entropyFrom2)` for each of their workspaces
+If there is a match, then both peers have that share in common. Where there are no matches, each peer will still have no knowledge of which shares the other knows of.
 
-The hashes they have in common correspond to the workspaces they both know about.
-
-The hashes that are unique to one peer will reveal no information to the other peer, except how many workspaces the other peer has.
-
-They can now proceed to sync each of their common workspaces, one at a time.
+They can now proceed to sync each of their common shares.
 
 #### Eavesdropping
 
-An eavesdropper observing this exchange will know both pieces of entropy, and can confirm that the peers have or don't have workspaces that the eavesdropper already knows about, but can't un-hash the exchanged values to get the workspace addresses they don't already know.
+An eavesdropper observing this exchange will know both pieces of entropy, and can confirm that the peers have or don't have shares that the eavesdropper already knows about, but can't un-hash the exchanged values to get the share addresses they don't already know.
 
-But once the peers start trading actual workspace data, an eavesdropper can observe the workspace addresses in plaintext in the exchanged documents.
+But once the peers start trading actual share data, an eavesdropper can observe the share addresses in plaintext in the exchanged documents.
 
-Peers SHOULD talk to each other over an encrypted connection such as HTTPS or [secret-handshake](https://www.npmjs.com/package/secret-handshake).
-
-### Sync Queries
-
-(This feature is not implemented yet.)
-
-During a sync, apps SHOULD be able to specify which documents they're willing to share, and which they're interested in getting.
-
-Apps do this by defining **Sync queries**. An app SHOULD be able to define:
-
-- An array of **incoming sync queries** -- what you want
-- An array of **outgoing sync queries** -- what you will share
-
-The queries in each array are additive: if a doument matches any query in the array, the document is chosen.
-
-This contrasts with the behavior of query fields inside each query object, each of which narrows the results down further.
-
-By taking advantage of these two techniques, both AND and OR type behaviour is possible.
-
-Example:
-
-```typescript
-// ask for all the About documents, and the recent Wiki documents
-let incomingQueries = [
-  {
-    pathStartsWith: "/about/",
-    history: "all",
-  },
-  {
-    pathStartsWith: "/wiki/",
-    history: "all",
-    tiemstampGt: 15028732938984,
-  },
-];
-
-// only share documents I wrote myself
-let outgoingQueries = [
-  {
-    author: "@suzy.bjzee56v2hd6mv5r5ar3xqg3x3oyugf7fejpxnvgquxcubov4rntq",
-    history: "all",
-  },
-];
-```
-
-(Sync queries are is not implemented yet as of March 2021.)
+Peers SHOULD talk to each other over an encrypted connection such as HTTPS.
 
 ### Resolving Conflicts
 
@@ -1268,35 +1104,37 @@ See the [Data model](#data-model) section for details about conflict resolution.
 
 These are not implemented or specified yet:
 
-### Sparse Mode
+### Invite-Only Shares
 
-Allow handling documents without their content. Then the content can be fetched later, on-demand. This is especially useful for large documents that you don't always want, like image files in a wiki.
+Invite-only shares will have a **share key** and **share secret**. The key is used as the share suffix, and the secret is given out-of-band to authors who should be able to write.
 
-Sparse documents would have `content: null` meaning the content is unknown or absent. It's different than `content: ''` which means the document is empty.
+Only authors who know the share key can write to an invite-only share. They will sign their documents with the share secret (in a new field, `shareSignature`, in addition to the regular author signature).
 
-Doc signatures can be verified without having the content, because we only include the contentHash in the signature.
+This will limit who can write, but anyone knowing the share address can still read. To limit readers, authors may choose to encrypt their document content using the share key so that anyone with the share secret can decrypt it.
 
-See more [in this issue.](https://github.com/earthstar-project/earthstar/issues/33)
+We need a way to tell if a share is invite-only or not just by looking at its address. Perhaps it's invite-only if the suffix looks like a base32 pubkey (53 chars starting with 'b').
 
-### Invite-Only Workspaces
+---
 
-Right now anyone can write to a workspace if they know its address.
+Right now anyone can write to a share if they know its address.
 
-We can add a second kind of workspace which has a pubkey in its address. Every item posted in this kind of workspace must be signed by the workspace private key AND the author private key. This will be enforced by the feed format validator class.
+In the future, Earthstar will support **invite-only** shares.
 
-So to write you need to know the workspace private key. You can give the workspace secret to someone to invite them.
+These separate "read permission" from "read and write permission". This enables use-cases such as
 
-Invite-only workspaces could also have their documents encrypted to the public key of the workspace. Then only people who know the workspace key can read the documents.
+- Shares where a few authors publish content to a wide audience of readers (who otherwise would be able to write to the share once they know its address)
+- Replica servers which host shares without the ability to write their own docs into the share
 
-This separates permissions into two tiers depending on whether or not you know the workspace private key:
+We can do this by adding a second kind of share which has a pubkey in its address. Every item posted in this kind of share must be signed by the share's private key AND the author private key. This will be enforced by the feed format validator class.
+
+So to write you need to know the share's private key. You can give the share secret to someone to invite them.
+
+Invite-only shares could also have their documents encrypted to the public key of the share. Then only people who know the share key can read the documents.
+
+This separates permissions into two tiers depending on whether or not you know the share private key:
 
 1. sync all documents (read-only), and only understand the unencrypted ones
-2. also understand all documents, and be able to write documents.
-
-And that opes up new possibilities:
-
-- Peers and pubs can host workspaces without being able to edit them or maybe even understand them
-- A few authors could publish a workspace that many people could read but not edit. It could be a blog, or it could contain the code files for an Earthstar app.
+2. also understand all documents, and be able to write documents
 
 See more [in this issue.](https://github.com/earthstar-project/earthstar/issues/7)
 
@@ -1309,9 +1147,7 @@ Peers could encrypt their communications with SSL, Noise Protocol, etc.
 The document `content` field can be encrypted by apps in any way they like. We have some convenient keys available already:
 
 - You can write a private message to one author using their public key
-- You can write a private message to the entire workspace using the workspace public key (if it's an invite-only workspace)
-
-We could use a format like [private-box](https://www.npmjs.com/package/private-box) to allow multiple recipients.
+- You can write a private message to the entire share using the share public key (if it's an invite-only share)
 
 However, the rest of the document metadata will be in plaintext including the author, path, and timestamp, which might reveal important information. App authors would have to use uninformative paths. [This issue](https://github.com/earthstar-project/earthstar/issues/11) discusses ways of nesting the metadata inside another document to obscure it.
 
@@ -1321,4 +1157,4 @@ Documents that can't be edited. They may or may not be able to be deleted, and t
 
 This would probably involve a new optional document field, `immutable`.
 
-See more [in this issue.](https://github.com/earthstar-project/earthstar/issues/8).
+See more [in this issue](https://github.com/earthstar-project/earthstar/issues/8).
