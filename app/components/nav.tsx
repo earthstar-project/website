@@ -25,7 +25,8 @@ const sitemap: Sitemap = {
       `https://doc.deno.land/https://deno.land/x/earthstar_replica_server@v${LATEST_RS_VERSION}/mod.ts`,
   },
   Specifications: {
-    "Data specification": "/specs/data-spec",
+    "es.5 Data Format": "/specs/data-spec-es5",
+    "es.4 Data Format": "/specs/data-spec-es4",
   },
   Community: {
     "Contribute code": "/community/contribute",

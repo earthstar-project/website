@@ -55,6 +55,8 @@ export default async function getDoc(
     }
   }
 
+  console.log(mdxResult);
+
   return {
     title: mdxResult.frontmatter.meta.title,
     description: mdxResult.frontmatter.meta.description,
