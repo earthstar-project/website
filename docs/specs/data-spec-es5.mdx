@@ -832,9 +832,9 @@ Documents may be regular or ephemeral. Ephemeral documents have an expiration da
 >
 > They also provide more privacy. Users can always delete their regular documents, but that deletion must propagate across all the peers. Ephemeral documents will be deleted from the entire network when they expire even if some peers have lost connectivity or you are not there to request a deletion at that time.
 
-Libraries MUST check for and delete all expired documents at least once an hour (while they are running). Deleted documents MUST be actually deleted, not just marked as ignored.
+Libraries MUST check for and delete all expired documents at least once an hour (while they are running). Deleted documents MUST be actually deleted, not just marked as ignored. If an expired document has an attachment which no other documents refer to, this attachment MUST also be deleted.
 
-Libraries MUST filter out expired documents from queries and lookups and not return them. Libraries MAY or MAY NOT actually delete them when they are encountered during querying; they may choose to wait until the next scheduled hourly deletion time.
+Libraries MUST filter out expired documents from queries and lookups and not return them. Libraries MAY or MAY NOT actually delete them when they are encountered during querying; they may choose to wait until the next scheduled hourly deletion time. In addition libraries MUST not return the attachments for expired documents.
 
 Expired documents MUST not be sent or accepted during a sync. Both peers in a sync should filter the incoming and outgoing documents to enforce this. This is the responsibility of the [Formatter](#format).
 
