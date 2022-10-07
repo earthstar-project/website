@@ -50,13 +50,13 @@ import { ReplicaDriverSqlite } from "earthstar/node";
 
 To integrate Earthstar into your program, your application will probably need a single instance of Earthstar's `Peer` class, which holds the replicas for many shares and is able to synchronise them with other peers.
 
-<img src="/api-tour/application.svg" class="bg-gray-200 p-4"/>
+<img src="/api-tour/application.svg" class="bg-gray-200 p-4" alt="A graphic representation showing your application as part of shares within a peer" />
 
 Nearly all of Earthstar's classes can be configured to suit your specific use-case, For example, a `Replica` can be configured to persist data to IndexedDB if you're building a browser app, or Sqlite if you're building a server or command-line tool.
 
 ## Peer
 
-<img src="/api-tour/peer.svg" class="bg-gray-200 p-4"/>
+<img src="/api-tour/peer.svg" class="bg-gray-200 p-4" alt="A peer holding many replicas" />
 
 A `Peer` is responsible for holding many `Replica`s, and offers many ways to access and manage them. A `Peer` can hold one `Replica` for each share.
 
@@ -84,7 +84,7 @@ When two peers synchronise with one another, they perform a 'salted handshake' t
 
 ## Replica
 
-<img src="/api-tour/replica.svg" class="bg-gray-200 p-4"/>
+<img src="/api-tour/replica.svg" class="bg-gray-200 p-4" alt="A diagram showing the flow of writing docs with a validator and a driver in a share which then can be queried to bring out the docs again" />
 
 A local replica of a share's documents. Provides operations for querying and setting documents.
 
@@ -121,7 +121,7 @@ await myReplica.set(myKeypair, {
 
 ## Replica drivers
 
-<img src="/api-tour/storage-driver.svg" class="bg-gray-200 p-4"/>
+<img src="/api-tour/storage-driver.svg" class="bg-gray-200 p-4" alt="Replica drivers control writing and reading docs" />
 
 Earthstar can be used on in browsers, on servers, the command line, or anywhere JavaScript can be run. There's no single way to persist data in all these environments, which is why we made `Replica` able to use different `ReplicaDrivers` suited to the environment its being used in.
 
@@ -146,7 +146,7 @@ It's possible to create your own replica drivers which conform to `IReplicaDrive
 
 ## Validators
 
-<img src="/api-tour/validator.svg" class="bg-gray-200 p-4"/>
+<img src="/api-tour/validator.svg" class="bg-gray-200 p-4" alt="What a validator does" />
 
 Earthstar shares are able to store documents of different formats. But most of the time, you'll want to use the built-in one from this library: `es.4`. As such, Earthstar currenly only offers one format validator: `FormatValidatorEs4`.
 
@@ -156,7 +156,7 @@ It's possible to write your own validator which adheres to `IFormatValidator`. <
 
 ## Identity
 
-<img src="/api-tour/identity.svg" class="bg-gray-200 p-4"/>
+<img src="/api-tour/identity.svg" class="bg-gray-200 p-4" alt="An image of a crypto key with a face" />
 
 An identity is a keypair containing a public address and a secret. This keypair is used to sign documents whenever they're written. The public address can be freely distributed, but the secret should be, well, secret.
 
@@ -170,7 +170,7 @@ Technically speaking, these are ed25519 keypairs encoded in base32.
 
 ## Query
 
-<img src="/api-tour/query.svg" class="bg-gray-200 p-4"/>
+<img src="/api-tour/query.svg" class="bg-gray-200 p-4" alt="A graphical representation of a query" />
 
 Used to describe a document query. Used with `ReplicaAsync.query` and `QueryFollower`.
 
@@ -178,7 +178,7 @@ Used to describe a document query. Used with `ReplicaAsync.query` and `QueryFoll
 
 ## Doc
 
-<img src="/api-tour/doc.svg" class="bg-gray-200 p-4"/>
+<img src="/api-tour/doc.svg" class="bg-gray-200 p-4" alt="A grapichal representation of a doc" />
 
 Represents some cryptographically-signed user data. The contents of a `Doc` can only be changed via `ReplicaAsync`. A document cannot be moved from one share to another. 
 
@@ -186,7 +186,7 @@ Represents some cryptographically-signed user data. The contents of a `Doc` can 
 
 ## Crypto
 
-<img src="/api-tour/crypto.svg" class="bg-gray-200 p-4"/>
+<img src="/api-tour/crypto.svg" class="bg-gray-200 p-4" alt="A key lock" />
 
 `Crypto` is used internally for signing and verifying documents using [ed25519](https://ed25519.cr.yp.to). In most cases, you will want to use it to generate new identity keypairs:
 
@@ -222,7 +222,7 @@ setGlobalCryptoDriver(CryptoDriverChloride);
 
 ## Syncers
 
-<img src="/api-tour/syncer.svg" class="bg-gray-200 p-4"/>
+<img src="/api-tour/syncer.svg" class="bg-gray-200 p-4" alt="A syncer with a peer" />
 
 Most of the time you will want to use the `Peer.sync` convenience method to synchronise with other peers. But if you are building something special — for example a server, or something with Web Workers and [`BroadcastChannel`](https://developer.mozilla.org/en-US/docs/Web/API/BroadcastChannel) — `Syncer` provides a more flexible API which you can use in combination with classes conforming to `earthstar-streaming-rpc`'s `ITransport` type.
 
@@ -249,7 +249,7 @@ broadcastChannelSyncer.close();
 
 ## QueryFollower
 
-<img src="/api-tour/query-follower.svg" class="bg-gray-200 p-4"/>
+<img src="/api-tour/query-follower.svg" class="bg-gray-200 p-4" alt="A conveyor belt flow with replica and query delivering docs" />
 
 Listens to events from a `Replica`, and if it matches the given query, sends an event to a [`SuperBus`](https://github.com/cinnamon-bun/superbus).
 
@@ -263,14 +263,14 @@ const myMarkdownFollower = new QueryFollower(myReplica, {
 });
 
 // Print every newly created / updated Markdown doc to the console
-myJpgFollower.bus.on((event: LiveQueryEvent) => {
+myMarkdownFollower.bus.on((event: LiveQueryEvent) => {
   if (event.kind === "success") {
     console.log("A markdown doc was updated or created!");
   }
 });
 
 // Start the follower.
-myJpgFollower.hatch();
+myMarkdownFollower.hatch();
 ```
 
 A `QueryFollower` must always be _hatched_ first. Hatching makes it catch up with all existing documents which match the query, after which it starts listening for new events.
@@ -278,14 +278,14 @@ A `QueryFollower` must always be _hatched_ first. Hatching makes it catch up wit
 When you're done with a `QueryFollower`, you should close it to stop callbacks from running:
 
 ```typescript
-myJpgFollower.close();
+myMarkdownFollower.close();
 ```
 
 <DocLink apiName="IQueryFollower"/>
 
 ## ReplicaCache
 
-<img src="/api-tour/replica-cache.svg" class="bg-gray-200 p-4"/>
+<img src="/api-tour/replica-cache.svg" class="bg-gray-200 p-4" alt="A folder holding a replica with cached docs" />
 
 `ReplicaAsync` offers a strictly asynchronous interface to a share's contents. Sometimes a synchronous API would make life far easier, and `ReplicaCache` does its best to provide that.
 
