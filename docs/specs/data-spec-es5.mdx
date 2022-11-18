@@ -19,7 +19,7 @@ Document version: 2022-08-22.1
 This document describes:
 * The format of Earthstar documents
 * The cryptography used for identities and signatures
-* The procedures needed for running a single local replica: signing, ingesting, and verifying documents; ingesting a verifying attachments.
+* The procedures needed for running a single local replica: signing, ingesting, and verifying documents; ingesting and verifying attachments
 
 This document may discuss, but does NOT prescribe, these topics which are still in development:
 * Network protocols
@@ -34,7 +34,7 @@ To make your own Earthstar library, you'll need:
 
 ### ed25519 Signatures
 
-This is the same cryptography format used by Secure Scuttlebutt and DAT/hyper.
+[ed25519](https://ed25519.cr.yp.to/) is the same cryptography format used by [Secure Scuttlebutt](https://scuttlebutt.nz/) and [hypercore](https://hypercore-protocol.org/).
 
 ### base32 Encoding
 
@@ -69,11 +69,11 @@ Earthstar messages are typically queried in a variety of ways. This is easiest t
 
 **Identity** — A keypair which writes documents to a share. Identities are identified by an ed25519 public key in a format called an **identity address**. It's safe to use the identity keypair from multiple devices simultaneously.
 
-**Share** — A collection of documents. Shares are identified by a **share address**. Share are separate, unrelated worlds of data. Each document exists within exactly one share.
+**Share** — A collection of documents. Shares are identified by a **share address**. Shares are separate, unrelated worlds of data. Each document exists within exactly one share.
 
 **Format** — The Earthstar document specification is versioned. Each version of the specification is called a document **format**, and the code that handles that format is called a **formatter**.
 
-**Peer** — A device which holds Earthstar data and wishes to sync with other peers. Peers may be individual users' devices and/or replica servers. A peer may hold data from multiple shares.
+**Peer** — A device which holds Earthstar data and wishes to sync with other peers. Peers may, for example, be individual users' devices and/or replica servers. A peer may hold data from multiple shares.
 
 **Attachment** — Arbitrary binary data which a document may refer to.
 
@@ -105,7 +105,7 @@ Share: "+gardening.friends"
     b84ahi8ah: <bytes>
 ```
 
-A peer MAY hold data from many shares. Each share's data is treated independently. Each document within a share is also independent; they don't form a chain or feed or refer to each other (e.g. Merkle backlinks).
+A peer MAY hold data from many shares. Each share's data is treated independently. Each document within a share is also independent; they don't form a chain or feed or refer to each other (e.g. no Merkle backlinks).
 
 Certain documents may have a corresponding attachment. For each known document the peer MAY also hold a corresponding attachment. A peer MUST NOT hold attachments with no corresponding documents.
 
@@ -113,17 +113,15 @@ Certain documents may have a corresponding attachment. For each known document t
 
 A peer MAY hold some or all of the documents from a share, in any combination. Apps MUST assume that any combination of docs may be missing.
 
-Each document in a share exists at a path. For each path, Earthstar keeps the newest document from each identity who has ever written to that path.
+Each document in a share exists at a path. For each path, Earthstar keeps the newest document from each identity who has ever written to that path. "Newest" is determined by comparing the `timestamp` field in the documents. See the next section for details about trusting timestamps.
 
-In this example, the `/wiki/shared/Flowers` path contains 3 documents, because 3 different identities have written there. They may have written there hundreds of times, but we only keep the newest document from each identity, in that path.
-
-"Newest" is determined by comparing the `timestamp` field in the documents. See the next section for details about trusting timestamps.
+In the preceeding example, the `/wiki/shared/Flowers` path contains 3 documents, because 3 different identities have written there. They may have written there hundreds of times, but we only keep the newest document from each identity, in that path.
 
 When looking up a path to retrieve a document, the newest document MUST be returned by default. Apps can also query for the full set of document versions at a path; the older ones are called **history documents**.
 
 ### Ingesting Documents
 
-When a new document arrives and an existing one is already there (from the same identity and same path), the new document overwrites the old one. Earthstar libraries MUST actually delete the older, overwritten document. The author's intent is to remove the old data.
+When a new document arrives and an existing older one is already there (from the same identity and at the same path), the new document overwrites the old one. Earthstar libraries MUST actually delete the older, overwritten document. The author's intent is to remove the old data.
 
 The process of validating and potentially saving an incoming document is called **ingesting**, and it MUST happen to newly obtained documents, whether they come from other peers or are made as local writes. Earthstar libraries MUST use this ingestion process:
 
@@ -162,7 +160,7 @@ Because many documents may refer to the same attachment (e.g. different history 
 
 ## Ingesting Attachments
 
-Newly arrived attachments are only saved if a corresponding document is known, the peer does not yet have the attachment saved, and the attachment's size and hash match the size and hash on the document.
+Newly arrived attachments are only saved if the peer holds a document that refers to an attachment of matching size and hash.
 
 The process of validating and potentially saving an incoming attachment is also called **ingesting**, and it MUST happen to newly obtained attachments, whether they come from other peers or are made as local writes. Earthstar libraries MUST use this ingestion process:
 
