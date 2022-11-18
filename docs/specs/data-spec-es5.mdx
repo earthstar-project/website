@@ -725,11 +725,11 @@ The maximum length of the text field is eight thousand bytes (8,000 bytes). This
 
 When a document has an associated attachment, the text field's contents MUST have a length greater than zero and SHOULD be used to describe the contents of the attachment. This description can be used by peers to evaluate the content of an attachment before downloading it.
 
-When storing formatted text (e.g. JSON or Markdown) apps SHOULD enclose the file extension in parentheses at the end of the path, e.g. `/todos/123(json)`. If the document has an attachment **and** formatted text, the pathname SHOULD NOT include this information, in order to prioritise the attachment's file extension instead. 
+When storing formatted text (e.g. JSON or Markdown) apps SHOULD enclose the file extension in parentheses at the end of the path, e.g. `/todos/123(json)`. If the document has an attachment **and** formatted text, the pathname SHOULD NOT include this information, in order to prioritize the attachment's file extension instead. 
 
 ### Text Hash
 
-The `text` is the `sha256` hash of the `text` data. The hash digest is then encoded from binary to base32 following the usual Earthstar format, with a leading `b`.
+The `textHash` is the `sha256` hash of the `text` data. The hash digest is then encoded from binary to base32 following the usual Earthstar format, with a leading `b`.
 
 Note that hash digests are usually encoded in hex format, but we use base32 instead to be consistent with the rest of Earthstar's encodings.
 
@@ -747,7 +747,7 @@ It MUST consist only of `PRINTABLE_ASCII` characters.
 
 The current format version is `es.5` ("es" is short for Earthstar.)
 
-If the specification is changed in a way that breaks forwards or backwards compatability, the format version MUST be incremented. The version number SHOULD be a single integer, not a semver.
+If the specification is changed in a way that breaks forwards or backwards compatibility, the format version MUST be incremented. The version number SHOULD be a single integer, not a semver.
 
 Other format families may someday exist, such as a hypothetical `ssb.1` which would embed Scuttlebutt messages in Earthstar documents, with special rules for validating the original embedded Scuttlebutt signatures as part of validating the document.
 
@@ -834,9 +834,9 @@ Libraries MUST check for and delete all expired documents at least once an hour 
 
 Libraries MUST filter out expired documents from queries and lookups and not return them. Libraries MAY or MAY NOT actually delete them when they are encountered during querying; they may choose to wait until the next scheduled hourly deletion time. In addition libraries MUST not return the attachments for expired documents.
 
-Expired documents MUST not be sent or accepted during a sync. Both peers in a sync should filter the incoming and outgoing documents to enforce this. This is the responsibility of the [Formatter](#format).
+Expired documents MUST not be sent or accepted during a sync. Both peers in a sync SHOULD filter the incoming and outgoing documents to enforce this. This is the responsibility of the [Formatter](#format).
 
-The `deleteAfter` field holds the timestamp after which a document is to be deleted. It is a timestamp with the same format and range as the regular `timestamp` field.
+The `deleteAfter` field holds the timestamp after which a document is to be deleted. It is a timestamp with the same format and range requirements as the regular `timestamp` field.
 
 Regular, non-ephemeral documents omit the `deleteAfter` field.
 
@@ -870,7 +870,7 @@ Like the hashes and crypto keys in Earthstar, this is the raw binary signature e
 
 The `share` field holds a share address, formatted according to the rules described in [Share Addresses](#share-addresses).
 
-Each document belongs to exactly one share and cannot be moved to another share (because that would cause the signature to become invalid).
+As a consequence, each document belongs to exactly one share and cannot be moved to another share (because that would cause the signature to become invalid).
 
 ### Attachments: `attachmentHash` and `attachmentSize`
 
