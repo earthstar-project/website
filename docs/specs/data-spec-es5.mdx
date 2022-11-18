@@ -234,7 +234,7 @@ ASCII = decimal character code 0 to 127 inclusive
       = hex character code 0x00 to 0x7F inclusive
         (no "extended ASCII" > 0x7F)
 
-PRINTABLE_ASCII = characters " " to "~", inclusive
+PRINTABLE_ASCII = ASCII characters " " to "~", inclusive
                 = decimal character code 32 to 126 inclusive
                 = hex character code 0x20 to 0x7E inclusive
 ```
@@ -565,7 +565,7 @@ Suzy and matt can write here, and nobody else can:
 /chat/~@suzy.bo5sotcncvkr7p4c3lnexxpb4hjqi5tcxcov5b4irbnnz2teoifua~@matt.bwnhvniwd3agqclyxl4lirbf3qpfrzq7lnkzvfelg4afexcodz27a/messages.json
 ```
 
-This path can't be written by anyone. It's **owned** because it contains a tilde `~`, but an owner is not specified. Even though the tilde appears without a `@` following it, it still acts as a marker of an owned path:
+The following path can't be written by anyone. It's **owned** because it contains a tilde `~`, but an owner is not specified. Even though the tilde appears without a `@` following it, it still acts as a marker of an owned path:
 
 ```
 /nobody/can/ever/write/this/path/~
@@ -579,16 +579,16 @@ Note that documents are mutable but their path can never change (or it would be 
 
 Documents may have arbitrary binary bytes associated with them, referred to as attachments. If a document is associated with an attachment, it MUST have a file extension.
 
-The file extension is there to help applications know how to interpret attachment data. For example, documents with JPEG image attachments should have paths ending in `.jpg`, and documents with MP3 audio attachments should have paths ending in `.mp3`.
+The file extension is there to help applications know how to interpret attachment data. For example, documents with JPEG image attachments SHOULD have paths ending in `.jpg`, and documents with MP3 audio attachments SHOULD have paths ending in `.mp3`.
 
-The file extension MUST be positioned at the end of the path to indicate a document with an attachment:
+The file extension MUST be positioned at the end of the path to indicate a document with attachments:
 
 ```
-Valid path for document with attachment:
+Valid path for a document with an attachment:
 
 /images/squirrel.png
 
-Invalid path for document with attachment:
+Invalid path for a document with an attachment:
 /images.png/squirrel
 ```
 
