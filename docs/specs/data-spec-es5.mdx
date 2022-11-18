@@ -678,7 +678,7 @@ The fields above are called the "core fields". All core fields are REQUIRED. Som
 
 Extra fields are FORBIDDEN as part of this core document schema.
 
-All string fields MUST BE limited to `PRINTABLE_ASCII` characters except for `text`, which is utf-8, or string fields can be null if specified above. `PRINTABLE_ASCII` is defined earlier, and notably does not contain newline or tab characters, which are reserved for use in the serialization format we use for hashing and signing.
+All string fields MUST be limited to `PRINTABLE_ASCII` characters except for `text`, which is utf-8, or string fields can be null if specified above. `PRINTABLE_ASCII` is defined earlier, and notably does not contain newline or tab characters, which are reserved for use in the serialization format we use for hashing and signing.
 
 All number fields MUST BE integers, and cannot be NaN or Infinity, but they can be null if specified above.
 
@@ -686,7 +686,7 @@ The order of fields is unspecified except for hashing and signing purposes (see 
 
 ### Document Validity
 
-A document MUST be **valid** in order to be ingested into a replica, either from a local write or a sync.
+A document MUST be **valid** in order to be ingested into a replica, whether from a local write, or a sync, or anywhere else.
 
 Invalid documents MUST be individually ignored when peers are syncing, and the sync MUST NOT be halted just because an invalid document was encountered. Continue syncing in case there are more valid documents.
 
@@ -695,7 +695,7 @@ Documents can be temporarily invalid depending on their timestamp and the curren
 To be **valid** a document MUST pass ALL these rules, which are described in more detail in the following sections:
 
 - `author` is a valid identity address string
-- `text` is a string holding utf-8 data
+- `text` is a compliant string holding utf-8 data
 - `textHash` is the sha256 hash of the `text`, encoded as base32 with a leading `b`, for a total length of 53 characters.
 - `timestamp` is an integer between 10^13 and 2^53-2, inclusive
 - `deleteAfter` is absent, or is a timestamp integer in the same range as `timestamp`
@@ -703,13 +703,13 @@ To be **valid** a document MUST pass ALL these rules, which are described in mor
 - `path` is a valid path string
 - `signature` is a base32 string with a leading `b`. For the `es.4` format it must be 104 characters long including the `b`.
 - `share` is a valid share address string which matches the local share we are intending to write the document to
-- `attachmentSize` is an integer between 0 or 2^53-2, or absent
+- `attachmentSize` is an integer between 0 and 2^53-2 inclusive, or absent
 - `attachmentHash` is a sha256 hash of the associated attachment, encoded as base32 with a leading `b` for a total length of 53 characters, or absent
 - No extra fields.
-- No missing fields
+- No missing fields (unless the fields may be absent)
 - Additional rules about `timestamp` and `deleteAfter` relative to the current wall clock (see below)
-- Author has write permission to path based on tilde placement
-- Signature is cryptographically valid
+- `author` has write permission to path based on tilde placement
+- `signature` is cryptographically valid
 
 ### Author
 
