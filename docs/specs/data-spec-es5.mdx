@@ -931,7 +931,7 @@ let hashDocument(document): string => {
 
     For each field and value in the document, sorted in lexicographic order by field name: {
 
-        // Skip the content and signatue fields
+        // Skip the content and signature fields
         if (field === 'text' || field === 'signature') { continue; }
 
         // Otherwise, append the fieldname and value.
@@ -1092,7 +1092,7 @@ An eavesdropper observing this exchange will know both pieces of entropy, and ca
 
 But once the peers start trading actual share data, an eavesdropper can observe the share addresses in plaintext in the exchanged documents.
 
-Peers SHOULD talk to each other over an encrypted connection such as HTTPS.
+Peers SHOULD thus talk to each other over an encrypted connection such as HTTPS.
 
 ### Resolving Conflicts
 
