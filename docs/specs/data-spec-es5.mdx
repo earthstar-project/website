@@ -6,7 +6,7 @@ meta:
 
 # es5 Data Format
 
-Document version: 2022-08-22.1
+Document version: 2022-11-18.1
 
 > The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
 > NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and
@@ -69,7 +69,7 @@ Earthstar messages are typically queried in a variety of ways. This is easiest t
 
 **Identity** — A keypair which writes documents to a share. Identities are identified by an ed25519 public key in a format called an **identity address**. It's safe to use the identity keypair from multiple devices simultaneously.
 
-**Share** — A collection of documents. Shares are identified by a **share address**. Share are separate, unrelated worlds of data. Each document exists within exactly one share.
+**Share** — A collection of documents. Shares are identified by a **share address**, the public key of an ed25519 keypair. Share are separate, unrelated worlds of data. Each document exists within exactly one share.
 
 **Format** — The Earthstar document specification is versioned. Each version of the specification is called a document **format**, and the code that handles that format is called a **formatter**.
 
@@ -86,7 +86,7 @@ A share's data is a collection of documents authored by various identities, as w
 ```
 // Simplified example of data stored in a share
 
-Share: "+gardening.friends"
+Share: "+gardening.bhyux4opeug2ieqcy36exrf4qymc56adwll4zeazm42oamxtr7heq"
   Path: "/wiki/shared/Flowers"
     Documents in this path:
       { author: @suzy.b..., timestamp: 1500094, text: 'pretty' }
@@ -246,20 +246,29 @@ In this document, everywhere we say ASCII we mean "standard ASCII and not extend
 ### Share Addresses
 
 ```
-SHARE_ADDRESS = "+" NAME "." SUFFIX
-NAME = one ALPHA_LOWER followed by 0 to 14 ALPHA_LOWER_OR_DIGIT
-SUFFIX = one ALPHA_LOWER followed by 0 to 52 ALPHA_LOWER_OR_DIGIT
+SHARE_ADDRESS = "+" NAME "." B32_PUBKEY
+NAME = one ALPHA_LOWER followed by 0 up to and including 15 ALPHA_LOWER_OR_DIGIT 
+B32_PUBKEY = "b" followed by 52 B32_CHAR
+
+SHARE_SECRET = "b" followed by 52 B32_CHAR
 ```
 
 Example:
 
 ```
-+gardening.jfao38ifjhaolie
+address: +gardening.bhyux4opeug2ieqcy36exrf4qymc56adwll4zeazm42oamxtr7heq
+secret: buaqth6jr5wkksnhdlpfi64cqcnjzfx3r6cssnfqdvitjmfygsk3q
 ```
 
-A share address is a sequence of: plus character `+`, **name**, period `.`, **suffix**.
+A share address starts with `+` and is followed by a **name**, period `.`, and a **public key**.
 
 It MUST have those four elements in that order.
+
+- **Names** are chosen by users when generating the share public address and secret. They cannot be changed later.
+
+- **Public keys** are 32-byte ed25519 public keys (just the integer portion, no wrapper or surrounding data structures), encoded as base32 with an extra leading "b". This results in 52 characters of base32 plus the "b", for a total of 53 characters.
+
+- **Private keys** (called "secrets") are also 32 bytes of binary data (just the secret integer), encoded as base32 in the same way as the public key.
 
 The **name**:
 
@@ -267,44 +276,13 @@ The **name**:
 - MUST only contain digits `0-9` and lowercase ASCII letters `a-z`
 - MUST NOT start with a digit
 
-The **suffix**:
-
-- MUST be 1 to 53 characters long, inclusive.
-- MUST only contain digits `0-9` and lowercase ASCII letters `a-z`
-- MUST NOT start with a digit
-
 No uppercase letters are allowed.
-
-Valid examples:
-
-```
-+a.b
-+gardening.friends
-+gardening.j230d9qjd0q09of4j
-+gardening.bnkksi5na3j7ifl5lmvxiyishmoybmu3khlvboxx6ighjv6crya5a
-+bestbooks2019.o049fjafo09jaf
-```
-
-Invalid examples:
-
-```
-+a.b.c       // too many periods
-+80smusic.x  // name can't start with a digit
-+a.4ever     // suffix can't start with a digit
-+PARTY.TIME  // no uppercase letters
-```
 
 > **Why these rules?**
 >
 > These rules allow share addresses to be used as the location part of regular URLs, after removing the `+`.
 
-Share suffixes may be used in a variety of ways:
-
-- meaningful words similar to domain name TLDs
-- random strings that make the share hard to guess
-- public keys in base32 format, starting with `b`, to be used as the **share key** in future versions of Earthstar (see below).
-
-Note that anyone can write to and read from a share if they know its full share address, so it's important to keep share addresses secret if you want to limit their audience.
+Note that anyone can instantiate a replica for a share if they know its full share address, so it's important to keep share addresses secret if you want to limit their audience. Write access to the share is granted by the share secret.
 
 ### Identity Addresses
 
@@ -482,7 +460,7 @@ Invalid: starts with "/@"
 >
 > ```
 > Don't do this:
-> https://mypub.com/+gardening.friends//wiki/Dolphins
+> https://mypub.com/+gardening.gardening.bhyux4opeug2ieqcy36exrf4qymc56adwll4zeazm42oamxtr7heq//wiki/Dolphins
 >                                      ^
 > ```
 >
@@ -641,14 +619,15 @@ This example document is shown as JSON though it can exist in many serialization
 
 ```json
 {
-  "author": "@suzy.bjzee56v2hd6mv5r5ar3xqg3x3oyugf7fejpxnvgquxcubov4rntq",
-  "text": "Flowers are pretty",
-  "textHash": "bt3u7gxpvbrsztsm4ndq3ffwlrtnwgtrctlq4352onab2oys56vhq",
-  "format": "es.5",
-  "path": "/wiki/shared/Flowers",
-  "signature": "bjljalsg2mulkut56anrteaejvrrtnjlrwfvswiqsi2psero22qqw7am34z3u3xcw7nx6mha42isfuzae5xda3armky5clrqrewrhgca",
-  "timestamp": 1597026338596000,
-  "share": "+gardening.friends"
+  author: "@suzy.bce576gvty3ecz5unzynwqwutjzqe6bvhcujec2mimz7n2o5ilkfa",
+  text: "Flowers are pretty",
+  textHash: "bt3u7gxpvbrsztsm4ndq3ffwlrtnwgtrctlq4352onab2oys56vhq",
+  format: "es.5",
+  path: "/wiki/shared/Flowers",
+  timestamp: 1668780332430000,
+  signature: "bjodtzvedk7cgqdngjt4zdj3ufvlsmqc363jht2ygftf73rb6a2huexi6vlopdk6pihijyuv643c3olxardyy2iqzgncj7mss5hqqsdq",
+  share: "+gardening.bhyux4opeug2ieqcy36exrf4qymc56adwll4zeazm42oamxtr7heq",
+  shareSignature: "bf5ifu7jjuxbsmyyxq2wcxmylydtdkwaz3h32zedznezlu4icflg3xwrqtds5ooilavr5zfoyasd6lfdccfyet2wegxmhuvwmjwot6dq",
 }
 ```
 
@@ -665,6 +644,7 @@ interface Doc {
   signature: string; // ed25519 signature of encoded document, signed by author
   timestamp: number; // integer.  when the document was created
   share: string; // a share address
+  shareSignature: string; // ed25519 signature of encoded document, signed by share
   
   // optional fields
   
@@ -703,7 +683,7 @@ To be **valid** a document MUST pass ALL these rules, which are described in mor
 - `deleteAfter` is absent, or is a timestamp integer in the same range as `timestamp`
 - `format` is a string of printable ASCII characters
 - `path` is a valid path string
-- `signature` is a base32 string with a leading `b`. For the `es.4` format it must be 104 characters long including the `b`.
+- `signature` and `shareSignature` are each a base32 string with a leading `b`. For the `es.5` format it must be 104 characters long including the `b`.
 - `share` is a valid share address string which matches the local share we are intending to write the document to
 - `attachmentSize` is an integer between 0 or 2^53-2, or absent
 - `attachmentHash` is a sha256 hash of the associated attachment, encoded as base32 with a leading `b` for a total length of 53 characters, or absent
@@ -872,7 +852,15 @@ Like the hashes and crypto keys in Earthstar, this is the raw binary signature e
 
 The `share` field holds a share address, formatted according to the rules described in [Share Addresses](#share-addresses).
 
-Each document belongs to exactly one share and cannot be moved to another share (because that would cause the signature to become invalid).
+Each document belongs to exactly one share and cannot be moved to another share (because that would cause the the document's signatures to become invalid).
+
+### Share signature 
+
+The ed25519 signature by the share keypair (share address + secret), encoded in base32 with a leading `b`.
+
+See [Serialization for Hashing and Signing](#serialization-for-hashing-and-signing), below, for details.
+
+Like the hashes and crypto keys in Earthstar, this is the raw binary signature encoded directly into base32. Do not encode the binary signature into a hex string and then into base32.
 
 ### Attachments: `attachmentHash` and `attachmentSize`
 
@@ -910,7 +898,7 @@ They have different needs and we use different formats for each.
 
 ### Serialization for Hashing and Signing
 
-When an author signs a document, they're actually signing a hash of the document. We need a deterministic, standardized, and simple way to serialize a document to a sequence of bytes that we can hash. This is a **one-way** conversion — we never need to deserialize this format.
+When a signature is produced for a document, it's actually signing a hash of the document. We need a deterministic, standardized, and simple way to serialize a document to a sequence of bytes that we can hash. This is a **one-way** conversion — we never need to deserialize this format.
 
 Earthstar libraries MUST use this exact process.
 
@@ -957,12 +945,12 @@ To sign a document:
 ```typescript
 // Pseudocode
 
-let signDocument(authorKeypair, document): void => {
+let signDocument(authorOrShareKeypair, document): void => {
     // Sign the document and store the signature into the document (mutating it).
-    // authorKeypair contains a pubkey and a private key.
+    // authorOrShareKeypair contains a pubkey and a private key.
 
     let binarySignature = ed25519sign(
-        authorKeypair,
+        authorOrShareKeypair,
         hashDocument(document)
     );
 
@@ -1072,7 +1060,9 @@ Documents are locked into specific shares; therefore syncing can't transfer docu
 
 ### Share Secrecy
 
-Knowing a share address gives a user the power to read and write to that share, so they need to be kept secret.
+Knowing a share address makes it possible to create a replica for that share and sync data from other peers who know about it. Therefore a share address should only be shared with those you wish to have read access to the share's data. This could be the wider public, or a small group, or a single individual.
+
+Writing new documents to a share is only possible with that share's secret. This secret should not be shared publicly.
 
 It MUST be impossible to discover new shares through the syncing process. Peers MUST keep their shares secret and only transmit data when they are sure the other peer also knows the address of the same share.
 
@@ -1103,40 +1093,6 @@ See the [Data model](#data-model) section for details about conflict resolution.
 ## Future Directions
 
 These are not implemented or specified yet:
-
-### Invite-Only Shares
-
-Invite-only shares will have a **share key** and **share secret**. The key is used as the share suffix, and the secret is given out-of-band to authors who should be able to write.
-
-Only authors who know the share key can write to an invite-only share. They will sign their documents with the share secret (in a new field, `shareSignature`, in addition to the regular author signature).
-
-This will limit who can write, but anyone knowing the share address can still read. To limit readers, authors may choose to encrypt their document content using the share key so that anyone with the share secret can decrypt it.
-
-We need a way to tell if a share is invite-only or not just by looking at its address. Perhaps it's invite-only if the suffix looks like a base32 pubkey (53 chars starting with 'b').
-
----
-
-Right now anyone can write to a share if they know its address.
-
-In the future, Earthstar will support **invite-only** shares.
-
-These separate "read permission" from "read and write permission". This enables use-cases such as
-
-- Shares where a few authors publish content to a wide audience of readers (who otherwise would be able to write to the share once they know its address)
-- Replica servers which host shares without the ability to write their own docs into the share
-
-We can do this by adding a second kind of share which has a pubkey in its address. Every item posted in this kind of share must be signed by the share's private key AND the author private key. This will be enforced by the feed format validator class.
-
-So to write you need to know the share's private key. You can give the share secret to someone to invite them.
-
-Invite-only shares could also have their documents encrypted to the public key of the share. Then only people who know the share key can read the documents.
-
-This separates permissions into two tiers depending on whether or not you know the share private key:
-
-1. sync all documents (read-only), and only understand the unencrypted ones
-2. also understand all documents, and be able to write documents
-
-See more [in this issue.](https://github.com/earthstar-project/earthstar/issues/7)
 
 ### Transport Encryption
 
