@@ -19,7 +19,7 @@ Document version: 2022-11-18.1
 This document describes:
 * The format of Earthstar documents
 * The cryptography used for identities and signatures
-* The procedures needed for running a single local replica: signing, ingesting, and verifying documents; ingesting a verifying attachments.
+* The procedures needed for running a single local replica: signing, ingesting, and verifying documents; ingesting and verifying attachments
 
 This document may discuss, but does NOT prescribe, these topics which are still in development:
 * Network protocols
@@ -34,7 +34,7 @@ To make your own Earthstar library, you'll need:
 
 ### ed25519 Signatures
 
-This is the same cryptography format used by Secure Scuttlebutt and DAT/hyper.
+[ed25519](https://ed25519.cr.yp.to/) is the same cryptography format used by [Secure Scuttlebutt](https://scuttlebutt.nz/) and [hypercore](https://hypercore-protocol.org/).
 
 ### base32 Encoding
 
@@ -73,7 +73,7 @@ Earthstar messages are typically queried in a variety of ways. This is easiest t
 
 **Format** — The Earthstar document specification is versioned. Each version of the specification is called a document **format**, and the code that handles that format is called a **formatter**.
 
-**Peer** — A device which holds Earthstar data and wishes to sync with other peers. Peers may be individual users' devices and/or replica servers. A peer may hold data from multiple shares.
+**Peer** — A device which holds Earthstar data and wishes to sync with other peers. Peers may, for example, be individual users' devices and/or replica servers. A peer may hold data from multiple shares.
 
 **Attachment** — Arbitrary binary data which a document may refer to.
 
@@ -105,7 +105,7 @@ Share: "+gardening.bhyux4opeug2ieqcy36exrf4qymc56adwll4zeazm42oamxtr7heq"
     b84ahi8ah: <bytes>
 ```
 
-A peer MAY hold data from many shares. Each share's data is treated independently. Each document within a share is also independent; they don't form a chain or feed or refer to each other (e.g. Merkle backlinks).
+A peer MAY hold data from many shares. Each share's data is treated independently. Each document within a share is also independent; they don't form a chain or feed or refer to each other (e.g. no Merkle backlinks).
 
 Certain documents may have a corresponding attachment. For each known document the peer MAY also hold a corresponding attachment. A peer MUST NOT hold attachments with no corresponding documents.
 
@@ -113,17 +113,15 @@ Certain documents may have a corresponding attachment. For each known document t
 
 A peer MAY hold some or all of the documents from a share, in any combination. Apps MUST assume that any combination of docs may be missing.
 
-Each document in a share exists at a path. For each path, Earthstar keeps the newest document from each identity who has ever written to that path.
+Each document in a share exists at a path. For each path, Earthstar keeps the newest document from each identity who has ever written to that path. "Newest" is determined by comparing the `timestamp` field in the documents. See the next section for details about trusting timestamps.
 
-In this example, the `/wiki/shared/Flowers` path contains 3 documents, because 3 different identities have written there. They may have written there hundreds of times, but we only keep the newest document from each identity, in that path.
-
-"Newest" is determined by comparing the `timestamp` field in the documents. See the next section for details about trusting timestamps.
+In the preceeding example, the `/wiki/shared/Flowers` path contains 3 documents, because 3 different identities have written there. They may have written there hundreds of times, but we only keep the newest document from each identity, in that path.
 
 When looking up a path to retrieve a document, the newest document MUST be returned by default. Apps can also query for the full set of document versions at a path; the older ones are called **history documents**.
 
 ### Ingesting Documents
 
-When a new document arrives and an existing one is already there (from the same identity and same path), the new document overwrites the old one. Earthstar libraries MUST actually delete the older, overwritten document. The author's intent is to remove the old data.
+When a new document arrives and an existing older one is already there (from the same identity and at the same path), the new document overwrites the old one. Earthstar libraries MUST actually delete the older, overwritten document. The author's intent is to remove the old data.
 
 The process of validating and potentially saving an incoming document is called **ingesting**, and it MUST happen to newly obtained documents, whether they come from other peers or are made as local writes. Earthstar libraries MUST use this ingestion process:
 
@@ -162,7 +160,7 @@ Because many documents may refer to the same attachment (e.g. different history 
 
 ## Ingesting Attachments
 
-Newly arrived attachments are only saved if a corresponding document is known, the peer does not yet have the attachment saved, and the attachment's size and hash match the size and hash on the document.
+Newly arrived attachments are only saved if the peer holds a document that refers to an attachment of matching size and hash.
 
 The process of validating and potentially saving an incoming attachment is also called **ingesting**, and it MUST happen to newly obtained attachments, whether they come from other peers or are made as local writes. Earthstar libraries MUST use this ingestion process:
 
@@ -236,7 +234,7 @@ ASCII = decimal character code 0 to 127 inclusive
       = hex character code 0x00 to 0x7F inclusive
         (no "extended ASCII" > 0x7F)
 
-PRINTABLE_ASCII = characters " " to "~", inclusive
+PRINTABLE_ASCII = ASCII characters " " to "~", inclusive
                 = decimal character code 32 to 126 inclusive
                 = hex character code 0x20 to 0x7E inclusive
 ```
@@ -545,7 +543,7 @@ Suzy and matt can write here, and nobody else can:
 /chat/~@suzy.bo5sotcncvkr7p4c3lnexxpb4hjqi5tcxcov5b4irbnnz2teoifua~@matt.bwnhvniwd3agqclyxl4lirbf3qpfrzq7lnkzvfelg4afexcodz27a/messages.json
 ```
 
-This path can't be written by anyone. It's **owned** because it contains a tilde `~`, but an owner is not specified. Even though the tilde appears without a `@` following it, it still acts as a marker of an owned path:
+The following path can't be written by anyone. It's **owned** because it contains a tilde `~`, but an owner is not specified. Even though the tilde appears without a `@` following it, it still acts as a marker of an owned path:
 
 ```
 /nobody/can/ever/write/this/path/~
@@ -559,16 +557,16 @@ Note that documents are mutable but their path can never change (or it would be 
 
 Documents may have arbitrary binary bytes associated with them, referred to as attachments. If a document is associated with an attachment, it MUST have a file extension.
 
-The file extension is there to help applications know how to interpret attachment data. For example, documents with JPEG image attachments should have paths ending in `.jpg`, and documents with MP3 audio attachments should have paths ending in `.mp3`.
+The file extension is there to help applications know how to interpret attachment data. For example, documents with JPEG image attachments SHOULD have paths ending in `.jpg`, and documents with MP3 audio attachments SHOULD have paths ending in `.mp3`.
 
-The file extension MUST be positioned at the end of the path to indicate a document with an attachment:
+The file extension MUST be positioned at the end of the path to indicate a document with attachments:
 
 ```
-Valid path for document with attachment:
+Valid path for a document with an attachment:
 
 /images/squirrel.png
 
-Invalid path for document with attachment:
+Invalid path for a document with an attachment:
 /images.png/squirrel
 ```
 
@@ -660,7 +658,7 @@ The fields above are called the "core fields". All core fields are REQUIRED. Som
 
 Extra fields are FORBIDDEN as part of this core document schema.
 
-All string fields MUST BE limited to `PRINTABLE_ASCII` characters except for `text`, which is utf-8, or string fields can be null if specified above. `PRINTABLE_ASCII` is defined earlier, and notably does not contain newline or tab characters, which are reserved for use in the serialization format we use for hashing and signing.
+All string fields MUST be limited to `PRINTABLE_ASCII` characters except for `text`, which is utf-8, or string fields can be null if specified above. `PRINTABLE_ASCII` is defined earlier, and notably does not contain newline or tab characters, which are reserved for use in the serialization format we use for hashing and signing.
 
 All number fields MUST BE integers, and cannot be NaN or Infinity, but they can be null if specified above.
 
@@ -668,7 +666,7 @@ The order of fields is unspecified except for hashing and signing purposes (see 
 
 ### Document Validity
 
-A document MUST be **valid** in order to be ingested into a replica, either from a local write or a sync.
+A document MUST be **valid** in order to be ingested into a replica, whether from a local write, or a sync, or anywhere else.
 
 Invalid documents MUST be individually ignored when peers are syncing, and the sync MUST NOT be halted just because an invalid document was encountered. Continue syncing in case there are more valid documents.
 
@@ -677,7 +675,7 @@ Documents can be temporarily invalid depending on their timestamp and the curren
 To be **valid** a document MUST pass ALL these rules, which are described in more detail in the following sections:
 
 - `author` is a valid identity address string
-- `text` is a string holding utf-8 data
+- `text` is a compliant string holding utf-8 data
 - `textHash` is the sha256 hash of the `text`, encoded as base32 with a leading `b`, for a total length of 53 characters.
 - `timestamp` is an integer between 10^13 and 2^53-2, inclusive
 - `deleteAfter` is absent, or is a timestamp integer in the same range as `timestamp`
@@ -685,13 +683,13 @@ To be **valid** a document MUST pass ALL these rules, which are described in mor
 - `path` is a valid path string
 - `signature` and `shareSignature` are each a base32 string with a leading `b`. For the `es.5` format it must be 104 characters long including the `b`.
 - `share` is a valid share address string which matches the local share we are intending to write the document to
-- `attachmentSize` is an integer between 0 or 2^53-2, or absent
+- `attachmentSize` is an integer between 0 and 2^53-2 inclusive, or absent
 - `attachmentHash` is a sha256 hash of the associated attachment, encoded as base32 with a leading `b` for a total length of 53 characters, or absent
 - No extra fields.
-- No missing fields
+- No missing fields (unless the fields may be absent)
 - Additional rules about `timestamp` and `deleteAfter` relative to the current wall clock (see below)
-- Author has write permission to path based on tilde placement
-- Signature is cryptographically valid
+- `author` has write permission to path based on tilde placement
+- `signature` is cryptographically valid
 
 ### Author
 
@@ -707,11 +705,11 @@ The maximum length of the text field is eight thousand bytes (8,000 bytes). This
 
 When a document has an associated attachment, the text field's contents MUST have a length greater than zero and SHOULD be used to describe the contents of the attachment. This description can be used by peers to evaluate the content of an attachment before downloading it.
 
-When storing formatted text (e.g. JSON or Markdown) apps SHOULD enclose the file extension in parentheses at the end of the path, e.g. `/todos/123(json)`. If the document has an attachment **and** formatted text, the pathname SHOULD NOT include this information, in order to prioritise the attachment's file extension instead. 
+When storing formatted text (e.g. JSON or Markdown) apps SHOULD enclose the file extension in parentheses at the end of the path, e.g. `/todos/123(json)`. If the document has an attachment **and** formatted text, the pathname SHOULD NOT include this information, in order to prioritize the attachment's file extension instead. 
 
 ### Text Hash
 
-The `text` is the `sha256` hash of the `text` data. The hash digest is then encoded from binary to base32 following the usual Earthstar format, with a leading `b`.
+The `textHash` is the `sha256` hash of the `text` data. The hash digest is then encoded from binary to base32 following the usual Earthstar format, with a leading `b`.
 
 Note that hash digests are usually encoded in hex format, but we use base32 instead to be consistent with the rest of Earthstar's encodings.
 
@@ -729,7 +727,7 @@ It MUST consist only of `PRINTABLE_ASCII` characters.
 
 The current format version is `es.5` ("es" is short for Earthstar.)
 
-If the specification is changed in a way that breaks forwards or backwards compatability, the format version MUST be incremented. The version number SHOULD be a single integer, not a semver.
+If the specification is changed in a way that breaks forwards or backwards compatibility, the format version MUST be incremented. The version number SHOULD be a single integer, not a semver.
 
 Other format families may someday exist, such as a hypothetical `ssb.1` which would embed Scuttlebutt messages in Earthstar documents, with special rules for validating the original embedded Scuttlebutt signatures as part of validating the document.
 
@@ -816,9 +814,9 @@ Libraries MUST check for and delete all expired documents at least once an hour 
 
 Libraries MUST filter out expired documents from queries and lookups and not return them. Libraries MAY or MAY NOT actually delete them when they are encountered during querying; they may choose to wait until the next scheduled hourly deletion time. In addition libraries MUST not return the attachments for expired documents.
 
-Expired documents MUST not be sent or accepted during a sync. Both peers in a sync should filter the incoming and outgoing documents to enforce this. This is the responsibility of the [Formatter](#format).
+Expired documents MUST not be sent or accepted during a sync. Both peers in a sync SHOULD filter the incoming and outgoing documents to enforce this. This is the responsibility of the [Formatter](#format).
 
-The `deleteAfter` field holds the timestamp after which a document is to be deleted. It is a timestamp with the same format and range as the regular `timestamp` field.
+The `deleteAfter` field holds the timestamp after which a document is to be deleted. It is a timestamp with the same format and range requirements as the regular `timestamp` field.
 
 Regular, non-ephemeral documents omit the `deleteAfter` field.
 
@@ -852,7 +850,7 @@ Like the hashes and crypto keys in Earthstar, this is the raw binary signature e
 
 The `share` field holds a share address, formatted according to the rules described in [Share Addresses](#share-addresses).
 
-Each document belongs to exactly one share and cannot be moved to another share (because that would cause the the document's signatures to become invalid).
+As a consequence, each document belongs to exactly one share and cannot be moved to another share (because that would cause the signature to become invalid).
 
 ### Share signature 
 
@@ -921,7 +919,7 @@ let hashDocument(document): string => {
 
     For each field and value in the document, sorted in lexicographic order by field name: {
 
-        // Skip the content and signatue fields
+        // Skip the content and signature fields
         if (field === 'text' || field === 'signature') { continue; }
 
         // Otherwise, append the fieldname and value.
@@ -1084,7 +1082,7 @@ An eavesdropper observing this exchange will know both pieces of entropy, and ca
 
 But once the peers start trading actual share data, an eavesdropper can observe the share addresses in plaintext in the exchanged documents.
 
-Peers SHOULD talk to each other over an encrypted connection such as HTTPS.
+Peers SHOULD thus talk to each other over an encrypted connection such as HTTPS.
 
 ### Resolving Conflicts
 
