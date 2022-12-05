@@ -50,11 +50,11 @@ export default function Index() {
     <div>
       <div className="gap-2 flex flex-col items-start my-4 md:my-8">
         <p className="text-2xl md:text-4xl max-w-prose font-display">
-          Sync stuff you care about with people you know.
+          Storage for private, distributed, offline-first applications.
         </p>
         <p className="text-gray-700">
           Earthstar is a specification and Javascript library for building
-          online tools you can <strong>truly call your own</strong>.
+          online applications owned and run by their users.
         </p>
 
         <div className="flex items-stretch md:items-baseline flex-col md:flex-row space-y-2 self-stretch">
@@ -66,22 +66,16 @@ export default function Index() {
           </CallToAction>
 
           <CallToAction
-            href="/get-started/install-cli"
+            href="/docs/browser-playground"
             className="border-es-blue text-es-blue"
           >
-            Install the CLI
+           Try the API in the browser
           </CallToAction>
           <CallToAction
-            href="/get-started/replica-server"
+            href="/specs/data-spec-es5"
             className="border-es-green text-es-green"
           >
-            Run a replica server
-          </CallToAction>
-          <CallToAction
-            href="/tutorials/start-a-webshare"
-            className="border-es-yellow text-es-yellow"
-          >
-            Start a webshare
+            Read the spec
           </CallToAction>
         </div>
       </div>
@@ -120,25 +114,27 @@ export default function Index() {
       <ul className="pl-0 text-lg max-w-prose mb-4">
         <FItem>Works offline.</FItem>
         <FItem>Undiscoverable.</FItem>
-        <FItem>No blockchain.</FItem>
-        <FItem>No tokens.</FItem>
+        <FItem>Store media.</FItem>
         <FItem>Use one or many identities.</FItem>
         <FItem>Actually delete stuff.</FItem>
         <FItem>Temporary documents.</FItem>
         <FItem>Sneakernets.</FItem>
         <FItem>Always self-hosted.</FItem>
         <FItem>Servers optional.</FItem>
+        <FItem>No blockchain.</FItem>
+        <FItem>No tokens.</FItem>
         <FItem>Free forever, in every sense.</FItem>
+ 
       </ul>
       <ul className="pl-0 text-lg max-w-prose">
-        <FItem>Author verification with ed25519.</FItem>
-        <FItem hidden>Resumable sync.</FItem>
-        <FItem>Protocol-agnostic sync.</FItem>
+        <FItem>Verification with ed25519.</FItem>
+        <FItem>Works in the browser.</FItem>
+        <FItem>Efficient sync.</FItem>
         <FItem>One identity across many devices.</FItem>
         <FItem>Multiwriter.</FItem>
-        <FItem>Swappable storage drivers.</FItem>
+        <FItem>Storage drivers.</FItem>
+        <FItem>Sync over different transports.</FItem>
         <FItem>Document write permissions.</FItem>
-        <FItem>Works in the browser.</FItem>
         <FItem>Deno.</FItem>
         <FItem>Node.</FItem>
       </ul>

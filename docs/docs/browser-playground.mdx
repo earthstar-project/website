@@ -1,6 +1,6 @@
 ---
 meta:
-  title: Playground
+  title: Try the Earthstar API
   description: You can play with the Earthstar API right here in your browser.
 ---
 
@@ -13,11 +13,27 @@ import { Link } from '../app/components/html.tsx';
 You can play with the Earthstar API right here in your browser.
 
 Open your browser's development console and start typing in `Earthstar`. It's been added to the global scope. <Link href={LATEST_DOCS_URL}>You can find full documentation for the API here</Link>.
+
+we start with share keypair
+
+instantiate a replica
+
+make author keypair
+
+write some data
+
+query it back out again
+
+make another replica without the secret
+
+try to write to it
+
+sync the two replicas
   
-Let's begin by creating an identity. We'll use this to write some data shortly.
+Let's begin by creating an author keypair. We'll use this to write some data shortly.
 
 ```js
-let identity = await Earthstar.Crypto.generateAuthorKeypair("suzy");
+const authorKeypair = await Earthstar.Crypto.generateAuthorKeypair("suzy");
 ```
 
 Feel free to change the shortname to whatever you want, as long as it's four lowercase letters or numbers.

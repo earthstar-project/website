@@ -6,24 +6,22 @@ type Sitemap = Record<string, string | Record<string, string>>;
 
 const sitemap: Sitemap = {
   // Blog: "/blog",
-  "Get started": {
-    "How it works": "/get-started/how-it-works",
-    "Install the CLI": "/get-started/install-cli",
-    "Run a replica server": "/get-started/replica-server",
-    "Like a bicycle": "/get-started/like-a-bicycle",
+  "What is it?": '/what-is-it',
+  'JavaScript module': {
+    "Try it in the browser": "/docs/browser-playground",
+    "Developer tour": "/docs/api-tour",
+   "API docs":
+   `https://doc.deno.land/https://deno.land/x/earthstar@v${LATEST_EARTHSTAR_VERSION}/mod.ts`,  
   },
-  Tutorials: {
-    "Start a webshare": "/tutorials/start-a-webshare",
+  "Server framework": {
+    "Developer tour": "/docs/replica-servers",  
+    "API docs":
+    `https://doc.deno.land/https://deno.land/x/earthstar_replica_server@v${LATEST_RS_VERSION}/mod.ts`,
   },
-  Docs: {
-    "Playground": "/docs/playground",
-    "Developer Tour": "/docs/api-tour",
-    "Core API":
-      `https://doc.deno.land/https://deno.land/x/earthstar@v${LATEST_EARTHSTAR_VERSION}/mod.ts`,
-    "Replica servers": "/docs/replica-servers",
-    "Replica server API":
-      `https://doc.deno.land/https://deno.land/x/earthstar_replica_server@v${LATEST_RS_VERSION}/mod.ts`,
-  },
+ Tutorials: {
+   "Create a chat app": "/tutorials/create-a-chat-app",
+   'Run a server': '/tutorials/run-a-server',
+ },
   Specifications: {
     "es.5 Data Format": "/specs/data-spec-es5",
     "es.4 Data Format": "/specs/data-spec-es4",
