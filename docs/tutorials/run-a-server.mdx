@@ -1,0 +1,235 @@
+---
+meta:
+  title: Run a server
+  description: Run and configure and Earthstar peer which is always online.
+---
+
+# Run a server
+
+In this tutorial you will run and configure an Earthstar server capable of syncing with other peers.
+
+## Table of contents
+
+## Overview
+
+A basic knowledge of JavaScript, servers, and using the terminal are needed for this tutorial.
+
+We will run the server we write in this tutorial with the Deno runtime. [Installation instructions can be found here](https://deno.land/manual@v1.28.3/getting_started/installation).
+
+You will also need a text editor and a terminal to execute commands in.
+
+## Starting the server
+
+1. Create a new directory on your filesystem for this project and name it something like `earthstar-server`.
+2. Inside the newly created directory, create a new file called `server.ts`.
+
+Open up the `server.ts` file you created with your text editor, and enter the following:
+
+```typescript
+import { ReplicaServer } from "FINAL_SERVER_URL";
+
+new ReplicaServer([]);
+```
+
+Now in your terminal, run the following command:
+
+```bash
+deno run -A server.ts
+```
+
+In your console, you will see the following text: 
+
+```text
+Your Earthstar server is running.
+```
+
+We have a running Earthstar server which doesn't do anything useful yet. Stop the process running the server.
+
+## Adding shares to our server
+
+1. Create a new file in your project's directory and name it `known_shares.json`.
+2. In `known_shares.json`, enter the following text: 
+
+```json
+[
+	"+apples.btqswluholq6on2ci5mck66uzkmumb5uszgvqimtshff2f6zy5etq", 
+	"+bananas.bjhk5etxeg2g5ig655c55uig4f36zgbxwsly7pqjbztt3sldn4vxq",
+	"+gardening.bhyux4opeug2ieqcy36exrf4qymc56adwll4zeazm42oamxtr7heq"
+]
+```
+
+3. Create a new directory and name it `.share_data` (starting with a dot).
+4. In `server.ts`, make the following addition:
+
+```typescript
+import * as Earthstar from "../earthstar/mod.ts";
+import { ExtensionKnownShares, ReplicaServer } from "../replica-server/mod.ts";
+
+new ReplicaServer([
+	new ExtensionKnownShares({
+		knownSharesPath: "./known_shares.json",
+		onCreateReplica: (address) => {
+			console.log(`Creating replica for ${address}...`);
+
+			return new Earthstar.Replica({
+				driver: new Earthstar.ReplicaDriverFs(address, "./.share_data"),
+			});
+		},
+	}),
+]);
+```
+
+5. In your terminal, run the command to start the server again:
+
+```bash
+deno run -A server.ts
+```
+
+You will see the following text: 
+
+```text
+Your replica server is running.
+Creating replica for +apples.btqswluholq6on2ci5mck66uzkmumb5uszgvqimtshff2f6zy5etq...
+Creating replica for +bananas.bjhk5etxeg2g5ig655c55uig4f36zgbxwsly7pqjbztt3sldn4vxq...
+Creating replica for +gardening.bhyux4opeug2ieqcy36exrf4qymc56adwll4zeazm42oamxtr7heq...
+```
+
+Our server is now hosting data for these shares, but cannot be synced with yet.
+
+## Making our server syncable
+
+We will now make it so that the server can be synced with via HTTP.
+
+Add the following to `server.ts`:
+
+```typescript
+import * as Earthstar from "../earthstar/mod.ts";
+import {
+	ExtensionKnownShares,
+	ExtensionSyncWeb,
+	ReplicaServer,
+} from "../replica-server/mod.ts";
+
+new ReplicaServer([
+	new ExtensionKnownShares({
+		knownSharesPath: "./known_shares.json",
+		onCreateReplica: (address) => {
+			console.log(`Creating replica for ${address}...`);
+
+			return new Earthstar.Replica({
+				driver: new Earthstar.ReplicaDriverFs(address, "./.share_data"),
+			});
+		},
+	}),
+	new ExtensionSyncWeb({}),
+]);
+```
+
+We will also write a small script to test syncing with the server.
+
+Create a new file name `sync_test.ts`:
+
+```typescript
+import * as Earthstar from "../earthstar/mod.ts";
+
+const SHARE_TO_SYNC =
+	"+gardening.bhyux4opeug2ieqcy36exrf4qymc56adwll4zeazm42oamxtr7heq";
+
+const SHARE_SECRET = "buaqth6jr5wkksnhdlpfi64cqcnjzfx3r6cssnfqdvitjmfygsk3q";
+
+const authorKeypair = await Earthstar.Crypto.generateAuthorKeypair("suzy");
+
+if (Earthstar.isErr(authorKeypair)) {
+	console.error(authorKeypair);
+	Deno.exit(1);
+}
+
+const replica = new Earthstar.Replica({
+	driver: new Earthstar.ReplicaDriverMemory(SHARE_TO_SYNC),
+	shareSecret: SHARE_SECRET,
+});
+
+await replica.set(authorKeypair, {
+	path: "/test",
+	text: "Hello.",
+});
+
+const peer = new Earthstar.Peer();
+
+peer.addReplica(replica);
+
+const syncer = peer.sync("http://localhost:8000");
+
+await syncer.isDone();
+
+console.log("Successfully synced with server.");
+```
+
+Now in your console, run the following command to start the server:
+
+```text
+deno run -A server.ts
+```
+
+And the following command to run our test server:
+
+```text
+deno run -A sync_test.ts
+```
+
+Which will output the following:
+
+```text
+Successfully synced with server.
+```
+
+The server will also output something like this:
+
+```text
+Client 340429: started sync
+Client 340429: completed sync
+Client 340429: removed
+```
+
+## Summary
+
+We've configured and run our own Earthstar server and tested its syncing capabilities with a script.
+
+- We used the `ReplicaServer` API to instantiate a server.
+- We configured it to use `ExtensionKnownShares` to read share addresses from a local JSON file, and use them to create replicas persisted to the filesystem.
+- We configured it to use `ExtensionSyncWeb` to make it available for syncing via HTTP.
+- We wrote a small script which wrote data to a in-memory replica and then synced its contents with the replica server.
+
+## Further exercises
+
+### Connecting it to the tutorial app
+
+Can you configure the [chat app created in the chat app tutorial](/tutorials/create-a-chat-app) to sync with your server? You will need to configure both to use the same share. The server does not need to know the share secret to replicate data with other peers.
+
+### Deploying the server
+
+Naturally we will want to deploy our server to a machine with a publicly reachable IP address. Your server will need to be able to run `deno run -A server.ts`, and then expose the server's default port of `8000`.
+
+Below is an example Dockerfile which will work with the server created in this tutorial:
+
+```text
+FROM denoland/deno:1.26.2
+
+EXPOSE 8000
+EXPOSE 443
+
+WORKDIR /app
+
+RUN mkdir /app/data/
+	
+VOLUME [ "/app/data" ]
+
+COPY server.ts ./server.ts
+COPY known_shares.json ./known_shares.json
+
+USER deno
+
+RUN deno cache  --no-check=remote server.ts
+CMD ["run", "--allow-all", "--no-check", "server.ts"]
+```
+
