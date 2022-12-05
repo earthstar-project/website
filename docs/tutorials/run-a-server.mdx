@@ -39,7 +39,7 @@ deno run -A server.ts
 
 In your console, you will see the following text: 
 
-```text
+```
 Your Earthstar server is running.
 ```
 
@@ -61,7 +61,7 @@ We have a running Earthstar server which doesn't do anything useful yet. Stop th
 3. Create a new directory and name it `.share_data` (starting with a dot).
 4. In `server.ts`, make the following addition:
 
-```typescript
+```typescript{1,2,5-14}
 import * as Earthstar from "../earthstar/mod.ts";
 import { ExtensionKnownShares, ReplicaServer } from "../replica-server/mod.ts";
 
@@ -87,7 +87,7 @@ deno run -A server.ts
 
 You will see the following text: 
 
-```text
+```
 Your replica server is running.
 Creating replica for +apples.btqswluholq6on2ci5mck66uzkmumb5uszgvqimtshff2f6zy5etq...
 Creating replica for +bananas.bjhk5etxeg2g5ig655c55uig4f36zgbxwsly7pqjbztt3sldn4vxq...
@@ -102,7 +102,7 @@ We will now make it so that the server can be synced with via HTTP.
 
 Add the following to `server.ts`:
 
-```typescript
+```typescript{2,15}
 import * as Earthstar from "../earthstar/mod.ts";
 import {
 	ExtensionKnownShares,
@@ -167,25 +167,25 @@ console.log("Successfully synced with server.");
 
 Now in your console, run the following command to start the server:
 
-```text
+```bash
 deno run -A server.ts
 ```
 
 And the following command to run our test server:
 
-```text
+```bash
 deno run -A sync_test.ts
 ```
 
 Which will output the following:
 
-```text
+```bash
 Successfully synced with server.
 ```
 
 The server will also output something like this:
 
-```text
+```bash
 Client 340429: started sync
 Client 340429: completed sync
 Client 340429: removed
@@ -212,7 +212,7 @@ Naturally we will want to deploy our server to a machine with a publicly reachab
 
 Below is an example Dockerfile which will work with the server created in this tutorial:
 
-```text
+```docker
 FROM denoland/deno:1.26.2
 
 EXPOSE 8000

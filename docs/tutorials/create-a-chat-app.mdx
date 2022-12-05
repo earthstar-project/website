@@ -46,8 +46,7 @@ Open the `index.html` file you created in your text editor, and enter the follow
 <html lang="en">
 	<head>
 			<meta charset="utf-8">
-			<title>My Chat App</title>
-			
+			<title>My Chat App</title>	
 	</head>
 	<body>
 		<ul id="messages"></ul>
@@ -86,9 +85,9 @@ We will now write some JavaScript to write the contents of the text input to an 
 
 Firstly we will write some Javascript which listens for events on form submission, and logs a message to the console.
 
-Modify chat.js with the following contents:
+Modify `chat.js` with the following contents:
 
-```typescript
+```typescript{3-4,6-11}
 import * as Earthstar from "https://FINAL_CDN_URL";
 
 const form = document.getElementById("message-form");
@@ -108,9 +107,9 @@ Reload your chat app, type something in the input, and click the send button. Yo
 
 Now we will take messages typed into the form and write them to an Earthstar Replica.
 
-Modify chat.js with the following contents:
+Modify `chat.js` with the following contents:
 
-```typescript
+```typescript{3-19}
 import * as Earthstar from "./earthstar.js";
 
 const shareKeypair = await Earthstar.Crypto.generateShareKeypair("chatting");
@@ -144,9 +143,9 @@ form.addEventListener("submit", (event) => {
 
 Reload the page and copy the values from the browser. We want to keep reusing them even after the page has refreshed.
 
-With these values we can instantiate an Earthstar Replica and write data to it.
+With these values we can instantiate an Earthstar Replica and write data to it. Modify `chat.js` again:
 
-```typescript
+```typescript{3-19,28-38}
 import * as Earthstar from "./earthstar.js";
 
 // Use the values for shareKeypair which were logged to your console.
@@ -175,10 +174,14 @@ form.addEventListener("submit", async (event) => {
 	event.preventDefault();
 
 	// Write the contents of the message to the replica.
-	await replica.set(authorKeypair, {
+	const result = await replica.set(authorKeypair, {
 		text: input.value,
 		path: `/chat/~${authorKeypair.address}/${Date.now()}`,
 	});
+	
+	if (Earthstar.isErr(result)) {
+		console.error(result);
+	}
 
 	input.value = "";
 });
@@ -190,7 +193,7 @@ We will now read data back out of the replica so that we can display the message
 
 Add the following to `chat.js`:
 
-```typescript
+```typescript{41-66}
 import * as Earthstar from "./earthstar.js";
 
 // Use the values for shareKeypair which were logged to your console.
@@ -263,9 +266,9 @@ Now when you enter messages they will be rendered above the message input. The m
 
 ## Going online
 
-Our chat application works, but it only allows us to talk to ourselves. We can enable online communication by adding three lines to the end of our script:
+Our chat application works, but it only allows us to talk to ourselves. We can enable online communication by adding three lines to the end of `chat.js`:
 
-```
+```typescript
 const peer = new Earthstar.Peer();
 peer.addReplica(replica);
 peer.sync("https://my.server", true);

@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { bundleMDX } from "mdx-bundler";
-import rehypeHighlight from "rehype-highlight";
+import mdxPrism from "mdx-prism";
 
 export type MdxDoc = {
   title: string;
@@ -40,7 +40,7 @@ export default async function getDoc(
       ];
       options.rehypePlugins = [
         ...(options.rehypePlugins ?? []),
-        rehypeHighlight,
+        mdxPrism,
         rehypeSlug,
         rehypeAutolinkHeadings,
       ];
@@ -54,8 +54,6 @@ export default async function getDoc(
       console.error(err);
     }
   }
-
-  console.log(mdxResult);
 
   return {
     title: mdxResult.frontmatter.meta.title,

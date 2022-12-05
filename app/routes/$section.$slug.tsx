@@ -40,7 +40,7 @@ export let links: LinksFunction = () => {
     {
       rel: "stylesheet",
       href:
-        "//unpkg.com/@highlightjs/cdn-assets@11.3.1/styles/base16/papercolor-light.min.css",
+        "/prism.css",
     },
   ];
 };
