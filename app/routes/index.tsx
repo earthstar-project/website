@@ -4,7 +4,7 @@ import Incantation from "../components/incantation";
 import stylesUrl from "../styles/index.css";
 
 const description =
-  "Sync stuff you care about with people you know. Earthstar is a specification and Javascript library for building online tools you can truly call your own.";
+  "Storage for private, distributed, offline-first applications. Earthstar is a specification and JavaScript library for building connected applications owned and run by their users.";
 
 export let meta: MetaFunction = () => {
   return {
@@ -53,13 +53,13 @@ export default function Index() {
           Storage for private, distributed, offline-first applications.
         </p>
         <p className="text-gray-700">
-          Earthstar is a specification and Javascript library for building
-          online applications owned and run by their users.
+          Earthstar is a specification and JavaScript library for building
+          connected applications owned and run by their users.
         </p>
 
         <div className="flex items-stretch md:items-baseline flex-col md:flex-row space-y-2 self-stretch">
           <CallToAction
-            href="/get-started/how-it-works"
+            href="/docs/what-is-it"
             className="text-es-purple border-es-purple"
           >
             Learn more
@@ -69,7 +69,7 @@ export default function Index() {
             href="/docs/browser-playground"
             className="border-es-blue text-es-blue"
           >
-            Try the API in the browser
+            Check out the JavaScript API
           </CallToAction>
           <CallToAction
             href="/specs/data-spec-es5"
@@ -95,7 +95,7 @@ export default function Index() {
       <ul className="pl-0 text-lg max-w-prose mb-4">
         <FItem>Works offline.</FItem>
         <FItem>Undiscoverable.</FItem>
-        <FItem>Store media.</FItem>
+        <FItem>Store music, photos, video.</FItem>
         <FItem>Use one or many identities.</FItem>
         <FItem>Actually delete stuff.</FItem>
         <FItem>Temporary documents.</FItem>
@@ -109,12 +109,13 @@ export default function Index() {
       <ul className="pl-0 text-lg max-w-prose">
         <FItem>Verification with ed25519.</FItem>
         <FItem>Works in the browser.</FItem>
+        <FItem>Grant read-only access.</FItem>
         <FItem>Efficient sync.</FItem>
         <FItem>One identity across many devices.</FItem>
         <FItem>Multiwriter.</FItem>
         <FItem>Storage drivers.</FItem>
-        <FItem>Sync over different transports.</FItem>
         <FItem>Document write permissions.</FItem>
+        <FItem>Discovery with zero knowledge proofs.</FItem>
         <FItem>Deno.</FItem>
         <FItem>Node.</FItem>
       </ul>

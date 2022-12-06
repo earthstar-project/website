@@ -7,9 +7,9 @@ type Sitemap = Record<string, string | Record<string, string>>;
 const sitemap: Sitemap = {
   // Blog: "/blog",
   "What is it?": "docs/what-is-it",
-  "How does it work?": "docs/how-does-it-work",
+  "How it works": "docs/how-it-works",
   "JavaScript module": {
-    "Try it in the browser": "/docs/browser-playground",
+    "Quick look": "/docs/browser-playground",
     "Developer tour": "/docs/api-tour",
     "API docs":
       `https://doc.deno.land/https://deno.land/x/earthstar@v${LATEST_EARTHSTAR_VERSION}/mod.ts`,
