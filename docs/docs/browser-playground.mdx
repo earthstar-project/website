@@ -8,126 +8,96 @@ import ModuleInject from '../app/components/module-inject.tsx';
 import { LATEST_DOCS_URL } from '../app/constants.ts';
 import { Link } from '../app/components/html.tsx';
 
-# Playground
+# Try Earthstar in the browser
 
 You can play with the Earthstar API right here in your browser.
 
-Open your browser's development console and start typing in `Earthstar`. It's been added to the global scope. <Link href={LATEST_DOCS_URL}>You can find full documentation for the API here</Link>.
+Open your browser's development console and start typing in `Earthstar`. It's been added to the global scope. <Link href={LATEST_DOCS_URL}>There is full documentation for the API here</Link>.
 
-we start with share keypair
+---
 
-instantiate a replica
+Shares are the boundary of discoverability and access in Earthstar. First we will generate a new share keypair.
 
-make author keypair
+```js
+const shareKeypair = await Earthstar.Crypto.generateShareKeypair("gardening");
+```
 
-write some data
+Now we can instantiate a Replica for this share using this keypair.
 
-query it back out again
+```js
+const replica = new Earthstar.Replica({ 
+	driver: new Earthstar.ReplicaDriverMemory(shareKeypair.shareAddress), 
+	shareSecret: shareKeypair.secret
+});
+```
 
-make another replica without the secret
+The driver tells the replica how to persist data. As we're just experimenting here, we will store its data in memory.
 
-try to write to it
-
-sync the two replicas
-  
-Let's begin by creating an author keypair. We'll use this to write some data shortly.
+Let's write some data to the share. We will need an author keypair first.
 
 ```js
 const authorKeypair = await Earthstar.Crypto.generateAuthorKeypair("suzy");
 ```
 
-Feel free to change the shortname to whatever you want, as long as it's four lowercase letters or numbers.
-
-We want to write some data, so let's make a replica. A replica is a local copy of a share's data which can synchronise with other replicas.
-
-We should decide on a cool name for our share. You can change it to whatever you like, just make sure it starts with a `+` and that the part after the dot begins with a letter. Lowercase letters and numbers only.
+This keypair will be used to sign any data we write (along with the share keypair we generated a minute ago).
 
 ```js
-let shareAddress = "+pizza2nite.p34axr";
+await replica.set(authorKeypair, { text: "Mushrooms everywhere this year.", path: 'notes/2022/mushrooms'});
 ```
 
-With that settled, we need a storage driver to tell our replica how to save data. As we're just playing around in a console, let's persist everything to memory for now.
-
-```js
-let driver = new Earthstar.ReplicaDriverMemory(shareAddress);
-```
-
-Now to instantiate our replica with the driver we just made:
-
-```js
-let replica = new Earthstar.Replica(shareAddress, Earthstar.FormatValidatorEs4, driver);
-```
-
-Our replica is ready to go. Let's put some data in it with the identity we made earlier.
-
-```js
-replica.set(identity, { content: 'Pizza Margherita!', path: '/my-order.txt', format: 'es.4'});
-```
-
-Let's check if it worked.
+Let's see if it worked.
 
 ```js
 await replica.getLatestDocs();
 ```
 
-```
+```json
 [
 	{
-		_localIndex: 0,
-		author: "@suzy.bklqpp6wuzv4t4qynjqvd2o7gaefk4776cb67fwo34xu6jfgwyaza",
-		content: "Hello!",
-		contentHash: "bgngqc33vltlnywgfhkdoda4if6hmct2s7mctiwehzcs63vbmq63q",
-		deleteAfter: null,
-		format: "es.4",
-		path: "/greetings.txt",
-		signature: "bcjpcgxxo7o5setztnoo4mgemlhh7ixloz6tnrdm24xf3gy62nbiafszdjpsdlildyqd6cp5gp46jxb4nummkxjmki4whnlgcjew4caa",
-		timestamp: 1643809349409000,
-		workspace: "+myshare.a123"
+		// todo get real output here
 	}
 ]
 ```
 
-Great! We should synchronise this to our friends so they know which pizza to order for us. First we'll need to put our replica inside a `Peer`, which is used to manage shares and coordinate with syncers.
+Great. Let's see what the syncing API is like. First we'll need another replica for the same share. Except we _won't_ provide this one with the secret:
 
 ```js
-let myPeer = new Earthstar.Peer();
+const otherReplica = new Earthstar.Replica({ 
+	driver: new Earthstar.ReplicaDriverMemory(shareKeypair.shareAddress),
+});
 ```
 
-And we'll add our replica to it.
+To sync the two replicas, we need to add them to two `Peer` instances.
 
 ```js
-myPeer.addReplica(replica);
+const peer = new Earthstar.Peer();
+const otherPeer = new Earthstar.Peer();
 ```
 
-Now we have a peer, we can sync it with other peers! We can do this with peers remotely over the network, but for now let's just pretend and sync with a local one.
+And add our replicas to them.
 
 ```js
-let otherDriver = new Earthstar.ReplicaDriverMemory(shareAddress);
+peer.addReplica(replica);
+otherPeer.addReplica(replica);
 ```
+
+And we're ready to sync.
 
 ```js
-let otherReplica = new Earthstar.Replica(shareAddress, Earthstar.FormatValidatorEs4, otherDriver);
+peer.sync(otherPeer);
 ```
 
-If we run `otherReplica.getLatestDocs`, we'll get an empty array. It doesn't have any documents in it yet. Let's put this replica in another peer so we can change that!
-
-```js
-let otherPeer = new Earthstar.Peer();
-otherPeer.addReplica(otherReplica);
-```
-
-Now that we have our two peers, let's sync them:
-
-```js
-myPeer.sync(otherPeer);
-```
-
-And now if we ask for documents:
+If you query the documents from the other replica we just instantiated:
 
 ```js
 await otherReplica.getLatestDocs();
 ```
 
-You'll see the document we made from before has synced over.
+You'll see the document we created a minute ago.
+
+## Next steps
+
+- [Take the developer tour](/docs/api-tour)
+- [Create a chat app](/tutorials/create-a-chat-app)
 
 <ModuleInject/>

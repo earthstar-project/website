@@ -17,6 +17,7 @@ import {
   H2,
   H3,
   H4,
+  HorizontalRule,
   Link,
   ListItem,
   OrderedList,
@@ -39,8 +40,7 @@ export let links: LinksFunction = () => {
   return [
     {
       rel: "stylesheet",
-      href:
-        "/prism.css",
+      href: "/prism.css",
     },
   ];
 };
@@ -82,6 +82,7 @@ export default function Post() {
           h2: H2,
           h3: H3,
           h4: H4,
+          hr: HorizontalRule,
           li: ListItem,
           ul: UnorderedList,
           ol: OrderedList,

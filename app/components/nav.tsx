@@ -6,22 +6,23 @@ type Sitemap = Record<string, string | Record<string, string>>;
 
 const sitemap: Sitemap = {
   // Blog: "/blog",
-  "What is it?": '/what-is-it',
-  'JavaScript module': {
+  "What is it?": "docs/what-is-it",
+  "How does it work?": "docs/how-does-it-work",
+  "JavaScript module": {
     "Try it in the browser": "/docs/browser-playground",
     "Developer tour": "/docs/api-tour",
-   "API docs":
-   `https://doc.deno.land/https://deno.land/x/earthstar@v${LATEST_EARTHSTAR_VERSION}/mod.ts`,  
+    "API docs":
+      `https://doc.deno.land/https://deno.land/x/earthstar@v${LATEST_EARTHSTAR_VERSION}/mod.ts`,
   },
   "Server framework": {
-    "Developer tour": "/docs/replica-servers",  
+    "Developer tour": "/docs/replica-servers",
     "API docs":
-    `https://doc.deno.land/https://deno.land/x/earthstar_replica_server@v${LATEST_RS_VERSION}/mod.ts`,
+      `https://doc.deno.land/https://deno.land/x/earthstar_replica_server@v${LATEST_RS_VERSION}/mod.ts`,
   },
- Tutorials: {
-   "Create a chat app": "/tutorials/create-a-chat-app",
-   'Run a server': '/tutorials/run-a-server',
- },
+  Tutorials: {
+    "Create a chat app": "/tutorials/create-a-chat-app",
+    "Run a server": "/tutorials/run-a-server",
+  },
   Specifications: {
     "es.5 Data Format": "/specs/data-spec-es5",
     "es.4 Data Format": "/specs/data-spec-es4",

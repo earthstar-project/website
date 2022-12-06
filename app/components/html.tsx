@@ -52,6 +52,10 @@ export function BlockQuote(props: React.HTMLAttributes<HTMLQuoteElement>) {
   );
 }
 
+export function HorizontalRule() {
+  return <hr className="border-0 border-t-2 my-3 max-w-prose" />;
+}
+
 export function Pre(props: React.HTMLAttributes<HTMLPreElement>) {
   return (
     <pre

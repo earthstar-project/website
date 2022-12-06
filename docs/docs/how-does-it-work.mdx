@@ -1,0 +1,34 @@
+---
+meta:
+  title: How does Earthstar work?
+  description: An overview of Earthstar, a database for private, distributed, offline-first applications.
+---
+
+# How does Earthstar work?
+
+## Earthstar databases are keyed to public keys
+
+The special identifier each database belongs to is the public address of an assymetric cryptography keypair. Knowledge of the public key grants discovery and read access of a database. Knowledge of the private key grants write access to the database.
+
+## Every change to data is cryptographically signed by authors
+
+In addition to the special database keypair, each user has one (or many) author keypairs. When data is written to an Earthstar database, the write is given a digital signature by both of these keypairs. With this signature Earthstar is able to cryptographically verify that the author is in possession of both keypairs.
+
+## Earthstar syncs peers using a zero knowledge proof
+
+A device may hold many Earthstar databases. When a peers sync with one another, Earthstar determines which databases they have in common without revealing to each other what those database addresses really are.
+
+## Some terminology
+
+The public addresses databases can belong to are called <span className="text-es-purple">Shares</span>.
+
+Because there are many databases for them scattered among many users, we call the databases <span className="text-es-blue">Replicas</span>.
+
+The cryptographically signed values written to replicas are called <span className="text-es-green">Documents</span>.
+
+---
+
+<div className={"pt-4"}>
+  <a className={`border-2 rounded-md p-2 text-md mr-2text-center border-es-purple text-es-purple`}href="/docs/browser-playground">Try it in the browser</a>
+  <a className={`border-2 rounded-md p-2 text-md mr-2text-center border-es-green text-es-green`}href="/specs/data-spec-es5">Read the spec</a>
+</div>

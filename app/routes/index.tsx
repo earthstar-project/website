@@ -69,7 +69,7 @@ export default function Index() {
             href="/docs/browser-playground"
             className="border-es-blue text-es-blue"
           >
-           Try the API in the browser
+            Try the API in the browser
           </CallToAction>
           <CallToAction
             href="/specs/data-spec-es5"
@@ -77,37 +77,18 @@ export default function Index() {
           >
             Read the spec
           </CallToAction>
+          <CallToAction
+            href="/specs/data-spec-es5"
+            className="border-es-yellow text-es-yellow"
+          >
+            Create a chat app
+          </CallToAction>
         </div>
       </div>
 
       <hr className="my-4 md:my-6" />
 
-      <div className="flex flex-col md:flex-row items-baseline gap-6">
-        <Explainer imgSrc="/landing/share.svg">
-          <p className="text-lg max-w-prose ">
-            A <span className="text-es-purple">share</span>{" "}
-            is a collection of data — messages, blog posts, photos,{" "}
-            <em>anything</em> — synchronised across the devices of its users.
-          </p>
-        </Explainer>
-
-        <Explainer imgSrc="/landing/replica.svg">
-          <p className=" max-w-prose text-lg">
-            Your data is here for the long haul. Everyone keeps a working{" "}
-            <span className="text-es-blue text-bold">replica</span>{" "}
-            of their share, so servers are just a nice-to-have.
-          </p>
-        </Explainer>
-
-        <Explainer imgSrc="/landing/interface.svg">
-          <p className=" max-w-prose text-lg">
-            Interact with your <span className="text-es-green">documents</span>
-            {" "}
-            however you want: through home-cooked browser apps, command-line
-            interfaces, or native apps.
-          </p>
-        </Explainer>
-      </div>
+      Splash image
 
       <hr className="my-4 md:my-6" />
 
@@ -124,7 +105,6 @@ export default function Index() {
         <FItem>No blockchain.</FItem>
         <FItem>No tokens.</FItem>
         <FItem>Free forever, in every sense.</FItem>
- 
       </ul>
       <ul className="pl-0 text-lg max-w-prose">
         <FItem>Verification with ed25519.</FItem>
