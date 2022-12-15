@@ -64,3 +64,11 @@
     background-size: 42px 42px;
   }
 }
+
+ul > li:last-child {
+  margin-bottom: 1em;
+}
+
+ul > li > ul > li:last-child {
+  margin-bottom: 0;
+}

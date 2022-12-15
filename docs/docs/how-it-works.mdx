@@ -28,7 +28,7 @@ These things combined can be used to make rich collaborative applications, like 
 
 ## <img src="/how-it-works/share.svg" class="inline-block h-7 align-text-top mr-1"/> Share
 
-A share is like a shared folder. They're typically used by a small group people who trust each other: a group of long-time friends; a family, or a community tied together by a common interest.
+A share is like a shared folder. They're typically used by a small group people who trust each other: a group of friends; a family, or any community tied together by a common interest.
 
 Each share has an address like `+gardening.bhyux4opeug2ieqcy36exrf4qymc56adwll4zeazm42oamxtr7heq`. The first part helps you see which share you're interacting with, and the second scrambly part is used in cryptographic operations.
 
@@ -59,6 +59,8 @@ Every document has a **path** like `/my-story.txt`. Paths can be used to group d
 Our community has used this to create a few conventions for storing documents for different purposes e.g. profile information, micro-blogging, long-form discussions. These emerging standards allow multiple apps to use the same data.
 
 Documents can be temporary: they can optionally state the time at which they should be auto-deleted. After this time, replicas will delete that document completely. Users can also delete documents on demand by overwriting them with empty documents.
+
+Documents can have attachments. These attachments can be anything: music, video, programs. Documents and attachments come separately, so it's possible to hold a document without its attachment (and you may even want this, e.g. in the case of large files).
 
 Documents can either belong to a single user, or be writable by everyone with the share address and secret. In that case many people can write to the same document, and your replica will store the last version from each author. This means you can always roll back or resolve conflicts if something went wrong.
 

@@ -6,13 +6,13 @@ export function H2(props: React.HTMLAttributes<HTMLHeadingElement>) {
   return (
     <h2
       {...props}
-      className={"text-2xl mt-6 font-display max-w-prose"}
+      className={"text-2xl mt-8 mb-2 font-display max-w-prose"}
     />
   );
 }
 
 export function H3(props: React.HTMLAttributes<HTMLHeadingElement>) {
-  return <h3 {...props} className={"text-lg mt-4 mb-1 font-bold"} />;
+  return <h3 {...props} className={"text-lg mt-6 mb-2 font-bold border-b-2 pb-1 max-w-prose"} />;
 }
 
 export function H4(props: React.HTMLAttributes<HTMLHeadingElement>) {
@@ -40,13 +40,13 @@ export function Code(props: React.HTMLAttributes<HTMLPreElement>) {
 }
 
 export function Paragraph(props: React.HTMLAttributes<HTMLParagraphElement>) {
-  return <p className={"max-w-prose my-4 "} {...props} />;
+  return <p className={"max-w-prose mb-4 "} {...props} />;
 }
 
 export function BlockQuote(props: React.HTMLAttributes<HTMLQuoteElement>) {
   return (
     <blockquote
-      className="px-4 py-0.5 bg-gray-100 max-w-prose border-l-2 border-purple-200 my-2"
+      className="px-4 py-2 bg-gray-100 max-w-prose border-l-2 border-purple-200 my-2"
       {...props}
     />
   );

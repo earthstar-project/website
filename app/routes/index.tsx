@@ -86,11 +86,8 @@ export default function Index() {
         </div>
       </div>
 
-      <hr className="my-4 md:my-6" />
-
-      Splash image
-
-      <hr className="my-4 md:my-6" />
+      <div className="bg-gray-200 max-w-prose my-4" style={{ "height": 400 }}>
+      </div>
 
       <ul className="pl-0 text-lg max-w-prose mb-4">
         <FItem>Works offline.</FItem>

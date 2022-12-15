@@ -8,7 +8,7 @@ import {
   useLoaderData,
 } from "remix";
 import { getMDXComponent } from "mdx-bundler/client";
-import getDoc, { MdxDoc } from "~/getDoc.server";
+import getDoc, { getGithubDoc, MdxDoc } from "~/getDoc.server";
 import cache from "../cache";
 import {
   BlockQuote,
@@ -45,6 +45,35 @@ export let links: LinksFunction = () => {
   ];
 };
 
+const GITHUB_SOURCES: Record<string, string> = {
+  "docs/developer-guide": "README.md",
+  "docs/server-guide": "README_SERVERS.md",
+  "community/code-of-conduct": "CODE_OF_CONDUCT.md",
+  "community/contribute": "CONTRIBUTING.md",
+};
+
+async function loadGithubDoc(section: string, slug: string) {
+  const key = `${section}/${slug}`;
+
+  const cachedDoc = cache.get(key);
+
+  if (cachedDoc && process.env.NODE_ENV !== "development") {
+    return json({ doc: cachedDoc });
+  }
+
+  const path = GITHUB_SOURCES[key];
+
+  if (!path) {
+    return redirect("404");
+  }
+
+  const maybeDoc = await getGithubDoc(path);
+
+  cache.set(key, maybeDoc);
+
+  return json({ doc: maybeDoc });
+}
+
 export let loader: LoaderFunction = async ({ params }) => {
   const cachedDoc = cache.get(`post.${params.section}/${params.slug}`);
 
@@ -55,7 +84,7 @@ export let loader: LoaderFunction = async ({ params }) => {
   const maybeDoc = await getDoc(params.section || "", params.slug || "");
 
   if (!maybeDoc) {
-    return redirect("/404");
+    return loadGithubDoc(params.section || "", params.slug || "");
   }
 
   cache.set(`post.${params.section}/${params.slug}`, maybeDoc);

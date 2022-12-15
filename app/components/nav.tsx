@@ -6,23 +6,22 @@ type Sitemap = Record<string, string | Record<string, string>>;
 
 const sitemap: Sitemap = {
   // Blog: "/blog",
-  "What is it?": "docs/what-is-it",
-  "How it works": "docs/how-it-works",
-  "JavaScript module": {
-    "Quick look": "/docs/browser-playground",
-    "Developer tour": "/docs/api-tour",
-    "API docs":
-      `https://doc.deno.land/https://deno.land/x/earthstar@v${LATEST_EARTHSTAR_VERSION}/mod.ts`,
-  },
-  "Server framework": {
-    "Developer tour": "/docs/replica-servers",
-    "API docs":
-      `https://doc.deno.land/https://deno.land/x/earthstar_replica_server@v${LATEST_RS_VERSION}/mod.ts`,
-  },
+  "What is it?": "/docs/what-is-it",
+  "How it works": "/docs/how-it-works",
+  "What's next?": "/docs/future",
   Tutorials: {
     "Create a chat app": "/tutorials/create-a-chat-app",
     "Run a server": "/tutorials/run-a-server",
   },
+  "JavaScript module": {
+    "Quick look": "/docs/quick-look",
+    "User guide": "/docs/developer-guide",
+    "Server guide": "/docs/server-guide",
+    "Writing scripts": "/docs/scripting",
+    "API docs":
+      `https://doc.deno.land/https://deno.land/x/earthstar@v10.0.0-beta.8/mod.ts`,
+  },
+
   Specifications: {
     "es.5 Data Format": "/specs/data-spec-es5",
     "es.4 Data Format": "/specs/data-spec-es4",

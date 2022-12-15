@@ -1,0 +1,42 @@
+---
+meta:
+  title: What's next for Earthstar?
+  description: Some things we're planning to do in our second year of funded development.
+---
+
+# What's next for Earthstar?
+
+
+We've just finished our first year of funded development, thanks to our partners at [NLnet](https://nlnet.nl). We're about to start the second year. Here's what's planned: 
+
+## Earthstar Desktop
+
+![](/desktop.png)
+
+The Earthstar JavaScript module has matured, and gained some features vital to building great applications. But so far, we haven't had many applications for people to get their hands on.
+
+Earthstar Desktop will be a hub for an ecosystem of "small pieces loosely joined" browser applets accessed through users' own Earthstar servers.
+
+The applets' client code will be stored on shares, so that they can be synced across peers and accessed from wherever you are and whatever your connectivity is.
+
+Earthstar Desktop simply lists the available applets, and provides nuts and bolts UI for common Earthstar settings. Earthstar provides the common storage for all the applets.
+
+## Safety tools
+
+Earthstar shares have been built for users who already know and trust each other. But what happens when that trust is broken?
+
+The Earthstar project intends to build tools which help groups move away from unwanted company, and manage data users no longer wish to see.
+
+## Sync and discovery over LAN
+
+Currently peers can sync over the internet using Replica servers, or by ferrying share data on physical media.The Earthstar project intends to build new APIs to enable discovery of Earthstar peers over LAN and sync with them.
+
+## Encryption
+
+Earthstar data is currently protected by peers only being able to know which shares they have in common. But this is not enough for many use-cases. Users may desire a level of privacy from each other even within trusted groups, and some users may have data sensitive enough that they can't risk it being unencrypted on disk.
+
+The Earthstar project intends to add new capabilities to encrypt share documents and attachments.
+
+## Synchronisation specification
+
+Last year Earthstar gained a new powerful efficient synchronisation implementation. This year we'd like to formalise how this sync is performed so that new potential implementations can interact with existing peers.
