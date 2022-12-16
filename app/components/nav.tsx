@@ -7,7 +7,7 @@ type Sitemap = Record<string, string | Record<string, string>>;
 const sitemap: Sitemap = {
   // Blog: "/blog",
   "What is it?": "/docs/what-is-it",
-  "How it works": "/docs/how-it-works",
+  "How does it work?": "/docs/how-it-works",
   "What's next?": "/docs/future",
   Tutorials: {
     "Create a chat app": "/tutorials/create-a-chat-app",
@@ -24,7 +24,6 @@ const sitemap: Sitemap = {
 
   Specifications: {
     "es.5 Data Format": "/specs/data-spec-es5",
-    "es.4 Data Format": "/specs/data-spec-es4",
   },
   Community: {
     "Contribute code": "/community/contribute",

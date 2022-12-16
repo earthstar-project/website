@@ -46,6 +46,8 @@ Replicas are stores of data which you can put wherever you want: your computer, 
 
 When two replicas are configured to use the same share address, they can synchronise their data with each other, and this can be used to create collaborative applications like chatrooms, forums, or games.
 
+Because replicas aren't connected to each other all the time, it's not guaranteed that all replicas have the same data on them at any given moment. Earthstar can only guarantee that replicas' data will be _eventually consistent_.
+
 Each **replica** holds the data for one **share**.
 
 Data stored in a replica are persisted as separate **Documents**.
@@ -63,6 +65,8 @@ Documents can be temporary: they can optionally state the time at which they sho
 Documents can have attachments. These attachments can be anything: music, video, programs. Documents and attachments come separately, so it's possible to hold a document without its attachment (and you may even want this, e.g. in the case of large files).
 
 Documents can either belong to a single user, or be writable by everyone with the share address and secret. In that case many people can write to the same document, and your replica will store the last version from each author. This means you can always roll back or resolve conflicts if something went wrong.
+
+When a public name is put into a document's path, prefixed with a tilde, then only the user with that identity can write documents to that path. Otherwise anyone can add a document to that path. 
 
 Every document has a signature to help Earthstar verify its authorship. So if a document claims it was written by `@suzy`, you can be confident it was really written by `@suzy` and not altered by anyone else. These signatures are created using **keypairs**.
 
@@ -84,9 +88,9 @@ This kind of information is stored as documents within the commons, e.g. in your
 
 Earthstar peers are able to sync with each other through the internet, but how do they find each other to begin with?
 
-We've designed Earthstar so that it cannot disclose which shares peers hold unless the the other peer knows about those shares itself, using something called a _zero knowledge proof_.
+We've designed Earthstar so that it doesn't disclose which shares peers hold unless the the other peer knows about those shares itself, using something called a _zero knowledge proof_.
 
-This way, malicious peers cannot scan a discovery service to find out which IP addresses are interested in what.
+This way, malicious peers cannot scan a discovery service to find out which IP addresses are interested in what data.
 
 It also means that Earthstar shares are **undiscoverable**. Users must disclose share addresses to each other manually.
 
@@ -98,14 +102,14 @@ Because they're servers, they can do things like serve responses to browsers too
 
 We are striving to make running a replica server as simple as possible. [See how easy it is in our 'Run a server' tutorial](/tutorials/run-a-server)
 
-Every share has its own separate network of Peers; data does not spread from one share to another. But a Peer can hold multiple share replicas at a time.
+Every share has its own separate network of Peers; data does not spread from one share to another. But a Peer can hold replicas of multiple shares at a time.
 
 
 ## Applications
 
-Applications are just programs which write and read through a replica's documents and re-present it as a friendly user interface. For example, imagine a program which reads a folder full of images and displays them as a gallery.
+Applications are just programs which write and read through a replica's documents and re-present them as a friendly user interface. For example, imagine a program which reads a folder full of images and displays them as a gallery.
 
-Earthstar has **no opinion** on how applications are created, and provides a Javascript API that you can use in your vanilla JS, jQuery, React, Svelte, Vue, Angular, or whatever app.
+Earthstar has **no opinion** on how applications are created, and provides a reference Javascript implementation that you can use in your vanilla JS, jQuery, React, Svelte, Vue, Angular, or whatever app.
 
 Earthstar apps can typically run in browsers, or can be native apps. They just need to be able to talk to the other peers to sync data.
 
@@ -138,7 +142,7 @@ As a first step, replica servers tend to be the bottlenecks in the network so th
 
 ## Get started
 
-- [A brief introduction to `earthstar`, the Javascript reference implementation](/docs/browser-playground)
+- [A brief introduction to `earthstar`, the Javascript reference implementation](/docs/quick-look)
 - [Create a chat app](/get-started/install-cli)
 - [Run a replica server](/get-started/replica-server)
 - [Read the data specification](/specs/data-spec)
