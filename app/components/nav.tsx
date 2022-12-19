@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Link, NavLink } from "remix";
-import { LATEST_EARTHSTAR_VERSION, LATEST_RS_VERSION } from "~/constants";
+import { LATEST_EARTHSTAR_VERSION } from "~/constants";
 
 type Sitemap = Record<string, string | Record<string, string>>;
 
@@ -19,22 +19,23 @@ const sitemap: Sitemap = {
     "Server guide": "/docs/server-guide",
     "Writing scripts": "/docs/scripting",
     "API docs":
-      `https://doc.deno.land/https://deno.land/x/earthstar@v10.0.0-beta.8/mod.ts`,
+      `https://doc.deno.land/https://deno.land/x/earthstar@${LATEST_EARTHSTAR_VERSION}/mod.ts`,
   },
 
   Specifications: {
     "es.5 Data Format": "/specs/data-spec-es5",
   },
   Community: {
+    "Application formats": "/community/application-formats",
     "Contribute code": "/community/contribute",
     Donate: "/community/donate",
     "Code of Conduct": "/community/code-of-conduct",
     "Our backers": "/community/our-backers",
   },
   Links: {
-    "Open Collective": "https://opencollective.com/earthstar",
-    Discord: "https://discord.gg/EFJnuyKbTv",
     Github: "https://github.com/earthstar-project/earthstar",
+    Discord: "https://discord.gg/EFJnuyKbTv",
+    "Open Collective": "https://opencollective.com/earthstar",
   },
 };
 

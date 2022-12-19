@@ -67,13 +67,13 @@ const textReplacements: Record<string, string> = {
     "https://github.com/earthstar-project/earthstar/blob/squirrel/ARCHITECTURE.md",
   "README_SERVERS.md": "/docs/server-guide",
   "CONTRIBUTING.md": "/community/contribute",
-  "# Earthstar\n": '# User Guide\n',
-  "# Earthstar Servers\n": "# Server guide\n"
+  "# Earthstar\n": "# User Guide\n",
+  "# Earthstar Servers\n": "# Server guide\n",
 };
 
-export async function getGithubDoc(path: string) {
+export async function getGithubDoc(repo: string, branch: string, path: string) {
   const res = await fetch(
-    `https://raw.githubusercontent.com/earthstar-project/earthstar/squirrel/${path}`,
+    `https://raw.githubusercontent.com/earthstar-project/${repo}/${branch}/${path}`,
   );
 
   const text = await res.text();

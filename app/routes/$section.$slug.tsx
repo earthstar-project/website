@@ -45,11 +45,13 @@ export let links: LinksFunction = () => {
   ];
 };
 
-const GITHUB_SOURCES: Record<string, string> = {
-  "docs/developer-guide": "README.md",
-  "docs/server-guide": "README_SERVERS.md",
-  "community/code-of-conduct": "CODE_OF_CONDUCT.md",
-  "community/contribute": "CONTRIBUTING.md",
+// Value is repo, branch, document path.
+const GITHUB_SOURCES: Record<string, [string, string, string]> = {
+  "docs/developer-guide": ["earthstar", "squirrel", "README.md"],
+  "docs/server-guide": ["earthstar", "squirrel", "README_SERVERS.md"],
+  "community/application-formats": ["application-formats", "main", 'README.md'],
+  "community/code-of-conduct": ["earthstar", "squirrel", "CODE_OF_CONDUCT.md"],
+  "community/contribute": ["earthstar", "squirrel", "CONTRIBUTING.md"]
 };
 
 async function loadGithubDoc(section: string, slug: string) {
@@ -61,13 +63,13 @@ async function loadGithubDoc(section: string, slug: string) {
     return json({ doc: cachedDoc });
   }
 
-  const path = GITHUB_SOURCES[key];
+  const triple = GITHUB_SOURCES[key];
 
-  if (!path) {
+  if (!triple) {
     return redirect("404");
   }
 
-  const maybeDoc = await getGithubDoc(path);
+  const maybeDoc = await getGithubDoc(...triple);
 
   cache.set(key, maybeDoc);
 

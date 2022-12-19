@@ -57,6 +57,9 @@ export default function Index() {
           connected applications owned and run by their users.
         </p>
 
+        <div className="bg-gray-200 max-w-prose my-4" style={{ "height": 400 }}>
+        </div>
+
         <div className="flex items-stretch md:items-baseline flex-col md:flex-row space-y-2 self-stretch">
           <CallToAction
             href="/docs/what-is-it"
@@ -86,10 +89,7 @@ export default function Index() {
         </div>
       </div>
 
-      <div className="bg-gray-200 max-w-prose my-4" style={{ "height": 400 }}>
-      </div>
-
-      <ul className="pl-0 text-lg max-w-prose mb-4">
+      <ul className="pl-0 text-lg max-w-prose mb-2">
         <FItem>Works offline.</FItem>
         <FItem>Undiscoverable.</FItem>
         <FItem>Store music, photos, video.</FItem>
