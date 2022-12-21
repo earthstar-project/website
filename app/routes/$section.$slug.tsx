@@ -49,9 +49,9 @@ export let links: LinksFunction = () => {
 const GITHUB_SOURCES: Record<string, [string, string, string]> = {
   "docs/developer-guide": ["earthstar", "squirrel", "README.md"],
   "docs/server-guide": ["earthstar", "squirrel", "README_SERVERS.md"],
-  "community/application-formats": ["application-formats", "main", 'README.md'],
+  "community/application-formats": ["application-formats", "main", "README.md"],
   "community/code-of-conduct": ["earthstar", "squirrel", "CODE_OF_CONDUCT.md"],
-  "community/contribute": ["earthstar", "squirrel", "CONTRIBUTING.md"]
+  "community/contribute": ["earthstar", "squirrel", "CONTRIBUTING.md"],
 };
 
 async function loadGithubDoc(section: string, slug: string) {
