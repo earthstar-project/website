@@ -48,7 +48,7 @@ function CallToAction(
 export default function Index() {
   return (
     <div>
-      <div className="gap-2 flex flex-col items-start my-4 md:my-8">
+      <div className="gap-2 flex flex-col items-start my-2">
         <p className="text-2xl md:text-4xl max-w-prose font-display">
           Storage for private, distributed, offline-first applications.
         </p>
@@ -56,9 +56,6 @@ export default function Index() {
           Earthstar is a specification and JavaScript library for building
           connected applications owned and run by their users.
         </p>
-
-        <div className="bg-gray-200 max-w-prose my-4" style={{ "height": 400 }}>
-        </div>
 
         <div className="flex items-stretch md:items-baseline flex-col md:flex-row space-y-2 self-stretch">
           <CallToAction
@@ -69,7 +66,7 @@ export default function Index() {
           </CallToAction>
 
           <CallToAction
-            href="/docs/browser-playground"
+            href="/docs/quick-look"
             className="border-es-blue text-es-blue"
           >
             Check out the JavaScript API
@@ -81,21 +78,26 @@ export default function Index() {
             Read the spec
           </CallToAction>
           <CallToAction
-            href="/specs/data-spec-es5"
+            href="/tutorials/create-a-chat-app"
             className="border-es-yellow text-es-yellow"
           >
             Create a chat app
           </CallToAction>
         </div>
+
+        <img
+          className="mt-4 lg:max-w-2xl md:max-w-3xl "
+          src="/splash.png"
+        />
       </div>
 
-      <ul className="pl-0 text-lg max-w-prose mb-2">
+      <ul className="pl-0 text-lg lg:text-xl max-w-prose mb-2">
         <FItem>Works offline.</FItem>
-        <FItem>Undiscoverable.</FItem>
         <FItem>Store music, photos, video.</FItem>
-        <FItem>Use one or many identities.</FItem>
         <FItem>Actually delete stuff.</FItem>
         <FItem>Temporary documents.</FItem>
+        <FItem>Live syncing.</FItem>
+        <FItem>Use one or many identities.</FItem>
         <FItem>Sneakernets.</FItem>
         <FItem>Always self-hosted.</FItem>
         <FItem>Servers optional.</FItem>
@@ -103,16 +105,16 @@ export default function Index() {
         <FItem>No tokens.</FItem>
         <FItem>Free forever, in every sense.</FItem>
       </ul>
-      <ul className="pl-0 text-lg max-w-prose">
+      <ul className="pl-0 text-lg lg:text-xl max-w-prose">
         <FItem>Verification with ed25519.</FItem>
         <FItem>Works in the browser.</FItem>
         <FItem>Grant read-only access.</FItem>
         <FItem>Efficient sync.</FItem>
+        <FItem>Streaming sync.</FItem>
         <FItem>One identity across many devices.</FItem>
         <FItem>Multiwriter.</FItem>
         <FItem>Storage drivers.</FItem>
         <FItem>Document write permissions.</FItem>
-        <FItem>Discovery with zero knowledge proofs.</FItem>
         <FItem>Deno.</FItem>
         <FItem>Node.</FItem>
       </ul>

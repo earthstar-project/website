@@ -114,9 +114,9 @@ export default function Nav() {
   return (
     <>
       <div className="hidden lg:block overflow-auto self-start sticky top-0">
-        <h1 className="text-3xl text-display pl-2 md:pl-4 my-4 ">
+        <h1 className="text-3xl text-display pl-2 md:pl-4 mt-4 mb-2 ">
           <Link to="/">
-            <span className="inline-block text-es-purple border-b-2 border-es-green">
+            <span className="inline-block text-es-purple">
               Earthstar
             </span>
           </Link>
@@ -142,7 +142,7 @@ export default function Nav() {
           Navigate
           <h1 className="text-2xl text-display text-right flex-grow">
             <Link to="/">
-              <span className="inline-block text-es-purple border-b-2 border-es-green">
+              <span className="inline-block text-es-purple">
                 Earthstar
               </span>
             </Link>
