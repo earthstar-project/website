@@ -8,7 +8,7 @@ export default function ModuleInject() {
         __html:
           `import * as Earthstar from "https://cdn.earthstar-project.org/js/earthstar.web.v10.0.0.js";
 				
-				globalThis.Earthstar = Earthstar;`,
+globalThis.Earthstar = Earthstar;`,
       }}
     />
   );
