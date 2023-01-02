@@ -1,6 +1,6 @@
 # fly.toml file generated for earthstar-preview-website on 2022-12-06T11:43:26+01:00
 
-app = "earthstar-preview-website"
+app = "earthstar-website"
 
 kill_signal = "SIGINT"
 kill_timeout = 5
