@@ -1,0 +1,131 @@
+---
+meta:
+  title: Scripting with Earthstar
+  description: An overview of Earthstar, a database for private, distributed, offline-first applications.
+---
+
+# Scripting with Earthstar
+
+We want everyone with some level of programming experience to be able to use the Earthstar JavaScript module, not just experts who know how to run servers or write complex applications. So we've designed many APIs to help users write their own short, versatile scripts which they can run locally on their own devices.
+
+This aim complements the Deno runtime, which makes it very easy to run these kinds of scripts, and has many nice filesystem APIs.
+
+## Table of contents
+
+## Community scripts repository
+
+For use and reference, we host a [repository of community-maintained scripts](https://github.com/earthstar-project/user_scripts) for common tasks like generating keypairs, saving attachments to the filesystem, making zipped archives of replicas, syncing with a server, and more.
+
+These scripts all use the same shared settings, which means you can do things like create a new keypair with one script and use it to write to a replica with another script. They also share your own pool of on-disk replicas.
+
+Get started by cloning the repository:
+
+```bash
+git clone https://github.com/earthstar-project/user_scripts.git
+```
+
+and look inside `scripts` to see what kinds of things you can run out of the box.
+
+## Examplenyp
+
+Let's create a new file in an empty folder called `my_script.ts`:
+
+```ts
+import * as Earthstar from "https://deno.land/x/earthstar/mod.ts";
+
+const name = Deno.args[0];
+
+const newShareKeypair = await Earthstar.Crypto.generateShareKeypair(name);
+
+console.log("Here's your new share keypair:");
+console.log(newShareKeypair);
+```
+
+The only thing we need to do is run `deno run my_script.ts <your name here>` and we have our new share keypair to share with friends.
+
+This is a very simple example. Earthstar scripts can do everything any complex application can like querying and writing data, or syncing with peers.
+
+
+
+## Scripting tips
+
+### Use `SharedSettings`
+
+Writing to and reading from replicas requires share and author keypairs. These keypairs are long, you may have a few of them, and they can be tedious to embed in your scripts.
+
+The `SharedSettings` API persists an author keypair, shares, and servers so that they can be reused across different processes and scripts:
+
+For example, in `set_author.ts`:
+
+```ts
+import * as Earthstar from "https://deno.land/x/earthstar/mod.ts";
+
+const newUserKeypair = await Earthstar.Crypto.generateAuthorKeypair('suzy');
+
+const settings = new Earthstar.SharedSettings();
+settings.author = newUserKeypair;
+
+console.log('Set a brand new author');
+```
+
+And in `get_author.ts`:
+
+```ts
+import * as Earthstar from "https://deno.land/x/earthstar/mod.ts";
+
+const settings = new Earthstar.SharedSettings();
+console.log('You are currently signed in as', settings.author?.share || 'no-one!');
+```
+
+As long as these two scripts are in the same directory they will share the same settings.
+
+### Use `ReplicaDriverMemory` for throwaway tasks
+
+For light scripts where you do not need to persist any data locally, there is a driver called `ReplicaDriverMemory`. 
+
+```ts
+// Make a new in-memory replica
+const replica = new Earthstar.Replica({
+  driver: new Earthstar.ReplicaDriverMemory(MY_SHARE),
+  secret: MY_SHARE_SECRET
+});
+
+// Quickly set a new status
+await replica.set(myKeypair, {
+  path: '/is-it-raining',
+  text: isItRaining() ? "It's raining!": "Dry today"
+})
+
+// Sync it to your server
+const peer = new Earthstar.Peer();
+peer.addReplica(replica);
+const syncer = peer.sync("https://my.server");
+await syncer.isDone();
+
+console.log('Synced rain status!')
+await replica.close();
+```
+
+### Use Web Stream APIs
+
+The Earthstar JavaScript module has many APIs which support `ReadableStream` and `WritableStream`, making them easy to use with Deno's filesystem APIs:
+
+Reading from the filesystem: 
+```ts
+const bigVidFile = await Deno.open('./sunset.mp4')
+
+await replica.set(myKeypair, {
+  path: "/videos/sunset.mp4",
+  text: "A video of the sun setting last night",
+  attachment: bigVidFile.readable
+});
+```
+
+Writing from the filesystem:
+```ts
+const bigAttachment = await replica.getAttachment(audiobookDoc);
+
+const bigVidFile = await Deno.open('./dracula_audiobook.mp3');
+
+await bigAttachment.getStream().pipeTo(bigVidFile.writable);
+```

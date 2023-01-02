@@ -4,316 +4,489 @@ meta:
   description: Get to know the Earthstar API with this illustrated tour.
 ---
 
-import { LATEST_EARTHSTAR_VERSION, LATEST_DOCS_URL } from '../app/constants.ts'
-import { Pre, Code, Link } from '../app/components/html.tsx';
+> This is a mirror of the Earthstar core README.
 
-export function DocLink({ apiName }) {
-  return <Link href={`${LATEST_DOCS_URL}/~/${apiName}`}>Technical docs for <Code>{apiName}</Code></Link> 
-}
+[Earthstar](https://earthstar-project.org) is a small and resilient distributed
+storage protocol designed with a strong focus on simplicity and versatility,
+with the social realities of peer-to-peer computing kept in mind.
 
-# earthstar API tour
+This is a reference implementation written in Typescript. You can use it to add
+Earthstar functionality to applications running on servers, browsers, the
+command line, or anywhere else JavaScript can be run.
+
+[Detailed API documentation for this module can be found here](TODO).
+
+This document is concerned with the usage of this module's APIs. To learn more
+about what Earthstar is, please see these links:
+
+- [What is Earthstar?](TODO)
+- [How does Earthstar work?](TODO)
+
+To learn about the layout of this codebase, please see
+[ARCHITECTURE](ARCHITECTURE.md).
+
+To learn about contributing to this codebase, please see
+[CONTRIBUTING](CONTRIBUTING.md).
 
 ## Table of contents
 
-## Introduction
-
-`earthstar` is a reference implementation of Earthstar written in Typescript. You can use it to add Earthstar functionality to programs running on servers, browsers, or the command line.
+## Importing the module
 
 It can be imported via URL into a browser:
 
-<Pre>
-{`<script type="module">
-  import * as Earthstar from "https://cdn.earthstar-project.org/js/earthstar.bundle.v${LATEST_EARTHSTAR_VERSION}.js";
-</script>`}
-</Pre>
+```html
+<script type="module">
+  import * as Earthstar from "https://cdn.earthstar-project.org/js/earthstar.bundle.v10.0.0.js";
+</script>
+```
 
 Or Deno:
 
-<Pre>
-{`import * as Earthstar from "https://deno.land/x/earthstar@v${LATEST_EARTHSTAR_VERSION}/mod.ts";`}
-</Pre>
-
+```ts
+import * as Earthstar from "https://deno.land/x/earthstar@v10.0.0/mod.ts";`}
+```
 
 or installed with NPM:
 
-<Pre>
+```bash
 {`npm install earthstar@${LATEST_EARTHSTAR_VERSION}`}
-</Pre>
-
-And import what you need for your specific platform:
-
-```typescript
-import { Replica } from "earthstar";
-import { ReplicaDriverIndexedDB } from "earthstar/browser";
-import { ReplicaDriverSqlite } from "earthstar/node";
 ```
 
-To integrate Earthstar into your program, your application will probably need a single instance of Earthstar's `Peer` class, which holds the replicas for many shares and is able to synchronise them with other peers.
+We recommend the browser and Deno versions. This module has been built with many
+standard web APIs that have need to be polyfilled to work in Node.
 
-<img src="/api-tour/application.svg" class="bg-gray-200 p-4" alt="A graphic representation showing your application as part of shares within a peer" />
+## Instantiating a replica
 
-Nearly all of Earthstar's classes can be configured to suit your specific use-case, For example, a `Replica` can be configured to persist data to IndexedDB if you're building a browser app, or Sqlite if you're building a server or command-line tool.
+`Replica` is the central API of this module. It is used to write and read data
+to a locally persisted copy of a share's data, and much more besides.
 
-## Peer
+To instantiate a replica, you will need knowledge of a share's public address.
 
-<img src="/api-tour/peer.svg" class="bg-gray-200 p-4" alt="A peer holding many replicas" />
+```ts
+import { Replica, ReplicaDriverMemory } from "earthstar";
 
-A `Peer` is responsible for holding many `Replica`s, and offers many ways to access and manage them. A `Peer` can hold one `Replica` for each share.
-
-There is also a `Peer.sync` method which can be passed 'syncable' things such as another `Peer` or a Websocket or HTTP URL to a replica server. The `Peer` will automatically create a new syncer
-
-```typescript
-const myPeer = new Peer();
-
-// Add a replica
-myPeer.addReplica(myReplica);
-
-// Sync with a local instance of a `Peer`
-myPeer.sync(myOtherPeer);
-// Sync with a replica server using Websockets
-myPeer.sync("wss://our.club/earthstar");
-
-// ... Some time later...
-
-myPeer.stopSyncing();
+const replica = new Replica({
+  driver: ReplicaDriverMemory(YOUR_SHARE_ADDRESS),
+  shareSecret: YOUR_SHARE_SECRET,
+});
 ```
 
-When two peers synchronise with one another, they perform a 'salted handshake' to determine if they have any shares in common without actually revealing what those shares are. Whichever shares they have in common are synced.
+The `shareSecret` property is optional. If we omit it, the replica will be
+read-only.
 
-<DocLink apiName="Peer"/>
+### Generating share keypairs
 
-## Replica
+You can create new shares whenever you want.
 
-<img src="/api-tour/replica.svg" class="bg-gray-200 p-4" alt="A diagram showing the flow of writing docs with a validator and a driver in a share which then can be queried to bring out the docs again" />
+```ts
+import { Crypto } from "earthstar";
 
-A local replica of a share's documents. Provides operations for querying and setting documents.
+const shareKeypair = await Crypto.generateShareKeypair("gardening");
+```
 
-```typescript
-import { ReplicaAsync, ValidatorEs4, ReplicaDriverMemory } from "earthstar";
+The result of this operation will either be a `ShareKeypair` object with
+`shareAddress` and `secret` properties, or a `ValidationError`.
 
-// Construct a replica
-const myReplica = new Replica(
-  // Needs a share address,
-  `+myshare.a8puorlpz1`,
-  // A document validator,
-  ValidatorEs4,
-  // And a driver to teach it how to read and write documents
-  new ReplicaDriverMemory(`+myshare.a8puorlpz1`)
-);
+### Persisting data with drivers
 
-// Query for documents
-const txtResults = myReplica.query({
+`Replica` must always be instantiated with a driver. These drivers tell the
+`Replica` how to store and retrieve data, with different drivers using different
+storage mechanisms.
+
+Here are the available drivers:
+
+- `ReplicaDriverMemory` (works in all environments, but only stores data in
+  memory)
+- `ReplicaDriverWeb` (works in the browser, stores data with IndexedDB)
+- `ReplicaDriverFs` (works on runtimes with filesystem access, stores data with
+  Sqlite and the filesystem)
+
+Drivers are made of two sub-drivers: one for documents, and one for attachments
+(arbitrary binary data).
+
+There are some extra document drivers not used in the default drivers:
+
+- `DocDriverLocalStorage` (works in runtimes supporting the WebStorage API)
+- `DocDriverSqliteFFI` (works in Deno, stores data with a FFI implementation of
+  Sqlite, requires using the `--unstable` flag, and is faster than the default
+  driver in `ReplicaDriverFs`)
+
+These document drivers can be used like this:
+
+```ts
+const driver: IReplicaDriver = {
+  docDriver: new DocDriverSqliteFfi(SHARE_ADDR, FS_PATH),
+  attachmentDriver: new AttachmentDriverFs(FS_ATTACHMENTS_PATH),
+};
+
+const replica = new Replica({ driver });
+```
+
+## Writing data
+
+Writing data requires two things:
+
+- A replica configured with a valid share secret
+- An author keypair
+
+Author keypairs can be generated like this:
+
+```ts
+import { Crypto } from "earthstar";
+
+const authorKeypair = await Crypto.generateAuthorKeypair("suzy");
+```
+
+The result will be a new `AuthorKeypair` object with `address` and `secret`
+properties, or a `ValidationError`.
+
+With a valid author keypair you can write data using `Replica.set`:
+
+```ts
+const setResult = await replica.set(authorKeypair, {
+  path: "/my-note",
+  text: "Saw seven magpies today",
+});
+```
+
+The result of this operation is either an `IngestEvent` describing the
+operation's success (or failure, if one of the parameters was invalid in some
+way).
+
+## Wiping data
+
+Once written, data can be removed by overwriting it:
+
+```ts
+await replica.set(authorKeypair, {
+  path: "/my-note",
+  text: "",
+});
+```
+
+Or with the convenience method:
+
+```ts
+await replica.wipeDocAtPath(authorKeypair, "/my-note");
+```
+
+### Creating ephemeral documents
+
+There is another way to remove written data without leaving any trace of it.
+
+Ephemeral documents are held by replicas until a specified time, until at which
+point they are deleted.
+
+```ts
+await replica.set(authorKeypair, {
+  path: "/my-temporary-note!",
+  text: "I accidentally stepped on the strawberries.",
+  deleteAfter: TIME_IN_MICROSECONDS,
+});
+```
+
+To set an ephemeral document, the path _must_ contain a `!`, and the
+`deleteAfter` property must be set with a timestamp in _microseconds_.
+
+## Querying data
+
+There are many ways to get data back out of a Replica. The simplest one is
+`Replica.getAllDocs`:
+
+```ts
+const everything = await replica.getAllDocs();
+```
+
+The most powerful is `Replica.queryDocs`:
+
+```ts
+const mostRecentlyEditedWikiPageDocs = await replica.queryDocs({
+  historyMode: "latest",
   filter: {
-    pathEndsWith: ".txt"
-  }
+    pathStartsWith: "/wiki",
+  },
+  limit: 10,
 });
-
-// Set a document
-await myReplica.set(myKeypair, {
-  format: "es.4",
-  path: "notes/ink.txt",
-  content: "Don't forget to get some new ink."
-});
-
 ```
 
-<DocLink apiName="Replica"/>
+Here are all the querying methods on `Replica`:
 
-## Replica drivers
+- `getAllDocs`
+- `getLatestDocs`
+- `getAllDocsAtPath`
+- `getLatestDocAtPath`
+- `queryDocs`
+- `queryPaths`
+- `queryAuthors`
 
-<img src="/api-tour/storage-driver.svg" class="bg-gray-200 p-4" alt="Replica drivers control writing and reading docs" />
+Detailed API documentation for all of them can be found [here](TODO).
 
-Earthstar can be used on in browsers, on servers, the command line, or anywhere JavaScript can be run. There's no single way to persist data in all these environments, which is why we made `Replica` able to use different `ReplicaDrivers` suited to the environment its being used in.
+## Using document contents
 
-Universal drivers:
+The documents returned by queries are plain objects with the following shape:
 
-- `ReplicaDriverMemory` (no persistence)
-
-Web platform drivers:
-
-- `ReplicaDriverLocalReplica`
-- `ReplicaDriverIndexedDB`
-
-Deno drivers:
-
-- `ReplicaDriverSqlite`
-
-Node drivers:
-
-- `ReplicaDriverSqlite`
-
-It's possible to create your own replica drivers which conform to `IReplicaDriver`. <DocLink apiName="IReplicaDriver"/>
-
-## Validators
-
-<img src="/api-tour/validator.svg" class="bg-gray-200 p-4" alt="What a validator does" />
-
-Earthstar shares are able to store documents of different formats. But most of the time, you'll want to use the built-in one from this library: `es.4`. As such, Earthstar currenly only offers one format validator: `FormatValidatorEs4`.
-
-Every time a new document is ingested by a `ReplicaAsync` it is checked by a validator.  In the case of `FormatValidatorEs4`, it checks whether a document's signature matches its  author, space address, and content.
-
-It's possible to write your own validator which adheres to `IFormatValidator`. <DocLink apiName="IFormatValidator"/>
-
-## Identity
-
-<img src="/api-tour/identity.svg" class="bg-gray-200 p-4" alt="An image of a crypto key with a face" />
-
-An identity is a keypair containing a public address and a secret. This keypair is used to sign documents whenever they're written. The public address can be freely distributed, but the secret should be, well, secret.
-
-You can generate identities using [Crypto](#crypto).
-
-Note that documents are not *encrypted* (yet), only *signed*.  This means we can verify that the document has not been tampered with on its journey to you, making it possible for syncing to hop across several peers without worrying about them messing with your data.  They can still *read* your data though -- all docs in a space are readable by everyone in the space.
-
-Technically speaking, these are ed25519 keypairs encoded in base32.
-
-<DocLink apiName="AuthorKeypair"/>
-
-## Query
-
-<img src="/api-tour/query.svg" class="bg-gray-200 p-4" alt="A graphical representation of a query" />
-
-Used to describe a document query. Used with `ReplicaAsync.query` and `QueryFollower`.
-
-<DocLink apiName="Query"/>
-
-## Doc
-
-<img src="/api-tour/doc.svg" class="bg-gray-200 p-4" alt="A graphical representation of a doc" />
-
-Represents some cryptographically-signed user data. The contents of a `Doc` can only be changed via `ReplicaAsync`. A document cannot be moved from one share to another. 
-
-<DocLink apiName="Doc"/>
-
-## Crypto
-
-<img src="/api-tour/crypto.svg" class="bg-gray-200 p-4" alt="A key lock" />
-
-`Crypto` is used internally for signing and verifying documents using [ed25519](https://ed25519.cr.yp.to). In most cases, you will want to use it to generate new identity keypairs:
-
-```typescript
-const keypair = Crypto.generateAuthorKeypair("suzy");
-
-console.log(keypair);
-/*
-  {
-    "address":"@suzy.bv3cclqhvnbn4fwjur7u4nimm4cznbzigqyihlfwi6acck5b4q54q",
-    "secret":"bxrishindifrczhm5riqd4mozx4o5htksqthd64yph4rlfs6ej53n"
-  }
-*/
+```ts
+type Doc = {
+  /** Which document format the doc adheres to, e.g. `es.5`. */
+  format: "es.5";
+  author: AuthorAddress;
+  text: string;
+  textHash: string;
+  /** When the document should be deleted, as a UNIX timestamp in microseconds. */
+  deleteAfter?: number;
+  path: Path;
+  /** Used to verify the authorship of the document. */
+  signature: Signature;
+  /** Used to verify the author knows the share's secret */
+  shareSignature: Signature;
+  /** When the document was written, as a UNIX timestamp in microseconds (millionths of a second, e.g. `Date.now() * 1000`).*/
+  timestamp: Timestamp;
+  /** The share this document is from. */
+  share: ShareAddress;
+  /** The size of the associated attachment in bytes, if any. */
+  attachmentSize?: number;
+  /** The sha256 hash of the associated attachment, if any. */
+  attachmentHash?: string;
+};
 ```
 
-<DocLink apiName="Crypto"/>
+Though most applications will probably only use the `author`, `text`, and
+`timestamp` properties.
 
-## setGlobalCryptoDriver
+## Syncing with other peers
 
-Because ed25519 is not part of any JS standard library (or WebCrypto API), there are several third-party implementations, some of which are only available for certain runtimes.
+Syncing data with other peers requires adding your replica(s) to an instance of
+`Peer`:
 
-To balance compatibility and performance, Earthstar uses [noble/ed25519](https://github.com/paulmillr/noble-ed25519) by default. This works in browsers, Deno, and Node.
+```ts
+import { Peer } from "earthstar";
 
-Earthstar exports a `setGlobalCrypto` function to change this:
+const peer = new Peer();
 
-```typescript
-import { setGlobalCryptoDriver, CryptoDriverChloride } from "earthstar";
+// Pretend myReplica is an instance of `Replica`
+peer.addReplica(myReplica);
+
+peer.sync("https://my.server");
+```
+
+`Peer.sync` can be passed another instance of `Peer` or a valid URL of an
+Earthstar server to sync with.
+
+The two peers will only sync the replicas with shares they have in common.
+
+The result of `Peer.sync` can be assigned and used to monitor the progress of
+the sync operation:
+
+```ts
+const syncer = peer.sync("https://my.server");
+
+syncer.onStatusChange((newStatus) => {
+  console.log(newStatus);
+});
+
+syncer.isDone().then(() => {
+  console.log("Sync complete");
+}).catch((err) => {
+  console.error("Sync failed", err);
+});
+```
+
+## Using document attachments
+
+Documents can be written along with some arbitrary data which is persisted as an
+'attachment'. Whereas a document's `text` field can hold a UTF-8 string of 8kb,
+attachments can be of any kind of data and of any size.
+
+```ts
+// Here we use Deno.readFile to get a file's contents as a Uint8Array
+const imageData = await Deno.readFile("/Desktop/leaf.jpg");
+
+await replica.set(authorKeypair, {
+  path: "/images/pear-leaf.jpg",
+  text: "A close-up of a leaf of a pear tree",
+  attachment: imageData,
+});
+```
+
+The path _must_ have a file extension e.g.`.jpg`, `.mp3` if it also has an
+attachment.
+
+If we were attaching a large amount of data, we would use a `ReadableStream`
+instead:
+
+```ts
+// Here we use Deno.readFile to get a file's contents as a ReadableStream<Uint8Array>
+const videoFile = await Deno.open("/Desktop/little-mole.mp4");
+
+await replica.set(authorKeypair, {
+  path: "/videos/little-mole.mp4",
+  text: "A close-up of a leaf of a pear tree",
+  attachment: videoFile.readable,
+});
+```
+
+### Retrieving attachments
+
+If you already have a document with an attachment, you can use
+`Replica.getAttachment`:
+
+```ts
+const attachment = await replica.getAttachment(docWithAttachment);
+```
+
+The result of this operation will be a `DocAttachment` with `getBytes` and
+`getStream` methods, undefined (if our replica has not received a copy of this
+attachment from other peers), or a `ValidationError` in case `getAttachment` was
+passed a document which can't have an attachment.
+
+It's also possible to add attachments to many documents at once:
+
+```ts
+const allDocs = await replica.getAllDocs();
+
+const allDocsWithAttachments = await replica.addAttachments(allDocs);
+```
+
+`allDocsWithAttachments` will be an array of all documents with an added
+`attachment` property. The type of this property will either be `DocAttachment`,
+`undefined`, or `ValidationError`.
+
+## Subscribing to replica changes
+
+There are many ways to subscribe to the many events a replica generates during
+its lifetime.
+
+If you want to subscribe to updates in order to update a UI, the most ergonomic
+API is `ReplicaCache`:
+
+```ts
+import { ReplicaCache } from "earthstar";
+
+const replicaCache = new ReplicaCache(myReplica);
+
+const allDocs = replicaCache.getAllDocs();
+```
+
+The caveat is that the first time a query method is called, it _always_ returns
+an empty result. To get new updates, you must subscribe to changes. In the
+following example, we build a UI with a fictitious `renderDocListUI` function
+with the results of `ReplicaCache.getAllDocs`:
+
+```ts
+function triggerUIRender() {
+  const allDocs = replicaCache.getAllDocs();
+  
+  renderDocListUI(allDocs);
+}
+
+replicaCache.onCacheUpdated(() => {
+  triggerUIRender()
+})
+
+triggerUIRender()
+```
+
+The important thing to remember is that the callback to `onCacheUpdated` will
+never trigger until the cache has been queried at least once.
+
+If you're not tracking changes for a UI, `Replica.getQueryStream` returns a
+`ReadableStream` of `QuerySourceEvent`, for documents matching a specific query.
+This API is great for creating indexes.
+
+```ts
+// Create a query steram for all docs with paths starting with /chat
+// And include all existing documents and all newly created or synced documents
+const chatMessagesStream = replica.getQueryStream({
+  filter: { pathStartsWith: "/chat" },
+}, "everything");
+
+chatMessagesStream.pipeTo(
+  new WritableStream({
+    write(event) {
+      if (event.kind === "success" || event.kind === "existing") {
+        console.log(event.doc.text);
+      }
+    },
+  }),
+);
+```
+
+Finally, `Replica.getEventStream` returns a `ReadableStream` of `ReplicaEvent`,
+which includes events for new document ingestions, document expirations,
+attachment ingestions, attachment prunes, and events for when the replica is
+about to close (and has closed).
+
+## Using common settings between clients
+
+There are a number of configurations which most Earthstar applications will want
+to persist between runs:
+
+- The shares used
+- An author to using for signing documents
+- Servers to sync with
+
+Earthstar offers a `ClientSettings` API which persists settings for these
+between sessions in all runtimes supporting the WebStorage APIs:
+
+```ts
+const settings = new ClientSettings();
+
+settings.author = authorKeypair;
+settings.addShare(myShareAddress);
+console.log(settings.servers);
+```
+
+It also offers a method which instantiates a new `Peer` with replicas for all
+shares already added:
+
+```ts
+const settings = new ClientSettings();
+
+// Create a peer with all saved shares and sync once with all saved servers.
+const peer = settings.getPeer({
+  sync: "once",
+  onCreateReplica: (addr, secret) => {
+    return new Replica({
+      driver: new ReplicaDriverMemory(addr),
+      shareSecret: secret,
+    });
+  },
+});
+```
+
+## Checking for errors
+
+Many functions in Earthstar return errors like `ValidationError`. These errors
+are not thrown, so it's good to check for them:
+
+```ts
+import { isErr } from "earthstar";
+
+const result = replica.set(authorKeypair, {
+  path: "/hey",
+  text: "Hello",
+});
+
+if (isErr(result)) {
+  console.error(
+    "Something went wrong when you tried to write some data!",
+    result,
+  );
+}
+```
+
+## Changing the cryptographic driver
+
+The Deno and browser versions of this module are configured by default to use
+the fastest cryptographic libraries available to them. The Node version is not,
+however.
+
+```ts
+import { setGlobalCryptoDriver } from "earthstar";
+import { CryptoDriverChloride } from "earthstar/node";
 
 setGlobalCryptoDriver(CryptoDriverChloride);
 ```
 
-<DocLink apiName="setGlobalCryptoDriver"/>
 
-## Syncers
 
-<img src="/api-tour/syncer.svg" class="bg-gray-200 p-4" alt="A syncer with a peer" />
-
-Most of the time you will want to use the `Peer.sync` convenience method to synchronise with other peers. But if you are building something special — for example a server, or something with Web Workers and [`BroadcastChannel`](https://developer.mozilla.org/en-US/docs/Web/API/BroadcastChannel) — `Syncer` provides a more flexible API which you can use in combination with classes conforming to `earthstar-streaming-rpc`'s `ITransport` type.
-
-```typescript
-import * as Rpc from "https://deno.land/x/earthstar_streaming_rpc/mod.ts";
-
-const myPeer = new Peer();
-
-// This syncer will listen for other syncers using the `my_channel` BroadcastChannel.
-const broadcastChannelSyncer = new Syncer(
-  myPeer,
-  (methods) => new Rpc.TransportBroadcastChannel({
-    methods,
-    deviceId: myPeer.peerId,
-    channel: 'my_channel'
-  })
-);
-
-// Don't forget to close once done!
-broadcastChannelSyncer.close();
-```
-
-<DocLink apiName="Syncer"/>
-
-## QueryFollower
-
-<img src="/api-tour/query-follower.svg" class="bg-gray-200 p-4" alt="A conveyor belt flow with replica and query delivering docs" />
-
-Listens to events from a `Replica`, and if it matches the given query, sends an event to a [`SuperBus`](https://github.com/cinnamon-bun/superbus).
-
-Here's a basic usage:
-
-```typescript
-const myMarkdownFollower = new QueryFollower(myReplica, {
-  filter: {
-    pathEndsWith: ".md",
-  },
-});
-
-// Print every newly created / updated Markdown doc to the console
-myMarkdownFollower.bus.on((event: LiveQueryEvent) => {
-  if (event.kind === "success") {
-    console.log("A markdown doc was updated or created!");
-  }
-});
-
-// Start the follower.
-myMarkdownFollower.hatch();
-```
-
-A `QueryFollower` must always be _hatched_ first. Hatching makes it catch up with all existing documents which match the query, after which it starts listening for new events.
-
-When you're done with a `QueryFollower`, you should close it to stop callbacks from running:
-
-```typescript
-myMarkdownFollower.close();
-```
-
-<DocLink apiName="IQueryFollower"/>
-
-## ReplicaCache
-
-<img src="/api-tour/replica-cache.svg" class="bg-gray-200 p-4" alt="A folder holding a replica with cached docs" />
-
-`ReplicaAsync` offers a strictly asynchronous interface to a share's contents. Sometimes a synchronous API would make life far easier, and `ReplicaCache` does its best to provide that.
-
-`ReplicaCache` offers a synchronous API for fetching documents by storing queried documents in an internal cache.
-
-When you first query a document, there is no result. But ReplicaCache can be subscribed to for updates, at which point you return to the cache and get an instant result:
-
-```typescript
-import { ReplicaCache } from "earthstar";
-
-const cache = new ReplicaCache(myReplica);
-
-const myQuery = { filter: { pathStartsWith: "/about/" } };
-
-let aboutDocs = cache.queryDocs(myQuery); // This will be an empty list.
-
-cache.onCacheUpdated(() => {
-  // Trigger a re-querying of the cache!
-  aboutDocs = cache.queryDocs(myQuery); // Now there should be something in there.
-});
-```
-
-`ReplicaCache` has an optional TTL (time-to-live) option which can be provided to its constructor:
-
-```typescript
-const cache = new ReplicaCache(myReplica, 2000); // ms, 1000 by default
-```
-
-When you fetch an expired result from the cache, ReplicaCache will then return the latest result from its backing replica.
-
-<DocLink apiName="ReplicaCache"/>

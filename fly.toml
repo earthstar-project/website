@@ -1,6 +1,6 @@
-# fly.toml file generated for earthstar-website on 2021-12-15T14:30:31+01:00
+# fly.toml file generated for earthstar-preview-website on 2022-12-06T11:43:26+01:00
 
-app = "earthstar-website"
+app = "earthstar-preview-website"
 
 kill_signal = "SIGINT"
 kill_timeout = 5
@@ -8,6 +8,7 @@ processes = []
 
 [build]
   builder = "heroku/buildpacks:20"
+
 
 [env]
   PORT = "8080"

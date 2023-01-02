@@ -1,0 +1,39 @@
+---
+meta:
+  title: What is Earthstar?
+  description: An overview of Earthstar, a database for private, distributed, offline-first applications.
+---
+
+# What is Earthstar?
+
+Earthstar is a small and resilient distributed storage protocol designed with a strong focus on simplicity, and the social realities of peer-to-peer computing kept in mind.
+
+<div>
+<img className="float-left clear-left w-20 mr-3 mb-6" src="/what-offline.png"/>**Earthstar is an offline-first database**. Earthstar stores all data directly on your device, so that reading and writing works even without an internet connection.
+</div>
+
+<div className="clear-left">
+<img className="float-left w-20 mr-3 mb-6" src="/what-path-by-author.png"/>**Earthstar is a key-value database which supports author versions**. Earthstar databases store arbitrary data, keyed by two pieces of information: a free-form path and a public key identifying the author. So a single path like `/wiki/flowers` may hold revisions by multiple authors.
+</div>
+
+<div className="clear-left">
+<img className="float-left  w-20 mr-3 mb-6" src="/what-mutable.png"/>**Earthstar data is mutable**. Earthstar lets you delete or overwrite the data you have created, but no-one else can.
+</div>
+
+<div className="clear-left">
+<img className="float-left clear-left w-20 mr-3 mb-6" src="/what-sync.png"/>**Earthstar databases can sync**. Earthstar databases can by synchronised so that changes from many users and devices can be combined into a reconciled state.
+</div>
+
+<div className="clear-left">
+<img className="float-left clear-left w-20 mr-3 mb-6" src="/what-undiscoverable.png"/>**Earthstar databases are private**. Earthstar databases do not announce their presence to the world. Only people who know a special identifier can learn of their existence from another peer and replicate their data.
+
+Write access is restricted by a second identifier, so it's possible to grant read-only access to a database.
+</div>
+
+<div className="clear-left">
+<img className="float-left clear-left w-20 mr-3 mb-6" src="/what-browsers.png"/>**Earthstar works in the browser**. The JavaScript implementation of Earthstar has been designed with standard Web APIs and a pluggable architecture which lets it use APIs exclusive to certain environments, one of them being browsers.
+</div>
+
+<div className={"pt-4"}>
+  <a className={`border-2 rounded-md p-2 text-md mr-2text-center border-es-purple text-es-purple`}href="/docs/how-it-works">How it works</a>
+</div>

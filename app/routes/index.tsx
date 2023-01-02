@@ -4,7 +4,7 @@ import Incantation from "../components/incantation";
 import stylesUrl from "../styles/index.css";
 
 const description =
-  "Sync stuff you care about with people you know. Earthstar is a specification and Javascript library for building online tools you can truly call your own.";
+  "Storage for private, distributed, offline-first applications. Earthstar is a specification and JavaScript library for building connected applications owned and run by their users.";
 
 export let meta: MetaFunction = () => {
   return {
@@ -48,97 +48,73 @@ function CallToAction(
 export default function Index() {
   return (
     <div>
-      <div className="gap-2 flex flex-col items-start my-4 md:my-8">
+      <div className="gap-2 flex flex-col items-start my-2">
         <p className="text-2xl md:text-4xl max-w-prose font-display">
-          Sync stuff you care about with people you know.
+          Storage for private, distributed, offline-first applications.
         </p>
         <p className="text-gray-700">
-          Earthstar is a specification and Javascript library for building
-          online tools you can <strong>truly call your own</strong>.
+          Earthstar is a specification and JavaScript library for building
+          connected applications owned and run by their users.
         </p>
 
         <div className="flex items-stretch md:items-baseline flex-col md:flex-row space-y-2 self-stretch">
           <CallToAction
-            href="/get-started/how-it-works"
+            href="/docs/what-is-it"
             className="text-es-purple border-es-purple"
           >
             Learn more
           </CallToAction>
 
           <CallToAction
-            href="/get-started/install-cli"
+            href="/docs/quick-look"
             className="border-es-blue text-es-blue"
           >
-            Install the CLI
+            Check out the JavaScript API
           </CallToAction>
           <CallToAction
-            href="/get-started/replica-server"
+            href="/specs/data-spec-es5"
             className="border-es-green text-es-green"
           >
-            Run a replica server
+            Read the spec
           </CallToAction>
           <CallToAction
-            href="/tutorials/start-a-webshare"
+            href="/tutorials/create-a-chat-app"
             className="border-es-yellow text-es-yellow"
           >
-            Start a webshare
+            Create a chat app
           </CallToAction>
         </div>
+
+        <img
+          className="mt-4 lg:max-w-2xl md:max-w-3xl "
+          src="/splash.png"
+        />
       </div>
 
-      <hr className="my-4 md:my-6" />
-
-      <div className="flex flex-col md:flex-row items-baseline gap-6">
-        <Explainer imgSrc="/landing/share.svg">
-          <p className="text-lg max-w-prose ">
-            A <span className="text-es-purple">share</span>{" "}
-            is a collection of data — messages, blog posts, photos,{" "}
-            <em>anything</em> — synchronised across the devices of its users.
-          </p>
-        </Explainer>
-
-        <Explainer imgSrc="/landing/replica.svg">
-          <p className=" max-w-prose text-lg">
-            Your data is here for the long haul. Everyone keeps a working{" "}
-            <span className="text-es-blue text-bold">replica</span>{" "}
-            of their share, so servers are just a nice-to-have.
-          </p>
-        </Explainer>
-
-        <Explainer imgSrc="/landing/interface.svg">
-          <p className=" max-w-prose text-lg">
-            Interact with your <span className="text-es-green">documents</span>
-            {" "}
-            however you want: through home-cooked browser apps, command-line
-            interfaces, or native apps.
-          </p>
-        </Explainer>
-      </div>
-
-      <hr className="my-4 md:my-6" />
-
-      <ul className="pl-0 text-lg max-w-prose mb-4">
+      <ul className="pl-0 text-lg lg:text-xl max-w-prose mb-2">
         <FItem>Works offline.</FItem>
-        <FItem>Undiscoverable.</FItem>
-        <FItem>No blockchain.</FItem>
-        <FItem>No tokens.</FItem>
-        <FItem>Use one or many identities.</FItem>
+        <FItem>Store music, photos, video.</FItem>
         <FItem>Actually delete stuff.</FItem>
         <FItem>Temporary documents.</FItem>
+        <FItem>Live syncing.</FItem>
+        <FItem>Use one or many identities.</FItem>
         <FItem>Sneakernets.</FItem>
         <FItem>Always self-hosted.</FItem>
         <FItem>Servers optional.</FItem>
+        <FItem>No blockchain.</FItem>
+        <FItem>No tokens.</FItem>
         <FItem>Free forever, in every sense.</FItem>
       </ul>
-      <ul className="pl-0 text-lg max-w-prose">
-        <FItem>Author verification with ed25519.</FItem>
-        <FItem hidden>Resumable sync.</FItem>
-        <FItem>Protocol-agnostic sync.</FItem>
+      <ul className="pl-0 text-lg lg:text-xl max-w-prose">
+        <FItem>Verification with ed25519.</FItem>
+        <FItem>Works in the browser.</FItem>
+        <FItem>Grant read-only access.</FItem>
+        <FItem>Efficient sync.</FItem>
+        <FItem>Streaming sync.</FItem>
         <FItem>One identity across many devices.</FItem>
         <FItem>Multiwriter.</FItem>
-        <FItem>Swappable storage drivers.</FItem>
+        <FItem>Storage drivers.</FItem>
         <FItem>Document write permissions.</FItem>
-        <FItem>Works in the browser.</FItem>
         <FItem>Deno.</FItem>
         <FItem>Node.</FItem>
       </ul>

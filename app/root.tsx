@@ -35,7 +35,7 @@ function Document({
         />
         <meta
           property="og:description"
-          content="Sync stuff you care about with people you know. Earthstar is a specification and Javascript library for building online tools you can truly call your own."
+          content="Storage for private, distributed, offline-first applications. Earthstar is a specification and JavaScript library for building connected applications owned and run by their users."
         />
         <Meta />
         <Links />

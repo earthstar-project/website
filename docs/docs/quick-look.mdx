@@ -1,0 +1,117 @@
+---
+meta:
+  title: A quick look at the JavaScript module
+  description: You can play with the Earthstar API right here in your browser.
+---
+
+import ModuleInject from '../app/components/module-inject.tsx';
+import { LATEST_DOCS_URL } from '../app/constants.ts';
+import { Link } from '../app/components/html.tsx';
+
+# A quick look at JavaScript module
+
+> Earthstar works in the browser, so you can try all the commands below for yourself by opening your browser's development console.
+
+---
+
+Shares are the boundary of discoverability and access in Earthstar. First we will generate a new share keypair.
+
+```js
+let shareKeypair = await Earthstar.Crypto.generateShareKeypair("gardening");
+```
+
+Now we can instantiate a Replica for this share using this keypair.
+
+```js
+const replica = new Earthstar.Replica({ 
+	driver: new Earthstar.ReplicaDriverMemory(shareKeypair.shareAddress), 
+	shareSecret: shareKeypair.secret
+});
+```
+
+The driver tells the replica how to persist data. As we're just experimenting here, we will store its data in memory.
+
+Let's write some data to the share. We will need an author keypair first.
+
+```js
+let authorKeypair = await Earthstar.Crypto.generateAuthorKeypair("suzy")
+```
+
+This keypair will be used to sign any data we write (along with the share keypair we generated a minute ago).
+
+```js
+await replica.set(authorKeypair, { text: "Mushrooms everywhere this year.", path: '/notes/2022/mushrooms'});
+```
+
+Let's see if it worked.
+
+```js
+let docs = await replica.getLatestDocs();
+```
+
+```js
+docs
+```
+
+```json
+[
+	{
+		author: "@suzy.bj3ml6gj4crzae5d3qf4patap67le7jmiwsrzheg2pkbowccul7sq",	
+		format: "es.5",
+		path: "/notes/2022/mushrooms",
+		share: "+gardening.biyibeijuqsqosarxrqjyroi5jd36kgzinfenwatfbbwk2l5ewvoa",	
+		shareSignature: "boihqp7zsdu4dzjdqjrtz3qzdvxades4r3t52fxk4z4lvby2tucp7zqpga65daoa2zflxz5w2spnoredjlx2n2wbn7g5l7oayfpc5caa",
+		signature: "b52zb47kxnnfdwohtv6ltkkqq2fpwzqn7sbvxzypeft2trggbk55tioxziq3z3jmqkk7q7otlm73ouno3lfcjf52vvlgsiwmm4bayqcy",
+		text: "Mushrooms everywhere this year.",
+		textHash: "bz2qwpfujhg4gr2gllgjmvbx2k4oeqgaq2ap6jct2tw4rgrv5o7hq",
+		timestamp: 1671636895450000,
+	}
+]
+```
+
+Great. Let's see what the syncing API is like. First we'll need another replica for the same share. Except we _won't_ provide this one with the secret:
+
+```js
+const otherReplica = new Earthstar.Replica({ 
+	driver: new Earthstar.ReplicaDriverMemory(shareKeypair.shareAddress),
+});
+```
+
+To sync the two replicas, we need to add them to two `Peer` instances.
+
+```js
+const peer = new Earthstar.Peer();
+const otherPeer = new Earthstar.Peer();
+```
+
+And add our replicas to them.
+
+```js
+peer.addReplica(replica);
+otherPeer.addReplica(othernReplica);
+```
+
+And we're ready to sync.
+
+```js
+peer.sync(otherPeer);
+```
+
+If you query the documents from the other replica we just instantiated:
+
+```js
+let otherDocs = await otherReplica.getLatestDocs();
+```
+
+```js
+otherDocs
+```
+
+You'll see the document we created a minute ago.
+
+## Next steps
+
+- [Take the developer tour](/docs/api-tour)
+- [Create a chat app](/tutorials/create-a-chat-app)
+
+<ModuleInject/>

@@ -8,7 +8,7 @@ import {
   useLoaderData,
 } from "remix";
 import { getMDXComponent } from "mdx-bundler/client";
-import getDoc, { MdxDoc } from "~/getDoc.server";
+import getDoc, { getGithubDoc, MdxDoc } from "~/getDoc.server";
 import cache from "../cache";
 import {
   BlockQuote,
@@ -17,6 +17,7 @@ import {
   H2,
   H3,
   H4,
+  HorizontalRule,
   Link,
   ListItem,
   OrderedList,
@@ -39,11 +40,41 @@ export let links: LinksFunction = () => {
   return [
     {
       rel: "stylesheet",
-      href:
-        "//unpkg.com/@highlightjs/cdn-assets@11.3.1/styles/base16/papercolor-light.min.css",
+      href: "/prism.css",
     },
   ];
 };
+
+// Value is repo, branch, document path.
+const GITHUB_SOURCES: Record<string, [string, string, string]> = {
+  "docs/developer-guide": ["earthstar", "main", "README.md"],
+  "docs/server-guide": ["earthstar", "main", "README_SERVERS.md"],
+  "community/application-formats": ["application-formats", "main", "README.md"],
+  "community/code-of-conduct": ["earthstar", "main", "CODE_OF_CONDUCT.md"],
+  "community/contribute": ["earthstar", "main", "CONTRIBUTING.md"],
+};
+
+async function loadGithubDoc(section: string, slug: string) {
+  const key = `${section}/${slug}`;
+
+  const cachedDoc = cache.get(key);
+
+  if (cachedDoc && process.env.NODE_ENV !== "development") {
+    return json({ doc: cachedDoc });
+  }
+
+  const triple = GITHUB_SOURCES[key];
+
+  if (!triple) {
+    return redirect("404");
+  }
+
+  const maybeDoc = await getGithubDoc(...triple);
+
+  cache.set(key, maybeDoc);
+
+  return json({ doc: maybeDoc });
+}
 
 export let loader: LoaderFunction = async ({ params }) => {
   const cachedDoc = cache.get(`post.${params.section}/${params.slug}`);
@@ -55,7 +86,7 @@ export let loader: LoaderFunction = async ({ params }) => {
   const maybeDoc = await getDoc(params.section || "", params.slug || "");
 
   if (!maybeDoc) {
-    return redirect("/404");
+    return loadGithubDoc(params.section || "", params.slug || "");
   }
 
   cache.set(`post.${params.section}/${params.slug}`, maybeDoc);
@@ -82,6 +113,7 @@ export default function Post() {
           h2: H2,
           h3: H3,
           h4: H4,
+          hr: HorizontalRule,
           li: ListItem,
           ul: UnorderedList,
           ol: OrderedList,

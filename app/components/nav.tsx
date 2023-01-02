@@ -1,43 +1,41 @@
 import * as React from "react";
 import { Link, NavLink } from "remix";
-import { LATEST_EARTHSTAR_VERSION, LATEST_RS_VERSION } from "~/constants";
+import { LATEST_EARTHSTAR_VERSION } from "~/constants";
 
 type Sitemap = Record<string, string | Record<string, string>>;
 
 const sitemap: Sitemap = {
   // Blog: "/blog",
-  "Get started": {
-    "How it works": "/get-started/how-it-works",
-    "Install the CLI": "/get-started/install-cli",
-    "Run a replica server": "/get-started/replica-server",
-    "Like a bicycle": "/get-started/like-a-bicycle",
-  },
+  "What is it?": "/docs/what-is-it",
+  "How does it work?": "/docs/how-it-works",
+  "What's next?": "/docs/future",
   Tutorials: {
-    "Start a webshare": "/tutorials/start-a-webshare",
+    "Create a chat app": "/tutorials/create-a-chat-app",
+    "Run a server": "/tutorials/run-a-server",
   },
-  Docs: {
-    "Playground": "/docs/playground",
-    "Developer Tour": "/docs/api-tour",
-    "Core API":
-      `https://doc.deno.land/https://deno.land/x/earthstar@v${LATEST_EARTHSTAR_VERSION}/mod.ts`,
-    "Replica servers": "/docs/replica-servers",
-    "Replica server API":
-      `https://doc.deno.land/https://deno.land/x/earthstar_replica_server@v${LATEST_RS_VERSION}/mod.ts`,
+  "JavaScript module": {
+    "Quick look": "/docs/quick-look",
+    "User guide": "/docs/developer-guide",
+    "Server guide": "/docs/server-guide",
+    "Writing scripts": "/docs/scripting",
+    "API docs":
+      `https://doc.deno.land/https://deno.land/x/earthstar@${LATEST_EARTHSTAR_VERSION}/mod.ts`,
   },
+
   Specifications: {
     "es.5 Data Format": "/specs/data-spec-es5",
-    "es.4 Data Format": "/specs/data-spec-es4",
   },
   Community: {
+    "Application formats": "/community/application-formats",
     "Contribute code": "/community/contribute",
     Donate: "/community/donate",
     "Code of Conduct": "/community/code-of-conduct",
     "Our backers": "/community/our-backers",
   },
   Links: {
-    "Open Collective": "https://opencollective.com/earthstar",
-    Discord: "https://discord.gg/EFJnuyKbTv",
     Github: "https://github.com/earthstar-project/earthstar",
+    Discord: "https://discord.gg/EFJnuyKbTv",
+    "Open Collective": "https://opencollective.com/earthstar",
   },
 };
 
@@ -116,9 +114,9 @@ export default function Nav() {
   return (
     <>
       <div className="hidden lg:block overflow-auto self-start sticky top-0">
-        <h1 className="text-3xl text-display pl-2 md:pl-4 my-4 ">
+        <h1 className="text-3xl text-display pl-2 md:pl-4 mt-4 mb-2 ">
           <Link to="/">
-            <span className="inline-block text-es-purple border-b-2 border-es-green">
+            <span className="inline-block text-es-purple">
               Earthstar
             </span>
           </Link>
@@ -144,7 +142,7 @@ export default function Nav() {
           Navigate
           <h1 className="text-2xl text-display text-right flex-grow">
             <Link to="/">
-              <span className="inline-block text-es-purple border-b-2 border-es-green">
+              <span className="inline-block text-es-purple">
                 Earthstar
               </span>
             </Link>
