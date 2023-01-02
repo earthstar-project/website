@@ -64,7 +64,7 @@ Open the `index.html` file you created in your text editor, and enter the follow
 Open the `main.js` file created earlier in your text editor, and enter the following text:
 
 ```js
-import * as Earthstar from "https://cdn.earthstar-project.org/js/earthstar.web.v10.0.0-rc.1.js";
+import * as Earthstar from "https://cdn.earthstar-project.org/js/earthstar.web.v10.0.0.js";
 
 alert("Everything is set up!");
 ```
@@ -88,7 +88,7 @@ Firstly we will write some Javascript which listens for events on form submissio
 Modify `chat.js` with the following contents:
 
 ```typescript{3-4,6-11}
-import * as Earthstar from "https://cdn.earthstar-project.org/js/earthstar.web.v10.0.0-rc.1.js";
+import * as Earthstar from "https://cdn.earthstar-project.org/js/earthstar.web.v10.0.0.js";
 
 const form = document.getElementById("message-form");
 const input = document.querySelector("input");
@@ -110,7 +110,7 @@ Now we will take messages typed into the form and write them to an Earthstar Rep
 Modify `chat.js` with the following contents:
 
 ```typescript{3-19}
-import * as Earthstar from "https://cdn.earthstar-project.org/js/earthstar.web.v10.0.0-rc.1.js";
+import * as Earthstar from "https://cdn.earthstar-project.org/js/earthstar.web.v10.0.0.js";
 
 const shareKeypair = await Earthstar.Crypto.generateShareKeypair("chatting");
 
@@ -146,7 +146,7 @@ Reload the page and copy the values from the browser. We want to keep reusing th
 With these values we can instantiate an Earthstar Replica and write data to it. Modify `chat.js` again:
 
 ```typescript{3-19,28-38}
-import * as Earthstar from "https://cdn.earthstar-project.org/js/earthstar.web.v10.0.0-rc.1.js";
+import * as Earthstar from "https://cdn.earthstar-project.org/js/earthstar.web.v10.0.0.js";
 
 // Use the values for shareKeypair which were logged to your console.
 const shareKeypair = {
@@ -194,7 +194,7 @@ We will now read data back out of the replica so that we can display the message
 Add the following to `chat.js`:
 
 ```typescript{41-66}
-import * as Earthstar from "https://cdn.earthstar-project.org/js/earthstar.web.v10.0.0-rc.1.js";
+import * as Earthstar from "https://cdn.earthstar-project.org/js/earthstar.web.v10.0.0.js";
 
 // Use the values for shareKeypair which were logged to your console.
 const shareKeypair = {

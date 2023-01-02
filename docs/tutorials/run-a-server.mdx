@@ -26,7 +26,7 @@ You will also need a text editor and a terminal to execute commands in.
 Open up the `server.ts` file you created with your text editor, and enter the following:
 
 ```typescript
-import * as Earthstar from "https://deno.land/x/earthstar@v10.0.0-rc.1/mod.ts";
+import * as Earthstar from "https://deno.land/x/earthstar@v10.0.0/mod.ts";
 
 new Earthstar.Server([]);
 ```
@@ -62,7 +62,7 @@ We have a running Earthstar server which doesn't do anything useful yet. Stop th
 4. In `server.ts`, make the following addition:
 
 ```typescript{4-13}
-import * as Earthstar from "https://deno.land/x/earthstar@v10.0.0-rc.1/mod.ts";
+import * as Earthstar from "https://deno.land/x/earthstar@v10.0.0/mod.ts";
 
 new Earthstar.Server([
 	new Earthstar.ExtensionKnownShares({
@@ -102,7 +102,7 @@ We will now make it so that the server can be synced with via HTTP.
 Add the following to `server.ts`:
 
 ```typescript{14}
-import * as Earthstar from "https://deno.land/x/earthstar@v10.0.0-rc.1/mod.ts";
+import * as Earthstar from "https://deno.land/x/earthstar@v10.0.0/mod.ts";
 
 new Earthstar.Server([
 	new Earthstar.ExtensionKnownShares({
@@ -124,7 +124,7 @@ We will also write a small script to test syncing with the server.
 Create a new file name `sync_test.ts`:
 
 ```typescript
-import * as Earthstar from "https://deno.land/x/earthstar@v10.0.0-rc.1/mod.ts";
+import * as Earthstar from "https://deno.land/x/earthstar@v10.0.0/mod.ts";
 
 const SHARE_TO_SYNC =
 	"+gardening.bhyux4opeug2ieqcy36exrf4qymc56adwll4zeazm42oamxtr7heq";
@@ -207,7 +207,7 @@ Naturally we will want to deploy our server to a machine with a publicly reachab
 Below is an example Dockerfile which will work with the server created in this tutorial:
 
 ```docker
-FROM denoland/deno:1.28.3
+FROM denoland/deno:1.29.1
 
 EXPOSE 8000
 EXPOSE 443
