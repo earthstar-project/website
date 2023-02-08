@@ -23,7 +23,7 @@ Other tools you will need:
 If you don't have a static file server yet, you can follow the instructions below.
 
 <details>
- <summary>Instructions for installing up a static file server</summary>
+ <summary>Instructions for installing a static file server</summary>
  
  1. [Install Deno](https://deno.land/manual@v1.28.3/getting_started/installation).
  2. In your terminal, run `deno install --allow-net --allow-read https://deno.land/std@0.167.0/http/file_server.ts`
@@ -145,7 +145,7 @@ Reload the page and copy the values from the browser. We want to keep reusing th
 
 With these values we can instantiate an Earthstar Replica and write data to it. Modify `chat.js` again:
 
-```typescript{3-19,28-38}
+```typescript{3-19,24,28-38}
 import * as Earthstar from "https://cdn.earthstar-project.org/js/earthstar.web.v10.0.2.js";
 
 // Use the values for shareKeypair which were logged to your console.
@@ -276,6 +276,14 @@ peer.sync("https://my.server", true);
 
 This won't work because there is no Earthstar server at `https://my.server`. [Fortunately we have a tutorial for running an Earthstar server](/tutorials/run-a-server).
 
+<details>
+ <summary>Make sure your browser allows Earthstar to save data</summary>
+
+  In your browser settings you may need to add an exception for your local Earthstar server, so that your application can access it and store data on it.
+
+  Firefox: go to "Settings -> Privacy & Security -> Cookies and Site Data -> Manage Exceptions..." and add the local Earthstar server address.
+</details>
+
 ## Summary
 
 We've created a simple chat app which works in the browser, and uses Earthstar to persist and sync data.
@@ -292,4 +300,4 @@ We've created a simple chat app which works in the browser, and uses Earthstar t
 
 - If you've followed the tutorial for running a replica server, can you update this chat app to sync with it?
 - Can you update the `renderMessages` function so that we can see who wrote which message? You may find `Earthstar.parseAuthorAddress` useful.
-- Rather than hardcoding the share and author keypairs into the chat itself, can you refactor this app to use the `Earthstar.ClientSettings` API?
+- Rather than hardcoding the share and author keypairs into the chat itself, can you refactor this app to use the `Earthstar.SharedSettings` API?
