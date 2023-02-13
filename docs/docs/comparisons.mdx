@@ -1,0 +1,40 @@
+---
+meta:
+  title: Comparisons with other distributed systems
+  description: How does Earthstar compare to other distributed systems like Secure Scuttlebutt, IPFS, and others?
+---
+
+# Comparisons with other distributed systems
+
+Earthstar makes some different trade-offs than other distributed systems do, mainly in terms of its private data model, and peer discoverability.
+
+## Table of Contents
+
+## Secure Scuttlebutt
+
+- Is a semi-public social network, whereas Earthstar is a private application database.
+- Does not allow editing or deletion, whereas Earthstar does.
+- Cannot reuse the same identity between many devices, whereas Earthstar can.
+- Uses an append only log, whereas Earthstar uses a key-value database.
+
+## Hypercore
+
+- Uses an append-only log, whereas Earthstar uses key-value database.
+- Does not natively support multiple users writing to the same hypercore, whereas Earthstar natively supports many users writing data to the same share.
+- Connects peers via a distributed hash table, whereas Earthstar peers are undiscoverable by default.
+- Does not work in the browser, whereas Earthstar does.
+
+## Syncthing
+
+- Is for synchronising files between devices, whereas Earthstar is an application database which can also synchronise arbitrary data (e.g. photos, video, music).
+
+## IPFS
+
+- Is a global network of content-addressed data, whereas Earthstar is a database for private applications.
+- Does not allow explicit deletions of data, whereas Earthstar can explicitly delete data.
+
+## BitTorrent
+
+- Is for transferring files between peers, whereas Earthstar is an application database which can also synchronise arbitrary data (e.g. photos, video, music).
+- Divides the work of transferring data between many peers, whereas Earthstar uses a more rudimentary direct transfer.
+- Connects peers via a distributed hash table, whereas Earthstar peers are undiscoverable by default.
