@@ -50,8 +50,9 @@ export default function Index() {
     <div>
       <div className="gap-2 flex flex-col items-start my-2">
         <p className="text-2xl md:text-4xl max-w-prose font-display">
-          Storage for private, distributed, offline-first applications.
+          A database for private, distributed, offline-first applications.
         </p>
+     
         <p className="text-gray-700">
           Earthstar is a specification and JavaScript library for building
           connected applications owned and run by their users.
