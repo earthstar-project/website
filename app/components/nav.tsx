@@ -18,8 +18,14 @@ const sitemap: Sitemap = {
     "User guide": "/docs/developer-guide",
     "Server guide": "/docs/server-guide",
     "Writing scripts": "/docs/scripting",
-    "API docs":
-      `https://doc.deno.land/https://deno.land/x/earthstar@${LATEST_EARTHSTAR_VERSION}/mod.ts`,
+    "Universal APIs":
+    `https://doc.deno.land/https://deno.land/x/earthstar@${LATEST_EARTHSTAR_VERSION}/src/entries/universal.ts`,
+    "Browser APIs":
+    `https://doc.deno.land/https://deno.land/x/earthstar@${LATEST_EARTHSTAR_VERSION}/src/entries/browser.ts`,
+    "Deno APIs":
+      `https://doc.deno.land/https://deno.land/x/earthstar@${LATEST_EARTHSTAR_VERSION}/src/entries/deno.ts`,
+      "Node APIs":
+      `https://doc.deno.land/https://deno.land/x/earthstar@${LATEST_EARTHSTAR_VERSION}/src/entries/node.ts`,
   },
 
   Specifications: {
