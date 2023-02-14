@@ -9,6 +9,7 @@ const sitemap: Sitemap = {
   "What is it?": "/docs/what-is-it",
   "How does it work?": "/docs/how-it-works",
   "What's next?": "/docs/future",
+  "Comparisons": "/docs/comparisons",
   Tutorials: {
     "Create a chat app": "/tutorials/create-a-chat-app",
     "Run a server": "/tutorials/run-a-server",
