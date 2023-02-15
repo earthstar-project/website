@@ -8,7 +8,7 @@ This is a Remix site. You can find documentation for Remix [here](https://remix.
 This project uses Tailwind CSS to style the site. You can find documentation for it [here](https://tailwindcss.com)
 
 1. Install dependencies with `npm install`.
-2. Run `npm dev` to start a development server.
+2. Run `npm run dev` to start a development server.
 3. Open http://localhost:3000 to preview the site.
 4. Start making your changes.
 
