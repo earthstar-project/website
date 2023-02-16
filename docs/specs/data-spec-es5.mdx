@@ -636,7 +636,7 @@ Document schema in Typescript:
 ```typescript
 interface Doc {
   author: string; // an author address
-  text: string; // an arbitary string of utf-8
+  text: string; // an arbitrary string of utf-8
   textHash: string; // sha256(content) encoded as base32 with a leading 'b'
   
   format: "es.5"; // the format version that this document adheres to.
@@ -656,7 +656,7 @@ interface Doc {
 
 Here we use the words "fields" and "properties" to mean the same thing.
 
-The fields above are called the "core fields". All core fields are REQUIRED. Some core fields may be null; these MUST NOT be omitted; they MUST be exlicitly set to null if they are null.
+The fields above are called the "core fields". All core fields are REQUIRED. Some core fields may be null; these MUST NOT be omitted; they MUST be explicitly set to null if they are null.
 
 Extra fields are FORBIDDEN as part of this core document schema.
 
@@ -1007,7 +1007,7 @@ Libraries SHOULD support a standard variety of queries against a database of Ear
 
 This query format will become standardized because it will be used for querying from one peer to another. It's not quite stable yet.
 
-This only supports relatively simple ways of querying and filtering documents because we want to make it easy to use many different kinds of backend storage which may have limited query capabilities. Apps and libraries MAY add extensions for more powerful querying if they're able to, but this should be considered the minimal set for compatability across peers.
+This only supports relatively simple ways of querying and filtering documents because we want to make it easy to use many different kinds of backend storage which may have limited query capabilities. Apps and libraries MAY add extensions for more powerful querying if they're able to, but this should be considered the minimal set for compatibility across peers.
 
 The recommended query object format, expressed in Typescript:
 
