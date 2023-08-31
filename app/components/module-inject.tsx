@@ -6,7 +6,7 @@ export default function ModuleInject() {
       type="module"
       dangerouslySetInnerHTML={{
         __html:
-          `import * as Earthstar from "https://cdn.earthstar-project.org/js/earthstar.web.v10.2.1.js";
+          `import * as Earthstar from "https://cdn.earthstar-project.org/js/earthstar.web.v10.2.2.js";
 				
 globalThis.Earthstar = Earthstar;`,
       }}
