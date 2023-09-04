@@ -6,37 +6,35 @@ meta:
 
 # What's next for Earthstar?
 
+Earthstar is well into its second year of funded development, thanks to the generous support of [NLnet](https://nlnet.nl).
 
-We've just finished our first year of funded development, thanks to our partners at [NLnet](https://nlnet.nl). We're about to start the second year. Here's what's planned: 
+This year we've already added automatic peer discovery and sync over LAN. We're aiming to have the following done for the beginning of 2024:
 
-## Earthstar Desktop
+## Capabilities
 
-![](/desktop.png)
+Earthstar currently only has two levels of access restriction: read or write. These privileges are granted by knowledge of a share's public and secret key, respectively. Such knowledge is obviously non-revocable, meaning that leakage of either of these keys means a share is permanently compromised. Not good.
 
-The Earthstar JavaScript module has matured, and gained some features vital to building great applications. But so far, we haven't had many applications for people to get their hands on.
+Enter _capabilities_. These are unforgeable tokens which bestow either read or write access to the owner of a public key, restricted to a certain path ranges, time ranges, and more. 
 
-Earthstar Desktop will be a hub for an ecosystem of "small pieces loosely joined" browser applets accessed through users' own Earthstar servers.
+These capabilities will make Earthstar's shares far more resilient to misbehaviour and key leakage, and allow universally moderated p2p spaces.
 
-The applets' client code will be stored on shares, so that they can be synced across peers and accessed from wherever you are and whatever your connectivity is.
+## Improved deletion
 
-Earthstar Desktop simply lists the available applets, and provides nuts and bolts UI for common Earthstar settings. Earthstar provides the common storage for all the applets.
+Earthstar allows documents to be overwritten with empty contents, effectively deleting them. However the metadata of this document remains, including a timestamp, author, path, and cryptographic signatures. That these details remain can be undesirable in many contexts.
 
-## Safety tools
+The next version of Earthstar will introduce _prefix deletion_. If you have documents `secrets/mayo_and_peas` and `secrets/not_really_a_black_belt`, writing a later document at `sec` (a prefix of both) will delete both of them in their entirety, leaving only a single document behind at `sec`.
 
-Earthstar shares have been built for users who already know and trust each other. But what happens when that trust is broken?
+This not only preserves privacy, but space, too!
 
-The Earthstar project intends to build tools which help groups move away from unwanted company, and manage data users no longer wish to see.
+## Partial sync
 
-## Sync and discovery over LAN
+Right now when peers sync, they sync everything within a share. The next version of Earthstar will be able to perform a partial sync, syncing only the specific region(s) of a share a a peer is interested in.
 
-Currently peers can sync over the internet using Replica servers, or by ferrying share data on physical media.The Earthstar project intends to build new APIs to enable discovery of Earthstar peers over LAN and sync with them.
+## Super efficient sync
 
-## Encryption
+Last year we added a new form of efficient synchronisation based on range-based set reconciliation. This year we will adopt a new protocol which builds upon this technique and introduces further efficiencies, to the point where peers can communicate resource budgets. Long story short, it will be theoretically possible for Earthstar to run on microcontrollers and other devices with very limited resources.
 
-Earthstar data is currently protected by peers only being able to know which shares they have in common. But this is not enough for many use-cases. Users may desire a level of privacy from each other even within trusted groups, and some users may have data sensitive enough that they can't risk it being unencrypted on disk.
+## Willow protocol
 
-The Earthstar project intends to add new capabilities to encrypt share documents and attachments.
+All of these above features are enabled by the new Willow General Purpose Sync Protocol we've been working on. It's a new protocol inspired by Earthstar, refining and building upon its concepts. We will be publishing a new website with complete specifications for this protocol.
 
-## Synchronisation specification
-
-Last year Earthstar gained a new powerful efficient synchronisation implementation. This year we'd like to formalise how this sync is performed so that new potential implementations can interact with existing peers.
