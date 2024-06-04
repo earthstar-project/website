@@ -10,6 +10,7 @@ import {
   useTransition,
 } from "remix";
 import Nav from "./components/nav";
+import { Link } from "./components/html";
 
 import stylesUrl from "./styles/global.css";
 
@@ -55,6 +56,16 @@ export default function App() {
 
   return (
     <Document>
+      <div className="p-2 text-center bg-yellow-100 lg:col-span-2">
+        Earthstar has a new{" "}
+        <Link href="https://willowprotocol.org/earthstar/spec/">
+          specification
+        </Link>{" "}
+        powered by <Link href="https://willowprotocol.org">Willow</Link>. <br />
+        <Link href="https://jsr.io/@earthstar/earthstar/versions">
+          Earthstar v11 is now in beta
+        </Link>.
+      </div>
       <Nav />
       <div
         className={`px-2 py-1 md:px-4 md:py-2 overflow-auto lg:w-full lg:m-0 ${
